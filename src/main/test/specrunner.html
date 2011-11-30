@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MTVNPlayer API Test</title>
+        <link rel="stylesheet" type="text/css" href="jasmine/jasmine.css">
+  		<script type="text/javascript" src="jasmine/jasmine.js"></script>
+  		<script type="text/javascript" src="jasmine/jasmine-html.js"></script>
+    	<script src="player_spec.js" type="text/javascript" language="javascript"></script>
+        <script type="text/javascript" language="javascript">
+
+            var player1, MTVNPlayer = MTVNPlayer || {};
+			MTVNPlayer.addCallback = function(n){
+				this.onAPIReady = function(e){
+		        		return e ? function(){e();n();} : n;
+		  	      }(this.onAPIReady);
+			};
+			
+			MTVNPlayer.addCallback(function(){
+				
+			    var uri = (function(l){
+			            // get the uri from the querystring if available
+			            var pattern = /mgid.*:[0-9]*/;
+			            if(l.indexOf("mgid")!==-1){
+			               return l.match(pattern);
+			            }
+			            return "mgid:cms:video:nick.com:920786";
+			            })(location.search);
+			    
+			    player1 = new MTVNPlayer.Player("video-player",
+			        {
+			            width:640,
+			            height:320,
+			            uri:uri
+			        },{onMetadata:function(){}});
+            });
+            
+        </script>
+    </head>
+    <body>
+	    <div id="video-player"></div>
+        <script type="text/javascript" language="javascript">
+        
+        	jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+  			jasmine.getEnv().execute();
+            
+            var tag = document.createElement('script'),
+            	matches = location.search.match(/api=(.*js)/),
+            	storedURL = window.localStorage.getItem("embedAPITestURL");
+            tag.src = storedURL ? storedURL : "/player/api/"+ (matches ? matches[1] : "");
+            tag.language = "javascript";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        </script>
+    </body>
+</html>
