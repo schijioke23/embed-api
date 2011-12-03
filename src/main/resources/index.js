@@ -36,6 +36,10 @@ if(!MTVNPlayer.Player){
 		swfobjectBase = baseURL+"player/api/swfobject/",
 		html5 = null,
 		flash = null,
+        jQuery = window.jQuery,
+        throwError = function(message){
+            throw new Error("Embed API:"+message);
+        },
 		onPlayerCallbacks = null,
 		document = window.document,
 		isIDevice = (function(){
@@ -262,12 +266,13 @@ if(!MTVNPlayer.Player){
 			 * @method create
 			 * @private
 			 */
-			html5.create = function(targetID,config){
-				var element = document.createElement("iframe"),
-				targetDiv = document.getElementById(targetID);
+			html5.create = function(player){
+				var config = player.config,
+                element = document.createElement("iframe"),
+				targetDiv = document.getElementById(player.id);
 
 				targetDiv.parentNode.replaceChild(element,targetDiv);
-				element.setAttribute("id",targetID);
+				element.setAttribute("id",player.id);
 				element.setAttribute("src",getPath(config));
 				element.setAttribute("frameborder", "0");
 				element.setAttribute("scrolling", "no");
@@ -279,12 +284,13 @@ if(!MTVNPlayer.Player){
 				}else if(typeof window.attachEvent !== 'undefined') { 
 					window.attachEvent('onmessage', handleMessage); 
 				}
+                instances.push({source:element.contentWindow,player:player});
 			};
 			
 			// set up orientationchange handler for iPad
-			var n = navigator.userAgent.toLowerCase();
+			var n = window.navigator.userAgent.toLowerCase();
 			if(n.indexOf("ipad") !== -1){
-				document.addEventListener("orientationchange", function(orientation){
+				document.addEventListener("orientationchange", function(){
 					var i,
 					player = null,
 					numberOfInstances = instances.length;
@@ -325,6 +331,7 @@ if(!MTVNPlayer.Player){
 				flashVars.objectID = targetID; // TODO objectID is used by the player.
 				swfobject.embedSWF(getPath(config),targetID,config.width,config.height,"10.0.0",
 						swfobjectBase + "expressInstall.swf",flashVars,params,attributes);
+                instances.push({source:targetID,player:this});
 			},
 
 			swfObjectInit = {
@@ -342,9 +349,9 @@ if(!MTVNPlayer.Player){
 			
 			MTVNPlayer.onSWFObjectLoaded = onSWFObjectLoaded;
 
-			flash.create = function(targetID,config){
+			flash.create = function(player){
 
-				var tag,firstScriptTag;
+				var tag,firstScriptTag,targetID = player.id,config = player.config;
 				
 				if(typeof(swfobject) === "undefined"){
 					// queue request
@@ -586,30 +593,56 @@ if(!MTVNPlayer.Player){
 		PlayerAPI = function(targetID,config,events){
 			
 			this.isFlash = config.isFlash === undefined ? !isIDevice : config.isFlash;
-			this.id = targetID;
-			if(this.isFlash){
-				initializeFlash();
-				flash.create(targetID,config);
-			}else{
-				initializeHTML();
-				html5.create(targetID,config);
-			}
 			this.state =  this.currentMetadata = this.playlistMetadata = null;
+			this.config = config;
+			this.id = targetID;
 			this.events = events || {};
 			checkEvents(events);
-			this.config = config;
-			this.getPlayerElement = (function(embedID){
-				var container = null;
-				return function(){
+           
+            // check for target div
+            var targetDiv = document.getElementById(targetID),
+                create = null;
+                
+            this.getPlayerElement = (function(targetDiv){
+                var container = targetDiv;
+                return function(){
 					if(!container){
-						container = document.getElementById(embedID);
+						container = document.getElementById(this.id);
 					}
 					return container;
 				};
-			})(targetID);
-
-			// map of content windows to player API instances
-			instances.push({source:this.isFlash ? this.id : this.getPlayerElement().contentWindow,player:this});
+			})(targetDiv);
+                
+            if(this.isFlash){
+				initializeFlash();
+                create = flash.create;
+			}else{
+				initializeHTML();
+                create = html5.create;
+			}
+                
+            if(!targetDiv){
+                if(document.readyState === "complete"){
+                    throwError("target div " + targetID + " not found");
+                }else{
+                    if(jQuery){
+                        (function(ref){
+                            jQuery(document).ready(function(){
+                                if(document.getElementById(ref.id)){
+                                    create(ref);
+                                }else{
+                                    throwError("target div " + targetID + " not found");
+                                }
+                            }); 
+                        })(this);
+                    }else{
+                        throwError("Only call new MTVNPlayer.Player(targetID,..) after the targetID element is in the DOM.");
+                    }
+                }
+                return;
+            }else{
+                create(this);
+            }
 		};
 
 		// public api
@@ -730,4 +763,6 @@ if(!MTVNPlayer.Player){
 	if(typeof MTVNPlayer.onAPIReady === "function"){
 		MTVNPlayer.onAPIReady();
 	}
+    
+    MTVNPlayer.isReady = true; 
 }
