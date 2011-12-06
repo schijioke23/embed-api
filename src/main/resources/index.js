@@ -68,7 +68,7 @@ if(!MTVNPlayer.Player){
 		 * Constructor to return
 		 * @private
 		 */
-		PlayerAPI,
+		Player,
 		/**
 		 * @method getPlayerInstance
 		 * @private
@@ -592,8 +592,17 @@ if(!MTVNPlayer.Player){
 		MTVNPlayer.onPlayer = function(n){
 			chainPlayerCreated(n);
 		};
+        
+        MTVNPlayer.getPlayers = function(){
+            var result = [],
+                i = instances.length;
+            for(i; i--;){
+                result.push(instances[i].player);
+            }
+            return result;
+        };
 
-		PlayerAPI = function(targetID,config,events){
+		Player = function(targetID,config,events){
 			
 			this.isFlash = config.isFlash === undefined ? !isIDevice : config.isFlash;
 			this.state =  this.currentMetadata = this.playlistMetadata = null;
@@ -649,7 +658,7 @@ if(!MTVNPlayer.Player){
 		};
 
 		// public api
-		PlayerAPI.prototype = {
+		Player.prototype = {
 				/**
 				 * @method play
 				 */
@@ -761,7 +770,7 @@ if(!MTVNPlayer.Player){
 				}
 		};
 
-		return PlayerAPI;
+		return Player;
 	}(window));
 
 	// legacy method.

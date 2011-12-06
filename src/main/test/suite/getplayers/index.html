@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MTVNPlayer API Test</title>
+        <link rel="stylesheet" type="text/css" href="../../jasmine/jasmine.css">
+  		<script type="text/javascript" src="../../jasmine/jasmine.js"></script>
+  		<script type="text/javascript" src="../../jasmine/jasmine-html.js"></script>
+    	<script src="getplayers_spec.js" type="text/javascript" language="javascript"></script>
+        <script type="text/javascript" language="javascript">
+
+            var player1, 
+            doneCreatingPlayers = false,
+            numberOfPlayers = 2,
+            MTVNPlayer = MTVNPlayer || {};
+            
+			MTVNPlayer.addCallback = function(n){
+				this.onAPIReady = function(e){
+		        		return e ? function(){e();n();} : n;
+		  	      }(this.onAPIReady);
+			};
+			
+			MTVNPlayer.addCallback(function(){
+				
+			    var config = {uri:"mgid:cms:video:nick.com:920786",
+                    width:640,height:320};
+			    
+			    player1 = new MTVNPlayer.Player("video-player",config);
+                player2 = new MTVNPlayer.Player("video-player2",config);
+                doneCreatingPlayers = true;
+            });
+            
+        </script>
+    </head>
+    <body>
+	    <div id="video-player"></div>
+	    <div id="video-player2"></div>
+        <script type="text/javascript" language="javascript">
+        
+        	jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+  			jasmine.getEnv().execute();
+            
+            var tag = document.createElement('script');
+            tag.src = "/player/api/";
+            tag.language = "javascript";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        </script>
+    </body>
+</html>
