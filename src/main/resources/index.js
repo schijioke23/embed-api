@@ -4,7 +4,7 @@
  */
 var MTVNPlayer = MTVNPlayer || {};
 if(!MTVNPlayer.Player){
-	
+    
 	MTVNPlayer.Events = {
 			METADATA:"onMetadata",
 			STATE_CHANGE:"onStateChange",
@@ -36,7 +36,7 @@ if(!MTVNPlayer.Player){
 		swfobjectBase = baseURL+"player/api/swfobject/",
 		html5 = null,
 		flash = null,
-        jQuery = window.jQuery,
+		jQuery = window.jQuery,
         throwError = function(message){
             throw new Error("Embed API:"+message);
         },
@@ -271,7 +271,6 @@ if(!MTVNPlayer.Player){
                 element = document.createElement("iframe"),
 				targetDiv = document.getElementById(player.id);
 
-				targetDiv.parentNode.replaceChild(element,targetDiv);
 				element.setAttribute("id",player.id);
 				element.setAttribute("src",getPath(config));
 				element.setAttribute("frameborder", "0");
@@ -279,6 +278,9 @@ if(!MTVNPlayer.Player){
 				element.setAttribute("type", "text/html");
 				element.height = config.height;
 				element.width = config.width;
+
+				targetDiv.parentNode.replaceChild(element,targetDiv);
+				
 				if(typeof window.addEventListener !== 'undefined') { 
 					window.addEventListener('message', handleMessage, false); 
 				}else if(typeof window.attachEvent !== 'undefined') { 
@@ -331,7 +333,6 @@ if(!MTVNPlayer.Player){
 				flashVars.objectID = targetID; // TODO objectID is used by the player.
 				swfobject.embedSWF(getPath(config),targetID,config.width,config.height,"10.0.0",
 						swfobjectBase + "expressInstall.swf",flashVars,params,attributes);
-                instances.push({source:targetID,player:this});
 			},
 
 			swfObjectInit = {
@@ -353,6 +354,8 @@ if(!MTVNPlayer.Player){
 
 				var tag,firstScriptTag,targetID = player.id,config = player.config;
 				
+				instances.push({source:targetID,player:player});
+
 				if(typeof(swfobject) === "undefined"){
 					// queue request
 					swfObjectInit.items.push(
@@ -603,15 +606,15 @@ if(!MTVNPlayer.Player){
             var targetDiv = document.getElementById(targetID),
                 create = null;
                 
-            this.getPlayerElement = (function(targetDiv){
-                var container = targetDiv;
+            this.getPlayerElement = (function(){
+                var container = null;
                 return function(){
 					if(!container){
 						container = document.getElementById(this.id);
 					}
 					return container;
 				};
-			})(targetDiv);
+			})();
                 
             if(this.isFlash){
 				initializeFlash();
