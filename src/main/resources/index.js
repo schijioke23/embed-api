@@ -708,6 +708,12 @@ if(!MTVNPlayer.Player){
 				exitFullScreen:function(){
 					if(html5){
 						exitFullScreen.apply(this,[this]);
+					}else{
+                        try{
+                            this.getPlayerElement().exitFullScreen();
+                        }catch(e){
+                            // fail silently. exit full screen introduced in Prime 1.12
+                        }
 					}
 				},
 				/**
