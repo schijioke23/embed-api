@@ -12,6 +12,7 @@ if(!MTVNPlayer.Player){
 			MEDIA_END:"onMediaEnd",
 			PLAYHEAD_UPDATE:"onPlayheadUpdate",
 			PLAYLIST_COMPLETE:"onPlaylistComplete",
+			OVERLAY_RECT_CHANGE:"onOverlayRectChange",
 			READY:"onReady"
 	};
 	
@@ -56,7 +57,9 @@ if(!MTVNPlayer.Player){
 		jsonParse = function(){
 			if(JSON){
 				return function(str){
-					return JSON.parse(str);
+					if(str){
+						return JSON.parse(str);
+					}else{return null;}
 				};
 			}else if(jQuery){
 				return function(str){
@@ -257,6 +260,8 @@ if(!MTVNPlayer.Player){
 								player.isFullScreen = true;
 								goFullScreen(player);
 							}
+						}else if(data.indexOf("overlayRectChange:") === 0){
+                            processEvent(events.onOverlayRectChange,{data:jsonParse(getMessageData(data)),target:player});
 						}
 					}
 				}

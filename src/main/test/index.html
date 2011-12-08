@@ -73,13 +73,18 @@
 			    onPlaylistComplete = function(event){
 			        console.log("onPlaylistComplete:"+event.target);
 			    },
+			
+				onOverlayRectChange = function(event){
+					console.log("onOverlayRectChange rect:",JSON.stringify(event.data));
+				},
 			    
 			    events = {onReady:onReady,
 			        onMetadata:onMetadata,
 			        onMediaEnd:onMediaEnd,
 			        onPlayheadUpdate:onPlayheadUpdate,
 			        onStateChange:onStateChange,
-			        onPlaylistComplete:onPlaylistComplete},
+			        onPlaylistComplete:onPlaylistComplete,
+					onOverlayRectChange:onOverlayRectChange},
 			        
 			    uri = (function(){
 			            // get the uri from the querystring if available
