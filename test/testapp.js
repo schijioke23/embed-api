@@ -3,14 +3,14 @@ var path = require("path"),
     testDir = "." + __dirname.replace(process.cwd(),"");
     apiPath = function(dir){
     	if(testDir === "."){
-    		return "../resources/index.js";
+    		return "../src/index.js";
     	}
-    	dir = dir.replace("main/test","main/resources");
+    	dir = dir.replace("test","src");
     	return "." + dir.replace(process.cwd(),"")+"/index.js";
     }(__dirname),
     cloud9Port = process.env.C9_PORT,
     port = process.argv[2],
-    port = port ? port : (cloud9Port ? cloud9Port : "8181"),
+    port = port ? port : (cloud9Port ? cloud9Port : "3131"),
     getContentType = function (file) {
         var extname = path.extname(file);
         switch (extname) {
@@ -39,7 +39,9 @@ var path = require("path"),
 
         return path.normalize(file);
     };
-    
+   
+console.log("listening on port:"+port);
+
 require("http").createServer(
 
 function (req, res) {

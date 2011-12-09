@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'js'
 
 def srcFile = "${projectDir}/src/index.js"
-def version = "1.4.1.js"
+def version = "1.4.2.js"
 
 minifyJs {
    	input = file(srcFile)

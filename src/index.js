@@ -182,9 +182,10 @@ if(!MTVNPlayer.Player){
 		 */
 		goFullScreen = function(player){
 			var iframeElement = player.getPlayerElement(),
-				highestZIndex = player.config.highestZIndex;
+				highestZIndex = player.config.highestZIndex,
+				cssText = player.config.fullScreenCssText;
 			player.isFullScreen = true;
-			iframeElement.style.cssText = "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
+			iframeElement.style.cssText = cssText ? cssText : "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
 			iframeElement.width = isIDevice ? window.innerWidth : "100%"; // 100% doesn't work on iPad.
 			iframeElement.height = isIDevice ? window.innerHeight : "100%";
 			window.scrollTo(0,0);
@@ -224,8 +225,8 @@ if(!MTVNPlayer.Player){
 			 * @private
 			 */
 			handleMessage = function(event){
-				var data = event.data,player,events;
-				if(data && data.indexOf("logMessage:") === -1){
+				var data = event.data,player,events;				
+				if(data && data.indexOf && data.indexOf("logMessage:") === -1){
 					player = getPlayerInstance(event.source);
 					if(player){
 						events = player.events;
