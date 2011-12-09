@@ -4,3 +4,4 @@ target/
 .project
 .settings/
 example.sh
+.gradle/

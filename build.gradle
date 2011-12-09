@@ -1,0 +1,28 @@
+defaultTasks 'minifyJs','finish'
+
+buildscript {
+   repositories {
+	   mavenLocal()
+       mavenCentral()
+   }
+   dependencies {
+       classpath 'com.eriwen:gradle-js-plugin:0.1'
+   }
+}
+
+apply plugin: 'js'
+
+def srcFile = "${projectDir}/src/index.js"
+def version = "1.4.1.js"
+
+minifyJs {
+   	input = file(srcFile)
+   	output = file("$buildDir/${version}")
+}
+
+task finish(type: Copy) { 
+  mkdir("${buildDir}/detailed")
+  from "$projectDir/src/index.js" 
+  into "$buildDir/detailed/"
+  rename "index.js", version
+}
