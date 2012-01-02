@@ -6,11 +6,13 @@ buildscript {
        mavenCentral()
    }
    dependencies {
-       classpath 'com.eriwen:gradle-js-plugin:0.1'
+		classpath 'com.eriwen:gradle-js-plugin:0.1'
+		classpath "com.github.dzhaughnroth:jasmine-gradle-plugin:0.4"
    }
 }
 
 apply plugin: 'js'
+apply plugin: 'jasmineGradle'
 
 def srcFile = "${projectDir}/src/index.js"
 def version = "1.4.2.js"

@@ -1,32 +1,65 @@
 /** 
- * MTVNPlayer 
- * @module media.mtvnservices.com 
+ * MTVNPlayer {Object}
+ * @static 
  */
 var MTVNPlayer = MTVNPlayer || {};
 if(!MTVNPlayer.Player){
     
+	/**
+	 * Events dispatched by {@link MTVNPlayer.Player}.
+	 */
 	MTVNPlayer.Events = {
+			/**
+			 * @event
+			 * Fired when the metadata changes. 
+			 */
 			METADATA:"onMetadata",
+			/**
+			 * @event
+			 * Fired when the state changes. 
+			 */
 			STATE_CHANGE:"onStateChange",
+			/**
+			 * @event
+			 * Fired once per playlist item (content + ads/bumpers)
+			 */
 			MEDIA_START:"onMediaStart",
+			/**
+			 * @event
+			 * Fired when a playlist item ends, this includes its prerolls and postrolls
+			 */
 			MEDIA_END:"onMediaEnd",
+			/**
+			 * @event
+			 * Fired as the playhead moves
+			 */
 			PLAYHEAD_UPDATE:"onPlayheadUpdate",
+			/**
+			 * @event
+			 * Fired once per playlist item (content + ads/bumpers)
+			 */
 			PLAYLIST_COMPLETE:"onPlaylistComplete",
+			/**
+			 * @event
+			 * Fired when the GUI appears, event.data contains an {Object} {x:0,y:0,width:640,height:320}
+			 */
 			OVERLAY_RECT_CHANGE:"onOverlayRectChange",
+			/**
+			 * @event
+			 * Fired once the API and metadata are available
+			 */
 			READY:"onReady"
 	};
 	
 	// swfobject callback
 	MTVNPlayer.onSWFObjectLoaded = null;
-	
-	/**
-	 * A Player Instance
-	 * @class Player
+	/**  
+	 * Create a new MTVNPlayer.Player
 	 * @constructor
-	 * @namespace MTVNPlayer
+	 * Create a new MTVNPlayer.Player
 	 * @param {String} id Target div id
-	 * @param {Object} playerVars config object
-	 * @param {Object} events Event callbacks
+	 * @param {Object} config config object {@link MTVNPlayer.Player#config}
+	 * @param {Object} events Event callbacks {@link MTVNPlayer.Events}
 	 */
 	MTVNPlayer.Player = (function(window){
 
@@ -67,10 +100,6 @@ if(!MTVNPlayer.Player){
 				};
 			}
 		}(),
-		/**
-		 * Constructor to return
-		 * @private
-		 */
 		Player,
 		/**
 		 * @method getPlayerInstance
@@ -595,10 +624,20 @@ if(!MTVNPlayer.Player){
 		};
 		// end private vars
 		
-		MTVNPlayer.onPlayer = function(n){
-			chainPlayerCreated(n);
+		/**
+		 * @member MTVNPlayer
+		 * If you want to know when players are created that you do not create, pass in a callback.
+		 * @param {Function} callback A callback fired when every player is created.
+		 */
+		MTVNPlayer.onPlayer = function(callback){
+			chainPlayerCreated(callback);
 		};
         
+		/**
+		 * @member MTVNPlayer
+		 * Returns an array containing each {@link MTVNPlayer.Player} created.
+		 * @returns {Array} An array containing each {@link MTVNPlayer.Player} created. 
+		 */
         MTVNPlayer.getPlayers = function(){
             var result = [],
                 i = instances.length;
@@ -607,11 +646,22 @@ if(!MTVNPlayer.Player){
             }
             return result;
         };
-
 		Player = function(targetID,config,events){
 			
 			this.isFlash = config.isFlash === undefined ? !isIDevice : config.isFlash;
 			this.state =  this.currentMetadata = this.playlistMetadata = null;
+			/**
+			 * @cfg {Object} config The main configuration object.
+			 * @cfg {String} [config.uri] (required) The URI of the media.
+			 * @cfg {Number} [config.width] (required) The width of the player
+			 * @cfg {Number} [config.height] (required) The height of the player
+			 * @cfg {Object} [config.flashVars] Flashvars are passed to the flash player
+			 * @cfg {Object} [config.attributes] Probably not useful (see [Adobe Help][1])
+			 * [1]: http://kb2.adobe.com/cps/127/tn_12701.html
+			 * @cfg {String} [config.fullScreenCssText] When the HTML5 player goes full screen, this is the css that is set on the iframe.
+			 * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
+			 *
+			 */
 			this.config = config;
 			this.id = targetID;
 			this.events = events || {};
@@ -620,7 +670,7 @@ if(!MTVNPlayer.Player){
             // check for target div
             var targetDiv = document.getElementById(targetID),
                 create = null;
-                
+            
             this.getPlayerElement = (function(){
                 var container = null;
                 return function(){
@@ -666,51 +716,48 @@ if(!MTVNPlayer.Player){
 		// public api
 		Player.prototype = {
 				/**
-				 * @method play
+				 * Begins playing or unpauses.
 				 */
 				play:function(){message.call(this,"play");},
 				/**
-				 * @method pause
+				 * Pauses the media.
 				 */
 				pause:function(){message.call(this,"pause");},
 				/**
-				 * @method mute
+				 * Mutes the volume
 				 */
 				mute:function(){message.call(this,"mute");},
 				/**
-				 * @method unmute
+				 * Returns the volume to the level before it was muted.
 				 */
 				unmute:function(){message.call(this,"unmute");},
 				/**
 				 * Play an item from the playlist specified by the index
-				 * @method playIndex
 				 * @param {Number} index
 				 */
 				playIndex:function(index){message.call(this,"playIndex:"+index);},
 				/**
 				 * Play a new URI
-				 * @method playURI
 				 * @param {String} uri
 				 */
 				playURI:function(uri){message.call(this,"playUri:"+uri);},
 				/**
-				 * change the volume
-				 * @method setVolume
+				 * Change the volume
 				 * @param {Number} value between 0 and 1.
 				 */
 				setVolume:function(v){message.call(this,"volume:"+v);},
 				/**
-				 * seeks to the time
-				 * @method seek
-				 * @param {Number} value between 0 and the duration of the clip.
+				 * Seeks to the time specified in seconds.
+				 * @param {Number} value between 0 and the duration of the clip or playlist.
 				 */
 				seek:function(v){message.call(this,"seek:"+v);},
 				/**
-				 * @method getEmbedCode
+				 * Returns the embed code used to share this instance of the player
+                 * @return {String} the embed code as a string.
 				 */
 				getEmbedCode:function(){return getEmbedCode.call(this);},
 				/**
-				 * @method goFullScreen
+				 * Puts the player in full screen mode, does not work for the flash player do the flash restrictions.
 				 */
 				goFullScreen:function(){
 					if(html5){
@@ -718,7 +765,8 @@ if(!MTVNPlayer.Player){
 					}
 				},
 				/**
-				 * @method exitFullScreen
+				 * Exits full screen and returns the player to its initial embed size.
+                 * Does not work with Prime builds older than 1.12. 
 				 */
 				exitFullScreen:function(){
 					if(html5){
@@ -732,7 +780,7 @@ if(!MTVNPlayer.Player){
 					}
 				},
 				/**
-				 * @method bind 
+				 * Adds an event listener for an event.
 				 * @param {String} eventName an MTVNPlayer.Event.
 				 * @param {Function} callback The function to invoke when the event is fired. 
 				 */
@@ -751,7 +799,7 @@ if(!MTVNPlayer.Player){
 					this.events[eventName] = currentEvent;
 				},
 				/**
-				 * @method unbind
+				 * Removes an event listener
 				 * @param {String} eventName an MTVNPlayer.Event.
 				 * @param {Function} callback The function to that was bound to the event.
 				 */
@@ -788,5 +836,10 @@ if(!MTVNPlayer.Player){
 		MTVNPlayer.onAPIReady();
 	}
     
+	/**
+	 * @member MTVNPlayer
+	 * @property {Boolean} 
+	 * If this is true, you wouldn't have to use the MTVNPlayer.addCallback() method.
+	 */
     MTVNPlayer.isReady = true; 
 }
