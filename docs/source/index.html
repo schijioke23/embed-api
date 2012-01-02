@@ -641,9 +641,8 @@ if(!MTVNPlayer.Player){
 		};
 		// end private vars
 		
-<span id='MTVNPlayer-static-method-onPlayer'>		/**
+<span id='MTVNPlayer-method-onPlayer'>		/**
 </span>		 * @member MTVNPlayer
-		 * @static
 		 * If you want to know when players are created that you do not create, pass in a callback.
 		 * @param {Function} callback A callback fired when every player is created.
 		 */
@@ -651,10 +650,9 @@ if(!MTVNPlayer.Player){
 			chainPlayerCreated(callback);
 		};
         
-<span id='MTVNPlayer-static-method-getPlayers'>		/**
+<span id='MTVNPlayer-method-getPlayers'>		/**
 </span>		 * @member MTVNPlayer
-		 * @static
-		 * returns An array containing each {@link MTVNPlayer.Player} created.
+		 * Returns an array containing each {@link MTVNPlayer.Player} created.
 		 * @returns {Array} An array containing each {@link MTVNPlayer.Player} created. 
 		 */
         MTVNPlayer.getPlayers = function(){
@@ -676,8 +674,10 @@ if(!MTVNPlayer.Player){
 			 * @cfg {Number} [config.height] (required) The height of the player
 			 * @cfg {Object} [config.flashVars] Flashvars are passed to the flash player
 			 * @cfg {Object} [config.attributes] Probably not useful (see [Adobe Help][1])
-			 *
 			 * [1]: http://kb2.adobe.com/cps/127/tn_12701.html
+			 * @cfg {String} [config.fullScreenCssText] When the HTML5 player goes full screen, this is the css that is set on the iframe.
+			 * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
+			 *
 			 */
 			this.config = config;
 			this.id = targetID;
@@ -733,19 +733,19 @@ if(!MTVNPlayer.Player){
 		// public api
 		Player.prototype = {
 <span id='MTVNPlayer-Player-method-play'>				/**
-</span>				 * begins playing or unpauses.
+</span>				 * Begins playing or unpauses.
 				 */
 				play:function(){message.call(this,&quot;play&quot;);},
 <span id='MTVNPlayer-Player-method-pause'>				/**
-</span>				 * pauses the media.
+</span>				 * Pauses the media.
 				 */
 				pause:function(){message.call(this,&quot;pause&quot;);},
 <span id='MTVNPlayer-Player-method-mute'>				/**
-</span>				 * mutes the volume
+</span>				 * Mutes the volume
 				 */
 				mute:function(){message.call(this,&quot;mute&quot;);},
 <span id='MTVNPlayer-Player-method-unmute'>				/**
-</span>				 * returns the volume to the level before it was muted.
+</span>				 * Returns the volume to the level before it was muted.
 				 */
 				unmute:function(){message.call(this,&quot;unmute&quot;);},
 <span id='MTVNPlayer-Player-method-playIndex'>				/**
@@ -759,21 +759,22 @@ if(!MTVNPlayer.Player){
 				 */
 				playURI:function(uri){message.call(this,&quot;playUri:&quot;+uri);},
 <span id='MTVNPlayer-Player-method-setVolume'>				/**
-</span>				 * change the volume
+</span>				 * Change the volume
 				 * @param {Number} value between 0 and 1.
 				 */
 				setVolume:function(v){message.call(this,&quot;volume:&quot;+v);},
 <span id='MTVNPlayer-Player-method-seek'>				/**
-</span>				 * seeks to the time
-				 * @param {Number} value between 0 and the duration of the clip.
+</span>				 * Seeks to the time specified in seconds.
+				 * @param {Number} value between 0 and the duration of the clip or playlist.
 				 */
 				seek:function(v){message.call(this,&quot;seek:&quot;+v);},
 <span id='MTVNPlayer-Player-method-getEmbedCode'>				/**
-</span>				 * return the embed code used to share this instance of the player
+</span>				 * Returns the embed code used to share this instance of the player
+                 * @return {String} the embed code as a string.
 				 */
 				getEmbedCode:function(){return getEmbedCode.call(this);},
 <span id='MTVNPlayer-Player-method-goFullScreen'>				/**
-</span>				 * will put the player in full screen mode, does not work for the flash player
+</span>				 * Puts the player in full screen mode, does not work for the flash player do the flash restrictions.
 				 */
 				goFullScreen:function(){
 					if(html5){
@@ -781,7 +782,8 @@ if(!MTVNPlayer.Player){
 					}
 				},
 <span id='MTVNPlayer-Player-method-exitFullScreen'>				/**
-</span>				 * exits full screen.
+</span>				 * Exits full screen and returns the player to its initial embed size.
+                 * Does not work with Prime builds older than 1.12. 
 				 */
 				exitFullScreen:function(){
 					if(html5){
@@ -795,7 +797,7 @@ if(!MTVNPlayer.Player){
 					}
 				},
 <span id='MTVNPlayer-Player-method-bind'>				/**
-</span>				 * adds an event listener for an event.
+</span>				 * Adds an event listener for an event.
 				 * @param {String} eventName an MTVNPlayer.Event.
 				 * @param {Function} callback The function to invoke when the event is fired. 
 				 */
@@ -814,7 +816,7 @@ if(!MTVNPlayer.Player){
 					this.events[eventName] = currentEvent;
 				},
 <span id='MTVNPlayer-Player-method-unbind'>				/**
-</span>				 * removes an event listener
+</span>				 * Removes an event listener
 				 * @param {String} eventName an MTVNPlayer.Event.
 				 * @param {Function} callback The function to that was bound to the event.
 				 */
