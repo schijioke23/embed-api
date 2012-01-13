@@ -276,8 +276,8 @@ if(!MTVNPlayer.Player){
 							player.playlistMetadata = jsonParse(getMessageData(data));
 						}else if(data === "onReady"){
 							var fv = player.config.flashVars;
-							if(fv && fv.ssid){
-								message.call(player,"setSSID:"+fv.ssid);
+							if(fv && fv.sid){
+								message.call(player,"setSSID:"+fv.sid);
 							}
 							if(onPlayerCallbacks){
 								onPlayerCallbacks(player);
