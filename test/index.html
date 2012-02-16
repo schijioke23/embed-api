@@ -77,6 +77,10 @@
 				onOverlayRectChange = function(event){
 					console.log("onOverlayRectChange rect:",JSON.stringify(event.data));
 				},
+                
+                onUIStateChange = function(event){
+					console.log("onUIStateChange rect:",JSON.stringify(event.data));
+				},
 			    
 			    events = {onReady:onReady,
 			        onMetadata:onMetadata,
@@ -84,6 +88,7 @@
 			        onPlayheadUpdate:onPlayheadUpdate,
 			        onStateChange:onStateChange,
 			        onPlaylistComplete:onPlaylistComplete,
+			        onUIStateChange:onUIStateChange,
 					onOverlayRectChange:onOverlayRectChange},
 			        
 			    uri = (function(){

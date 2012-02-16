@@ -1,12 +1,12 @@
 var path = require("path"),
     fs = require("fs"),
-    testDir = "." + __dirname.replace(process.cwd(),"");
-    apiPath = function(dir){
-    	if(testDir === "."){
-    		return "../src/index.js";
-    	}
-    	dir = dir.replace("test","src");
-    	return "." + dir.replace(process.cwd(),"")+"/index.js";
+    testDir = "." + __dirname.replace(process.cwd(),""),
+    apiPath = function(dir) {
+        if (testDir === ".") {
+            return "../src/index.js";
+        }
+        dir = dir.replace("test", "src");
+        return "." + dir.replace(process.cwd(), "") + "/index.js";
     }(__dirname),
     cloud9Port = process.env.C9_PORT,
     port = process.argv[2],
