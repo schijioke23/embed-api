@@ -103,19 +103,23 @@ if(!MTVNPlayer.Player){
 			return baseURL + config.uri;
 		},
 		instances = [],
-		jsonParse = function(){
-			if(JSON){
-				return function(str){
-					if(str){
-						return JSON.parse(str);
-					}else{return null;}
-				};
-			}else if(jQuery){
-				return function(str){
-					return jQuery.parseJSON(str);
-				};
-			}
-		}(),
+		jsonParse = function(str){
+			// choose method.
+			jsonParse = function() {
+				if(window.JSON){
+					return function(str){
+						if(str){
+							return JSON.parse(str);
+						}else{return null;}
+					};
+				}else if(window.jQuery){
+					return function(str){
+						return jQuery.parseJSON(str);
+					};
+				}
+			}();
+			return jsonParse(str);
+		},
 		Player,
 		/**
 		 * @method getPlayerInstance
