@@ -1,5 +1,5 @@
 /** 
- * MTVNPlayer {Object}
+ * MTVNPlayer 
  * @static 
  */
 var MTVNPlayer = MTVNPlayer || {};
@@ -7,48 +7,64 @@ if(!MTVNPlayer.Player){
     
 	/**
 	 * Events dispatched by {@link MTVNPlayer.Player}.
+	 * attach them like so:
+	 * 
+	 * `player.bind("onMetadata",function(event){// your code here});`
+	 * 
 	 */
 	MTVNPlayer.Events = {
 			/**
-			 * @event
+			 * @event onMetadata
 			 * Fired when the metadata changes. 
 			 */
 			METADATA:"onMetadata",
 			/**
-			 * @event
-			 * Fired when the state changes. 
+			 * @event onStateChange
+			 * Fired when the play state changes. 
 			 */
 			STATE_CHANGE:"onStateChange",
 			/**
-			 * @event
+			 * @event onMediaStart
 			 * Fired once per playlist item (content + ads/bumpers)
 			 */
 			MEDIA_START:"onMediaStart",
 			/**
-			 * @event
+			 * @event onMediaEnd
 			 * Fired when a playlist item ends, this includes its prerolls and postrolls
 			 */
 			MEDIA_END:"onMediaEnd",
 			/**
-			 * @event
+			 * @event onPlayheadUpdate
 			 * Fired as the playhead moves
 			 */
 			PLAYHEAD_UPDATE:"onPlayheadUpdate",
 			/**
-			 * @event
+			 * @event onPlaylistComplete
 			 * Fired once per playlist item (content + ads/bumpers)
 			 */
 			PLAYLIST_COMPLETE:"onPlaylistComplete",
 			/**
-			 * @event
+             * @deprecated 1.5.0 Use {@link MTVNPlayer.Events#onUIStateChange} instead
+			 * @event onOverlayRectChange
 			 * Fired when the GUI appears, event.data contains an {Object} {x:0,y:0,width:640,height:320}
 			 */
 			OVERLAY_RECT_CHANGE:"onOverlayRectChange",
 			/**
-			 * @event
+			 * @event onReady
 			 * Fired once the API and metadata are available
 			 */
-			READY:"onReady"
+			READY:"onReady",
+            /**
+             * @event onUIStateChange
+			 * Fired when the UI changes its state, ususally due to user interaction, or lack of.
+             * 
+             * event.data will contain information about the state.
+             
+             * - data.active <code>Boolean</code>: If true, user has activated the UI by clicking or touching. 
+             * If false, the user has remained idle with out interaction for a predetermined amount of time.
+             * - data.overlayRect <code>Object</code>: the area that is not obscured by the GUI, a rectangle such as <code>{x:0,y:0,width:640,height:320}</code>
+			 */
+			UI_STATE_CHANGE:"onUIStateChange"
 	};
 	
 	// swfobject callback
@@ -109,7 +125,7 @@ if(!MTVNPlayer.Player){
 		 * @method getPlayerInstance
 		 * @private
 		 * @param {ContentWindow} source
-		 * @returns {MTVN.Player} A player instance
+		 * @returns {MTVNPlayer.Player} A player instance
 		 */
 		getPlayerInstance = function(source){
 			var i,
@@ -197,7 +213,7 @@ if(!MTVNPlayer.Player){
 		 * return the iframe to it's original width and height
 		 * @method exitFullScreen
 		 * @private
-		 * @param {MTVN.Player} player
+		 * @param {MTVNPlayer.Player} player
 		 */
 		exitFullScreen = function(player){
 			player.isFullScreen = false;
@@ -241,7 +257,7 @@ if(!MTVNPlayer.Player){
 			 * @method onMetadata
 			 * @private
 			 * @param {Object} data Event data
-			 * @param {MTVN.Player} player A player instance
+			 * @param {MTVNPlayer.Player} player A player instance
 			 */
 			onMetadata = function(data,player){
 				var obj = jsonParse(getMessageData(data));
@@ -280,8 +296,8 @@ if(!MTVNPlayer.Player){
 							player.playlistMetadata = jsonParse(getMessageData(data));
 						}else if(data === "onReady"){
 							var fv = player.config.flashVars;
-							if(fv && fv.ssid){
-								message.call(player,"setSSID:"+fv.ssid);
+							if(fv && fv.sid){
+								message.call(player,"setSSID:"+fv.sid);
 							}
 							if(onPlayerCallbacks){
 								onPlayerCallbacks(player);
@@ -296,6 +312,8 @@ if(!MTVNPlayer.Player){
 							}
 						}else if(data.indexOf("overlayRectChange:") === 0){
                             processEvent(events.onOverlayRectChange,{data:jsonParse(getMessageData(data)),target:player});
+						}else if(data.indexOf("onUIStateChange:") === 0){
+                            processEvent(events.onUIStateChange,{data:jsonParse(getMessageData(data)),target:player});
 						}
 					}
 				}
@@ -785,7 +803,7 @@ if(!MTVNPlayer.Player){
 				},
 				/**
 				 * Adds an event listener for an event.
-				 * @param {String} eventName an MTVNPlayer.Event.
+				 * @param {String} eventName an {@link MTVNPlayer.Events}.
 				 * @param {Function} callback The function to invoke when the event is fired. 
 				 */
 				bind:function(eventName,callback){
