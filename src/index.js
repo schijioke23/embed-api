@@ -849,11 +849,6 @@ if(!MTVNPlayer.Player){
 		return Player;
 	}(window));
 
-	// legacy method.
-	if(typeof onPlayerAPIReady === "function"){
-		onPlayerAPIReady();
-	}
-	
 	if(typeof MTVNPlayer.onAPIReady === "function"){
 		MTVNPlayer.onAPIReady();
 	}
