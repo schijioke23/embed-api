@@ -668,6 +668,43 @@ if (!MTVNPlayer.Player) {
                         n(p);
                     } : n;
                 }(onPlayerCallbacks);
+            },
+            buildConfig = function(el) {
+                var getDataAttr = function(attr) {
+                        return el.getAttribute("data-" + attr);
+                    },
+                    getStyleAttr = function(attr) {
+                        return el.style[attr];
+                    },
+                    getObjectFromNameValue = function(attr) {
+                        attr = getDataAttr(attr);
+                        if (attr) {
+                            var i, result = {},
+                                pairs = attr.split("&"),
+                                pair;
+                            for (i = pairs.length; i--;) {
+                                pair = pairs[i].split("=");
+                                if (pair && pair.length == 2) {
+                                    result[pair[0]] = pair[1];
+                                }
+                            }
+                            return result;
+                        }
+                    },
+                    width = getStyleAttr("width"),
+                    height = getStyleAttr("height");
+                return {
+                    uri: getDataAttr("contenturi"),
+                    width: width ? width : "640",
+                    height: height ? height : "320",
+                    flashVars: getObjectFromNameValue("flashVars"),
+                    attributes: getObjectFromNameValue("attributes")
+                };
+            },
+            createId = function(target) {
+                var newID = "mtvnPlayer" + Math.round(Math.random() * 10000000);
+                target.setAttribute("id", newID);
+                return newID;
             };
         // end private vars
         /**
@@ -691,8 +728,7 @@ if (!MTVNPlayer.Player) {
             }
             return result;
         };
-        Player = function(targetID, config, events) {
-            this.isFlash = config.isFlash === undefined ? !isIDevice : config.isFlash;
+        Player = function(elementOrId, config, events) {
             this.state = this.currentMetadata = this.playlistMetadata = null;
             /**
              * @cfg {Object} config The main configuration object.
@@ -706,13 +742,33 @@ if (!MTVNPlayer.Player) {
              * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
              *
              */
-            this.config = config;
-            this.id = targetID;
+            this.config = null;
+            /**
+             * cross-browser check for element
+             */
+            var create = null,
+                el = null,
+                isElement = (function(o) {
+                    return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+                    typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
+                })(elementOrId);
+            if (isElement) {
+                el = elementOrId;
+                this.id = createId(el);
+                if (!config) {
+                    this.config = buildConfig(el);
+                }
+            } else {
+                this.config = config;
+                this.id = elementOrId;
+                el = document.getElementById(this.id);
+            }
             this.events = events || {};
+            this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
+            // make sure the events are valid
             checkEvents(events);
-            // check for target div
-            var targetDiv = document.getElementById(targetID),
-                create = null;
+            // this is called later, and references the iframe or embed created, not the target el.
+            // TODO just store the ref to the element in this.element.
             this.getPlayerElement = (function() {
                 var container = null;
                 return function() {
@@ -729,9 +785,10 @@ if (!MTVNPlayer.Player) {
                 initializeHTML();
                 create = html5.create;
             }
-            if (!targetDiv) {
+            // check for element before creating
+            if (!el) {
                 if (document.readyState === "complete") {
-                    throwError("target div " + targetID + " not found");
+                    throwError("target div " + this.id + " not found");
                 } else {
                     if (jQuery) {
                         (function(ref) {
@@ -739,7 +796,7 @@ if (!MTVNPlayer.Player) {
                                 if (document.getElementById(ref.id)) {
                                     create(ref);
                                 } else {
-                                    throwError("target div " + targetID + " not found");
+                                    throwError("target div " + ref.id + " not found");
                                 }
                             });
                         })(this);
@@ -877,6 +934,136 @@ if (!MTVNPlayer.Player) {
         };
         return Player;
     }(window));
+    /**
+     * Create players from elements in the page.
+     * @param {String} selector default is "div.MTVNPlayer"
+     */
+    MTVNPlayer.createPlayers = function(selector) {
+        if (!selector) {
+            selector = "div.MTVNPlayer";
+        }
+        if (!MTVNPlayer.selector) {
+            /**
+             * author:  Fabio Miranda Costa
+             * github:  fabiomcosta
+             * twitter: @fabiomiranda
+             * license: MIT-style license
+             */
+            (function(global, document) {
+                var elements, parsed, parsedClasses, parsedPseudos, pseudos = {},
+                    context, currentDocument, reTrim = /^\s+|\s+$/g;
+                var supports_querySelectorAll = !! document.querySelectorAll;
+                var $u = function(selector, _context, append) {
+                        elements = append || [];
+                        context = _context || $u.context;
+                        if (supports_querySelectorAll) {
+                            try {
+                                arrayFrom(context.querySelectorAll(selector));
+                                return elements;
+                            } catch (e) {}
+                        }
+                        currentDocument = context.ownerDocument || context;
+                        parse(selector.replace(reTrim, ''));
+                        find();
+                        return elements;
+                    };
+                var matchSelector = function(node) {
+                        if (parsed.tag) {
+                            var nodeName = node.nodeName.toUpperCase();
+                            if (parsed.tag == '*') {
+                                if (nodeName < '@') return false; // Fix for comment nodes and closed nodes
+                            } else {
+                                if (nodeName != parsed.tag) return false;
+                            }
+                        }
+                        if (parsed.id && node.getAttribute('id') != parsed.id) {
+                            return false;
+                        }
+                        if ((parsedClasses = parsed.classes)) {
+                            var className = (' ' + node.className + ' ');
+                            for (var i = parsedClasses.length; i--;) {
+                                if (className.indexOf(' ' + parsedClasses[i] + ' ') < 0) return false;
+                            }
+                        }
+                        if ((parsedPseudos = parsed.pseudos)) {
+                            for (var i = parsedPseudos.length; i--;) {
+                                var pseudoClass = pseudos[parsedPseudos[i]];
+                                if (!(pseudoClass && pseudoClass.call($u, node))) return false;
+                            }
+                        }
+                        return true;
+                    };
+                var find = function() {
+                        var parsedId = parsed.id,
+                            merge = ((parsedId && parsed.tag || parsed.classes || parsed.pseudos) || (!parsedId && (parsed.classes || parsed.pseudos))) ? arrayFilterAndMerge : arrayMerge;
+                        if (parsedId) {
+                            var el = currentDocument.getElementById(parsedId);
+                            if (el && (currentDocument === context || contains(el))) {
+                                merge([el]);
+                            }
+                        } else {
+                            merge(context.getElementsByTagName(parsed.tag || '*'));
+                        }
+                    };
+                var parse = function(selector) {
+                        parsed = {};
+                        while ((selector = selector.replace(/([#.:])?([^#.:]*)/, parser))) {};
+                    };
+                var parser = function(all, simbol, name) {
+                        if (!simbol) {
+                            parsed.tag = name.toUpperCase();
+                        } else if (simbol == '#') {
+                            parsed.id = name;
+                        } else if (simbol == '.') {
+                            if (parsed.classes) {
+                                parsed.classes.push(name);
+                            } else {
+                                parsed.classes = [name];
+                            }
+                        } else if (simbol == ':') {
+                            if (parsed.pseudos) {
+                                parsed.pseudos.push(name);
+                            } else {
+                                parsed.pseudos = [name];
+                            }
+                        }
+                        return '';
+                    };
+                var slice = Array.prototype.slice;
+                var arrayFrom = function(collection) {
+                        elements = slice.call(collection, 0);
+                    };
+                var arrayMerge = function(collection) {
+                        for (var i = 0, node; node = collection[i++];) {
+                            elements.push(node);
+                        }
+                    };
+                try {
+                    slice.call(document.documentElement.childNodes, 0);
+                } catch (e) {
+                    arrayFrom = arrayMerge;
+                }
+                var arrayFilterAndMerge = function(found) {
+                        for (var i = 0, node; node = found[i++];) {
+                            if (matchSelector(node)) elements.push(node);
+                        }
+                    };
+                var contains = function(node) {
+                        do {
+                            if (node === context) return true;
+                        } while ((node = node.parentNode));
+                        return false;
+                    };
+                $u.pseudos = pseudos;
+                $u.context = document;
+                global.selector = $u;
+            })(MTVNPlayer, document);
+        }
+        var elements = this.selector(selector);
+        for (var i = 0, len = elements.length; i < len; i++) {
+            new MTVNPlayer.Player(elements[i]);
+        }
+    };
     if (typeof MTVNPlayer.onAPIReady === "function") {
         MTVNPlayer.onAPIReady();
     }
