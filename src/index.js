@@ -86,7 +86,7 @@ if (!MTVNPlayer.Player) {
             throwError = function(message) {
                 throw new Error("Embed API:" + message);
             },
-            onPlayerCallbacks = null,
+            onPlayerCallbacks = [],
             document = window.document,
             isIDevice = (function() {
                 var n = window.navigator.userAgent.toLowerCase();
@@ -232,6 +232,11 @@ if (!MTVNPlayer.Player) {
                 iframeElement.height = isIDevice ? window.innerHeight : "100%";
                 window.scrollTo(0, 0);
             },
+            executeCallbacks = function(player) {
+                for (var i = 0, len = onPlayerCallbacks.length; i < len; i++) {
+                    onPlayerCallbacks[i](player);
+                }
+            },
             initializeHTML = function() {
                 initializeHTML = function() {}; // call only once
                 html5 = {};
@@ -306,9 +311,7 @@ if (!MTVNPlayer.Player) {
                                     if (fv && fv.sid) {
                                         message.call(player, "setSSID:" + fv.sid);
                                     }
-                                    if (onPlayerCallbacks) {
-                                        onPlayerCallbacks(player);
-                                    }
+                                    executeCallbacks(player);
                                     processEvent(events.onReady, {
                                         data: null,
                                         target: player
@@ -601,9 +604,7 @@ if (!MTVNPlayer.Player) {
                             e(id);
                         }
                         var player = getPlayerInstance(id);
-                        if (onPlayerCallbacks) {
-                            onPlayerCallbacks(player);
-                        }
+                        executeCallbacks(player);
                         addFlashEvents(player);
                     };
                 }(window.mtvnPlayerLoaded);
@@ -646,15 +647,6 @@ if (!MTVNPlayer.Player) {
                 embedCode = embedCode.replace(/\{height\}/, config.height);
                 embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
                 return embedCode;
-            },
-            chainPlayerCreated = function(n) {
-                onPlayerCallbacks = function(e) {
-                    return e ?
-                    function(p) {
-                        e(p);
-                        n(p);
-                    } : n;
-                }(onPlayerCallbacks);
             };
         // end private vars
         /**
@@ -663,7 +655,13 @@ if (!MTVNPlayer.Player) {
          * @param {Function} callback A callback fired when every player is created.
          */
         MTVNPlayer.onPlayer = function(callback) {
-            chainPlayerCreated(callback);
+            onPlayerCallbacks.push(callback);
+        };
+        MTVNPlayer.removeOnPlayer = function(callback) {
+            var index = onPlayerCallbacks.indexOf(callback);
+            if (index !== -1) {
+                onPlayerCallbacks.splice(index, 1);
+            }
         };
         /**
          * @member MTVNPlayer
