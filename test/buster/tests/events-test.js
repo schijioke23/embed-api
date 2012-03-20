@@ -5,7 +5,7 @@ var buster = buster,
     MTVNPlayer = window.MTVNPlayer;
 buster.testCase("bind and unbind", {
     setUp:function() {
-        this.timeout = 20000;
+        this.timeout = 10000;
         this.targetId = "targetId";
         this.el = document.createElement("div");
         this.el.setAttribute("id", this.targetId);
@@ -16,10 +16,6 @@ buster.testCase("bind and unbind", {
         };
         document.body.appendChild(this.el);
         this.player = new MTVNPlayer.Player(this.targetId, this.playerConfig);
-        console.group("run event test");
-    },
-    tearDown:function() {
-        console.groupEnd();  
     },
     "check playhead": function(done) {
         var player = this.player;
