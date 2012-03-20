@@ -432,6 +432,9 @@ if (!MTVNPlayer.Player) {
                             tag.src = swfobjectBase + "swfobject.js";
                             tag.language = "javascript";
                             firstScriptTag = document.getElementsByTagName('script')[0];
+                            if(!firstScriptTag){
+                                firstScriptTag = document.body; // for buster tests
+                            }
                             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
                         }
                     } else {
