@@ -432,6 +432,9 @@ if (!MTVNPlayer.Player) {
                             tag.src = swfobjectBase + "swfobject.js";
                             tag.language = "javascript";
                             firstScriptTag = document.getElementsByTagName('script')[0];
+                            if (!firstScriptTag) {
+                                firstScriptTag = document.body; // for buster tests
+                            }
                             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
                         }
                     } else {
@@ -518,95 +521,79 @@ if (!MTVNPlayer.Player) {
                             readyEvent = MTVNPlayer.Events.READY,
                             mediaEnd = MTVNPlayer.Events.MEDIA_END,
                             mediaStart = MTVNPlayer.Events.MEDIA_START,
-                            playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE,
-                            userReadyEvent = events[readyEvent],
-                            userMetadataEvent = events[metadataEvent];
+                            playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                         // the first metadata event will trigger the readyEvent
-                        if (userMetadataEvent || userReadyEvent) {
-                            map[id + metadataEvent] = function(metadata) {
-                                var playlistItems = player.getPlayerElement().getPlaylist().items,
-                                    processedMetadata = processMetadata(metadata, playlistItems),
-                                    playlistMetadata = player.playlistMetadata,
-                                    fireReadyEvent = false;
-                                player.currentMetadata = processedMetadata;
-                                if (processedMetadata.index !== -1) { // index is -1 for ads.
-                                    if (!playlistMetadata) {
-                                        // this is our first metadata event
-                                        fireReadyEvent = true;
-                                        try {
-                                            playlistMetadata = processPlaylistMetadata(player.getPlayerElement().getPlaylistMetadata());
-                                        } catch (e) {
-                                            playlistMetadata = getPlaylistItemsLegacy(playlistItems);
-                                        }
-                                    }
-                                    playlistMetadata.items[processedMetadata.index] = processedMetadata;
-                                    playlistMetadata.index = processedMetadata.index;
-                                    player.playlistMetadata = playlistMetadata;
-                                    if (fireReadyEvent && userReadyEvent) {
-                                        processEvent(userReadyEvent, {
-                                            data: processedMetadata,
-                                            target: player
-                                        });
+                        map[id + metadataEvent] = function(metadata) {
+                            var playlistItems = player.getPlayerElement().getPlaylist().items,
+                                processedMetadata = processMetadata(metadata, playlistItems),
+                                playlistMetadata = player.playlistMetadata,
+                                fireReadyEvent = false;
+                            player.currentMetadata = processedMetadata;
+                            if (processedMetadata.index !== -1) { // index is -1 for ads.
+                                if (!playlistMetadata) {
+                                    // this is our first metadata event
+                                    fireReadyEvent = true;
+                                    try {
+                                        playlistMetadata = processPlaylistMetadata(player.getPlayerElement().getPlaylistMetadata());
+                                    } catch (e) {
+                                        playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                                     }
                                 }
-                                if (userMetadataEvent) {
-                                    processEvent(userMetadataEvent, {
+                                playlistMetadata.items[processedMetadata.index] = processedMetadata;
+                                playlistMetadata.index = processedMetadata.index;
+                                player.playlistMetadata = playlistMetadata;
+                                if (fireReadyEvent) {
+                                    processEvent(events[readyEvent], {
                                         data: processedMetadata,
                                         target: player
                                     });
                                 }
-                            };
-                            element.addEventListener('METADATA', mapString + metadataEvent);
-                        }
-                        if (events[stateEvent]) {
-                            map[id + stateEvent] = function(state) {
-                                player.state = state;
-                                processEvent(events[stateEvent], {
-                                    data: state,
-                                    target: player
-                                });
-                            };
-                            element.addEventListener('STATE_CHANGE', mapString + stateEvent);
-                        }
-                        if (events[playheadUpdate]) {
-                            map[id + playheadUpdate] = function(playhead) {
-                                player.playhead = playhead;
-                                processEvent(events[playheadUpdate], {
-                                    data: playhead,
-                                    target: player
-                                });
-                            };
-                            element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
-                        }
-                        if (events[playlistCompleteEvent]) {
-                            map[id + playlistCompleteEvent] = function() {
-                                processEvent(events[playlistCompleteEvent], {
-                                    data: null,
-                                    target: player
-                                });
-                            };
-                            element.addEventListener('PLAYLIST_COMPLETE', mapString + playlistCompleteEvent);
-                        }
-                        if (events[mediaStart]) {
-                            map[id + mediaStart] = function() {
-                                processEvent(events[mediaStart], {
-                                    data: null,
-                                    target: player
-                                });
-                            };
-                            // TODO does this fire for ads?
-                            element.addEventListener("READY", mapString + mediaStart);
-                        }
-                        if (events[mediaEnd]) {
-                            map[id + mediaEnd] = function() {
-                                processEvent(events[mediaEnd], {
-                                    data: null,
-                                    target: player
-                                });
-                            };
-                            // yes, flash event is media ended unfort.
-                            element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
-                        }
+                            }
+                            processEvent(events[metadataEvent], {
+                                data: processedMetadata,
+                                target: player
+                            });
+                        };
+                        element.addEventListener('METADATA', mapString + metadataEvent);
+                        map[id + stateEvent] = function(state) {
+                            player.state = state;
+                            processEvent(events[stateEvent], {
+                                data: state,
+                                target: player
+                            });
+                        };
+                        element.addEventListener('STATE_CHANGE', mapString + stateEvent);
+                        map[id + playheadUpdate] = function(playhead) {
+                            player.playhead = playhead;
+                            processEvent(events[playheadUpdate], {
+                                data: playhead,
+                                target: player
+                            });
+                        };
+                        element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
+                        map[id + playlistCompleteEvent] = function() {
+                            processEvent(events[playlistCompleteEvent], {
+                                data: null,
+                                target: player
+                            });
+                        };
+                        element.addEventListener('PLAYLIST_COMPLETE', mapString + playlistCompleteEvent);
+                        map[id + mediaStart] = function() {
+                            processEvent(events[mediaStart], {
+                                data: null,
+                                target: player
+                            });
+                        };
+                        // TODO does this fire for ads?
+                        element.addEventListener("READY", mapString + mediaStart);
+                        map[id + mediaEnd] = function() {
+                            processEvent(events[mediaEnd], {
+                                data: null,
+                                target: player
+                            });
+                        };
+                        // yes, flash event is media ended unfort.
+                        element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
                     };
                 window.mtvnPlayerLoaded = function(e) {
                     return function(id) {
