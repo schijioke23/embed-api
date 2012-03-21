@@ -9,22 +9,25 @@ if (!MTVNPlayer.Player) {
      * attach them like so:
      * 
      * `player.bind("onMetadata",function(event){// your code here});`
+     *
+     *  All events have a target property (event.target) which is the player that dispatched the event.
+     *  Some events have a data property (event.data) which contains data specific to the event.
      * 
      */
     MTVNPlayer.Events = {
         /**
          * @event onMetadata
-         * Fired when the metadata changes. 
+         * Fired when the metadata changes. event.data is the metadata.
          */
         METADATA: "onMetadata",
         /**
          * @event onStateChange
-         * Fired when the play state changes. 
+         * Fired when the play state changes. event.data is the state.
          */
         STATE_CHANGE: "onStateChange",
         /**
          * @event onMediaStart
-         * Fired once per playlist item (content + ads/bumpers)
+         * Fired once per playlist item (content + ads/bumpers).
          */
         MEDIA_START: "onMediaStart",
         /**
@@ -34,7 +37,7 @@ if (!MTVNPlayer.Player) {
         MEDIA_END: "onMediaEnd",
         /**
          * @event onPlayheadUpdate
-         * Fired as the playhead moves
+         * Fired as the playhead moves. event.data is the playhead time.
          */
         PLAYHEAD_UPDATE: "onPlayheadUpdate",
         /**
@@ -657,6 +660,11 @@ if (!MTVNPlayer.Player) {
         MTVNPlayer.onPlayer = function(callback) {
             onPlayerCallbacks.push(callback);
         };
+         /**
+         * @member MTVNPlayer
+         * (Available in 1.6.0) Remove a callback registered width {MTVNPlayer.onPlayer}
+         * @param {Function} callback A callback fired when every player is created.
+         */
         MTVNPlayer.removeOnPlayer = function(callback) {
             var index = onPlayerCallbacks.indexOf(callback);
             if (index !== -1) {
