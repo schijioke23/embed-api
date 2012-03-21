@@ -2,14 +2,20 @@
 <html lang="en">
     <head>
         <title>MTVN Video Player</title>
-        <script type="text/template" id="MTVNPlayerConfig">
-           {"width":900}
+        <script type="application/json" id="MTVNPlayerConfig">
+           {"width":600,
+            "flashVars":
+                {   
+                    "fv1":"fv1value",
+                    "autoPlay":"true"
+                }
+           }
         </script>
     </head>
     <body>
         
     	<!--target div -->
-        <div class="MTVNPlayer" style="height:320px;"data-contenturi="mgid:cms:video:nick.com:920786" data-flashVars="ssid=gianni"></div>
+        <div class="MTVNPlayer" style="height:320px;" data-contenturi="mgid:cms:video:nick.com:920786" data-flashVars="ssid=gianni&autoPlay=false"></div>
         
         
 	<script type="text/javascript" src="/player/api/"></script>	

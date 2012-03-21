@@ -651,8 +651,13 @@ if (!MTVNPlayer.Player) {
             copyProperties = function(toObj, fromObj) {
                 for (var prop in fromObj) {
                     if (fromObj.hasOwnProperty(prop)) {
-                        if(fromObj[prop]){
-                            toObj[prop] = fromObj[prop];
+                        if (fromObj[prop]) {
+                            var propName = prop.toLowerCase();
+                            if (propName === "flashvars" || propName === "attributes" || propName === "params") {
+                                copyProperties(toObj[prop], fromObj[prop]);
+                            } else {
+                                toObj[prop] = fromObj[prop];
+                            }
                         }
                     }
                 }
@@ -696,7 +701,7 @@ if (!MTVNPlayer.Player) {
             },
             initConfig = function(config) {
                 // TODO cross browser
-                if(Object.prototype.toString.call(config) == "[object String]"){
+                if (Object.prototype.toString.call(config) == "[object String]") {
                     config = jsonParse(config);
                 }
                 return config;
@@ -1065,7 +1070,7 @@ if (!MTVNPlayer.Player) {
                 return;
             }(this.selector("#MTVNPlayerConfig"));
         for (var i = 0, len = elements.length; i < len; i++) {
-            new MTVNPlayer.Player(elements[i],configJSON);
+            new MTVNPlayer.Player(elements[i], configJSON);
         }
     };
     if (typeof MTVNPlayer.onAPIReady === "function") {
