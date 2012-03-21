@@ -1,4 +1,4 @@
-defaultTasks 'minifyJs','finish'
+defaultTasks 'minifyJs','archive','finish'
 
 buildscript {
    repositories {
@@ -6,26 +6,31 @@ buildscript {
        mavenCentral()
    }
    dependencies {
-		classpath 'com.eriwen:gradle-js-plugin:0.1'
-		classpath "com.github.dzhaughnroth:jasmine-gradle-plugin:0.4"
+		classpath 'com.eriwen:gradle-js-plugin:0.3'
    }
 }
 
 apply plugin: 'js'
-apply plugin: 'jasmineGradle'
 
 def srcFile = "${projectDir}/src/index.js"
-
-def version = "1.5.0.js"
+def buildNumber = System.getenv().BUILD_NUMBER
+def version = "1.6.0"
 
 minifyJs {
    	input = file(srcFile)
-   	output = file("$buildDir/${version}")
+   	output = file("$buildDir/${version}.js")
+}
+
+task archive(type: Copy) { 
+  mkdir("${buildDir}/archive")
+  from "$projectDir/src/index.js" 
+  into "$buildDir/archive/"
+  rename "index.js", "${version}-${buildNumber}.js"
 }
 
 task finish(type: Copy) { 
   mkdir("${buildDir}/detailed")
   from "$projectDir/src/index.js" 
   into "$buildDir/detailed/"
-  rename "index.js", version
+  rename "index.js", "${version}.js"
 }
