@@ -648,7 +648,17 @@ if (!MTVNPlayer.Player) {
                 embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
                 return embedCode;
             },
-            buildConfig = function(el) {
+            copyProperties = function(toObj, fromObj) {
+                for (var prop in fromObj) {
+                    if (fromObj.hasOwnProperty(prop)) {
+                        if(fromObj[prop]){
+                            toObj[prop] = fromObj[prop];
+                        }
+                    }
+                }
+                return toObj;
+            },
+            buildConfig = function(el, config) {
                 var getDataAttr = function(attr) {
                         return el.getAttribute("data-" + attr);
                     },
@@ -670,20 +680,26 @@ if (!MTVNPlayer.Player) {
                             return result;
                         }
                     },
-                    width = getStyleAttr("width"),
-                    height = getStyleAttr("height");
-                return {
-                    uri: getDataAttr("contenturi"),
-                    width: width ? width : "640",
-                    height: height ? height : "320",
-                    flashVars: getObjectFromNameValue("flashVars"),
-                    attributes: getObjectFromNameValue("attributes")
-                };
+                    configFromEl = {
+                        uri: getDataAttr("contenturi"),
+                        width: getStyleAttr("width"),
+                        height: getStyleAttr("height"),
+                        flashVars: getObjectFromNameValue("flashVars"),
+                        attributes: getObjectFromNameValue("attributes")
+                    };
+                return copyProperties(config, configFromEl);
             },
             createId = function(target) {
                 var newID = "mtvnPlayer" + Math.round(Math.random() * 10000000);
                 target.setAttribute("id", newID);
                 return newID;
+            },
+            initConfig = function(config) {
+                // TODO cross browser
+                if(Object.prototype.toString.call(config) == "[object String]"){
+                    config = jsonParse(config);
+                }
+                return config;
             };
         // end private vars
         /**
@@ -727,7 +743,7 @@ if (!MTVNPlayer.Player) {
              * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
              *
              */
-            this.config = null;
+            this.config = initConfig(config || {});
             /**
              * cross-browser check for element
              */
@@ -740,11 +756,8 @@ if (!MTVNPlayer.Player) {
             if (isElement) {
                 el = elementOrId;
                 this.id = createId(el);
-                if (!config) {
-                    this.config = buildConfig(el);
-                }
+                this.config = buildConfig(el, this.config);
             } else {
-                this.config = config;
                 this.id = elementOrId;
                 el = document.getElementById(this.id);
             }
@@ -1044,9 +1057,15 @@ if (!MTVNPlayer.Player) {
                 global.selector = $u;
             })(MTVNPlayer, document);
         }
-        var elements = this.selector(selector);
+        var elements = this.selector(selector),
+            configJSON = function(found) {
+                if (found && found.length === 1) {
+                    return found[0].innerText;
+                }
+                return;
+            }(this.selector("#MTVNPlayerConfig"));
         for (var i = 0, len = elements.length; i < len; i++) {
-            new MTVNPlayer.Player(elements[i]);
+            new MTVNPlayer.Player(elements[i],configJSON);
         }
     };
     if (typeof MTVNPlayer.onAPIReady === "function") {
