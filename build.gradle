@@ -32,6 +32,14 @@ task feature(type: Copy) {
   rename "index.js", "${version}-${buildNumber}.js"
 }
 
+combineJs {
+  mkdir("${buildDir}/auto")
+  file1 = fileTree(dir: "${projectDir}/src", includes: ['index.js'])
+  file2 = fileTree(dir: "${projectDir}/src", includes: ['auto-create-players.js'])
+  inputs.files file1 + file2
+  outputs.file file("${buildDir}/auto/${version}.js")
+}
+
 task archive(type: Copy) { 
   mkdir("${buildDir}/archive")
   from "$projectDir/src/index.js" 
