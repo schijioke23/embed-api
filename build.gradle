@@ -14,11 +14,30 @@ apply plugin: 'js'
 
 def srcFile = "${projectDir}/src/index.js"
 def buildNumber = System.getenv().BUILD_NUMBER
-def version = "1.6.0"
+def version = "2.0.0"
+def gitBranch = System.getenv().GIT_BRANCH
+if(gitBranch){
+	gitBranch = gitBranch.replaceAll("origin/","")
+}
 
 minifyJs {
    	input = file(srcFile)
    	output = file("$buildDir/${version}.js")
+}
+
+task feature(type: Copy) { 
+  mkdir("${buildDir}/${gitBranch}")
+  from "$projectDir/src/index.js" 
+  into "$buildDir/${gitBranch}/"
+  rename "index.js", "${version}-${buildNumber}.js"
+}
+
+combineJs {
+  mkdir("${buildDir}/auto")
+  file1 = fileTree(dir: "${projectDir}/src", includes: ['index.js'])
+  file2 = fileTree(dir: "${projectDir}/src", includes: ['auto-create-players.js'])
+  inputs.files file1 + file2
+  outputs.file file("${buildDir}/auto/${version}.js")
 }
 
 task archive(type: Copy) { 
