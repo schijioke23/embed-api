@@ -941,7 +941,7 @@ if (!MTVNPlayer.Player) {
      * Create players from elements in the page.
      * @param {String} selector default is "div.MTVNPlayer"
      */
-    MTVNPlayer.createPlayers = function(selector) {
+    MTVNPlayer.createPlayers = function(selector,config,events) {
         if (!selector) {
             selector = "div.MTVNPlayer";
         }
@@ -1063,14 +1063,14 @@ if (!MTVNPlayer.Player) {
             })(MTVNPlayer, document);
         }
         var elements = this.selector(selector),
-            configJSON = function(found) {
+            configJSON = config ? null : function(found) {
                 if (found && found.length === 1) {
                     return found[0].innerText;
                 }
                 return;
             }(this.selector("#MTVNPlayerConfig"));
         for (var i = 0, len = elements.length; i < len; i++) {
-            new MTVNPlayer.Player(elements[i], configJSON);
+            new MTVNPlayer.Player(elements[i], config || configJSON, events);
         }
     };
     if (typeof MTVNPlayer.onAPIReady === "function") {
