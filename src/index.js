@@ -1,5 +1,6 @@
 /** 
- * MTVNPlayer 
+ * For creating a player inline see MTVNPlayer.Player constructor.
+ * For creating a player or group of players defined in HTML see {@link MTVNPlayer#createPlayers}
  * @static 
  */
 var MTVNPlayer = MTVNPlayer || {};
@@ -96,12 +97,17 @@ if (!MTVNPlayer.Player) {
     // swfobject callback
     MTVNPlayer.onSWFObjectLoaded = null;
     /**  
-     * Create a new MTVNPlayer.Player
+     * @class MTVNPlayer.Player
+     * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
+     *      var player = new MTVNPlayer.Player(element/id,config,events);
+     *      player.bind("onReady",function(event){player.mute();});
+     *      player.pause();
      * @constructor
      * Create a new MTVNPlayer.Player
-     * @param {String} id Target div id
-     * @param {Object} config config object {@link MTVNPlayer.Player#config}
-     * @param {Object} events Event callbacks {@link MTVNPlayer.Events}
+     * @param {String/HTMLElement} id-or-element Pass in a string id, or an actual HTMLElement
+     * @param {Object} config config object, see: {@link MTVNPlayer.Player#config}
+     * @param {Object} events Event callbacks, see: {@link MTVNPlayer.Events}
+     * @returns MTVNPlayer.Player
      */
     MTVNPlayer.Player = (function(window) {
         "use strict";
@@ -729,18 +735,12 @@ if (!MTVNPlayer.Player) {
                 var newID = "mtvnPlayer" + Math.round(Math.random() * 10000000);
                 target.setAttribute("id", newID);
                 return newID;
-            },
-            initConfig = function(config) {
-                // TODO cross browser
-                if (Object.prototype.toString.call(config) == "[object String]") {
-                    config = jsonParse(config);
-                }
-                return config;
             };
         // end private vars
         /**
          * @member MTVNPlayer
-         * If you want to know when players are created that you do not create, pass in a callback.
+         * Whenever a player is created, the callback passed will fire with the player as the first
+         * argument, providing an easy way to hook into player events in a decoupled way.
          * @param {Function} callback A callback fired when every player is created.
          * 
          *     MTVNPlayer.onPlayer(function(player){
@@ -754,7 +754,7 @@ if (!MTVNPlayer.Player) {
         };
         /**
          * @member MTVNPlayer
-         * (Available in 1.6.0) Remove a callback registered width {MTVNPlayer.onPlayer}
+         * (Available in 1.6.0) Remove a callback registered width {@link MTVNPlayer#onPlayer}
          * @param {Function} callback A callback fired when every player is created.
          */
         MTVNPlayer.removeOnPlayer = function(callback) {
@@ -941,7 +941,7 @@ if (!MTVNPlayer.Player) {
              * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
              *
              */
-            this.config = initConfig(config || {});
+            this.config = config || {};
             var create = null,
                 el = null,
                 isElement = (function(o) {
@@ -1133,7 +1133,7 @@ if (!MTVNPlayer.Player) {
     /**
      * @member MTVNPlayer
      * @property {Boolean} 
-     * If this is true, you wouldn't have to use the MTVNPlayer.addCallback() method.
+     * Set to true after the API is loaded.
      */
     MTVNPlayer.isReady = true;
 }
