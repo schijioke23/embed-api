@@ -109,15 +109,14 @@ if (!MTVNPlayer.Player) {
      * @param {Object} events Event callbacks, see: {@link MTVNPlayer.Events}
      * @returns MTVNPlayer.Player
      */
-    MTVNPlayer.Player = (function(window) {
+    MTVNPlayer.Player = (function(window, $) {
         "use strict";
         // static methods variables
         var baseURL = "http://media.mtvnservices.com/",
             swfobjectBase = baseURL + "player/api/swfobject/",
             html5 = null,
             flash = null,
-            selector = null,
-            jQuery = window.jQuery,
+            selector = $,
             throwError = function(message) {
                 throw new Error("Embed API:" + message);
             },
@@ -145,9 +144,13 @@ if (!MTVNPlayer.Player) {
                                 return null;
                             }
                         };
-                    } else if (window.jQuery) {
+                    } else if ($ && $.parseJSON) {
                         return function(str) {
-                            return jQuery.parseJSON(str);
+                            return $.parseJSON(str);
+                        };
+                    } else {
+                        return function() {
+                            // no json parsing, fail silently.
                         };
                     }
                 }();
@@ -983,9 +986,9 @@ if (!MTVNPlayer.Player) {
                 if (document.readyState === "complete") {
                     throwError("target div " + this.id + " not found");
                 } else {
-                    if (jQuery) {
+                    if ($) {
                         (function(ref) {
-                            jQuery(document).ready(function() {
+                            $(document).ready(function() {
                                 if (document.getElementById(ref.id)) {
                                     create(ref);
                                 } else {
@@ -1126,7 +1129,7 @@ if (!MTVNPlayer.Player) {
             }
         };
         return Player;
-    }(window));
+    }(window, window.jQuery || window.Zepto));
     if (typeof MTVNPlayer.onAPIReady === "function") {
         MTVNPlayer.onAPIReady();
     }
