@@ -1,30 +1,59 @@
 /** 
- * MTVNPlayer 
+ * For creating a player inline see MTVNPlayer.Player constructor.
+ * For creating a player or group of players defined in HTML see {@link MTVNPlayer#createPlayers}
  * @static 
  */
 var MTVNPlayer = MTVNPlayer || {};
 if (!MTVNPlayer.Player) {
     /**
      * Events dispatched by {@link MTVNPlayer.Player}.
-     * attach them like so:
+     *
+     * All events have a target property (event.target) which is the player that dispatched the event.
+     * Some events have a data property (event.data) which contains data specific to the event.
      * 
-     * `player.bind("onMetadata",function(event){// your code here});`
+     * # How to listen to events
+     * Attached to player instance via {@link MTVNPlayer.Player#bind}:
+     *      player.bind("onMetadata",function(event) {  
+     *             var metadata = event.data;
+     *          }    
+     *      });
+     * Passed in as an Object to the constructor {@link MTVNPlayer.Player}:
+     *      var player = new MTVNPlayer.Player("video-player",config,{
+     *              onMetadata:function(event) {
+     *                  var metadata = event.data;
+     *              }
+     *      });
+     * Passed as an Object into {@link MTVNPlayer#createPlayers}
+     *      MTVNPlayer.createPlayers("div.MTVNPlayer",config,{
+     *              onMetadata:function(event) {
+     *                  var metadata = event.data;
+     *                  // player that dispatched the event
+     *                  var player = event.player;
+     *                  var uri = event.player.config.uri;
+     *              }
+     *      });
+     * Attached to player from {@link MTVNPlayer#onPlayer}
+     *      MTVNPlayer.onPlayer(function(player){
+     *              player.bind("onMetadata",function(event) {  
+     *                  var metadata = event.data;
+     *              }    
+     *      });
      * 
      */
     MTVNPlayer.Events = {
         /**
          * @event onMetadata
-         * Fired when the metadata changes. 
+         * Fired when the metadata changes. event.data is the metadata.
          */
         METADATA: "onMetadata",
         /**
          * @event onStateChange
-         * Fired when the play state changes. 
+         * Fired when the play state changes. event.data is the state.
          */
         STATE_CHANGE: "onStateChange",
         /**
          * @event onMediaStart
-         * Fired once per playlist item (content + ads/bumpers)
+         * Fired once per playlist item (content + ads/bumpers).
          */
         MEDIA_START: "onMediaStart",
         /**
@@ -34,7 +63,7 @@ if (!MTVNPlayer.Player) {
         MEDIA_END: "onMediaEnd",
         /**
          * @event onPlayheadUpdate
-         * Fired as the playhead moves
+         * Fired as the playhead moves. event.data is the playhead time.
          */
         PLAYHEAD_UPDATE: "onPlayheadUpdate",
         /**
@@ -68,12 +97,17 @@ if (!MTVNPlayer.Player) {
     // swfobject callback
     MTVNPlayer.onSWFObjectLoaded = null;
     /**  
-     * Create a new MTVNPlayer.Player
+     * @class MTVNPlayer.Player
+     * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
+     *      var player = new MTVNPlayer.Player(element/id,config,events);
+     *      player.bind("onReady",function(event){player.mute();});
+     *      player.pause();
      * @constructor
      * Create a new MTVNPlayer.Player
-     * @param {String} id Target div id
-     * @param {Object} config config object {@link MTVNPlayer.Player#config}
-     * @param {Object} events Event callbacks {@link MTVNPlayer.Events}
+     * @param {String/HTMLElement} id-or-element Pass in a string id, or an actual HTMLElement
+     * @param {Object} config config object, see: {@link MTVNPlayer.Player#config}
+     * @param {Object} events Event callbacks, see: {@link MTVNPlayer.Events}
+     * @returns MTVNPlayer.Player
      */
     MTVNPlayer.Player = (function(window) {
         "use strict";
@@ -82,6 +116,7 @@ if (!MTVNPlayer.Player) {
             swfobjectBase = baseURL + "player/api/swfobject/",
             html5 = null,
             flash = null,
+            selector = null,
             jQuery = window.jQuery,
             throwError = function(message) {
                 throw new Error("Embed API:" + message);
@@ -647,16 +682,81 @@ if (!MTVNPlayer.Player) {
                 embedCode = embedCode.replace(/\{height\}/, config.height);
                 embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
                 return embedCode;
+            },
+            copyProperties = function(toObj, fromObj) {
+                if (fromObj) {
+                    for (var prop in fromObj) {
+                        if (fromObj.hasOwnProperty(prop)) {
+                            if (fromObj[prop]) {
+                                var propName = prop.toLowerCase();
+                                if (propName === "flashvars" || propName === "attributes" || propName === "params") {
+                                    copyProperties(toObj[prop], fromObj[prop]);
+                                } else {
+                                    toObj[prop] = fromObj[prop];
+                                }
+                            }
+                        }
+                    }
+                }
+                return toObj;
+            },
+            buildConfig = function(el, config) {
+                var getDataAttr = function(attr) {
+                        return el.getAttribute("data-" + attr);
+                    },
+                    getStyleAttr = function(attr) {
+                        return el.style[attr];
+                    },
+                    getObjectFromNameValue = function(attr) {
+                        attr = getDataAttr(attr);
+                        if (attr) {
+                            var i, result = {},
+                                pairs = attr.split("&"),
+                                pair;
+                            for (i = pairs.length; i--;) {
+                                pair = pairs[i].split("=");
+                                if (pair && pair.length == 2) {
+                                    result[pair[0]] = pair[1];
+                                }
+                            }
+                            return result;
+                        }
+                    },
+                    configFromEl = {
+                        uri: getDataAttr("contenturi"),
+                        width: getStyleAttr("width"),
+                        height: getStyleAttr("height"),
+                        flashVars: getObjectFromNameValue("flashVars"),
+                        attributes: getObjectFromNameValue("attributes")
+                    };
+                return copyProperties(config, configFromEl);
+            },
+            createId = function(target) {
+                var newID = "mtvnPlayer" + Math.round(Math.random() * 10000000);
+                target.setAttribute("id", newID);
+                return newID;
             };
         // end private vars
         /**
          * @member MTVNPlayer
-         * If you want to know when players are created that you do not create, pass in a callback.
+         * Whenever a player is created, the callback passed will fire with the player as the first
+         * argument, providing an easy way to hook into player events in a decoupled way.
          * @param {Function} callback A callback fired when every player is created.
+         * 
+         *     MTVNPlayer.onPlayer(function(player){
+         *         player.bind("onReady",function(event) {  
+         *             // do something
+         *         }    
+         *     });
          */
         MTVNPlayer.onPlayer = function(callback) {
             onPlayerCallbacks.push(callback);
         };
+        /**
+         * @member MTVNPlayer
+         * (Available in 1.6.0) Remove a callback registered width {@link MTVNPlayer#onPlayer}
+         * @param {Function} callback A callback fired when every player is created.
+         */
         MTVNPlayer.removeOnPlayer = function(callback) {
             var index = onPlayerCallbacks.indexOf(callback);
             if (index !== -1) {
@@ -676,8 +776,158 @@ if (!MTVNPlayer.Player) {
             }
             return result;
         };
-        Player = function(targetID, config, events) {
-            this.isFlash = config.isFlash === undefined ? !isIDevice : config.isFlash;
+        /**
+         * @member MTVNPlayer
+         * Create players from elements in the page.
+         * @param {String} selector default is "div.MTVNPlayer"
+         * @param {Object} config {@link MTVNPlayer.Player#config}
+         * @param {Object} events {@link MTVNPlayer.Events}
+         *
+         * Example:
+         *      <div class="MTVNPlayer" data-contenturi="mgid:cms:video:nick.com:920786"/>
+         *      <script type="text/javascript">
+         *              MTVNPlayer.createPlayers("div.MTVNPlayer",{width:640,height:320})
+         *      </script>
+         *  With events:
+         *      <div class="MTVNPlayer" data-contenturi="mgid:cms:video:nick.com:920786"/>
+         *      <script type="text/javascript">
+         *              MTVNPlayer.createPlayers("div.MTVNPlayer",{width:640,height:320},{
+         *                  onPlayheadUpdate:function(event) {
+         *                      // do something
+         *                  }
+         *              });
+         *      </script>
+         */
+        MTVNPlayer.createPlayers = function(selectorQuery, config, events) {
+            if (!selectorQuery) {
+                selectorQuery = "div.MTVNPlayer";
+            }
+            if (!selector) {
+                /**
+                 * micro-selector 
+                 * @method selector
+                 * @private
+                 * author:  Fabio Miranda Costa
+                 * github:  fabiomcosta
+                 * twitter: @fabiomiranda
+                 * license: MIT-style license
+                 */
+                (function(document) {
+                    var elements, parsed, parsedClasses, parsedPseudos, pseudos = {},
+                        context, currentDocument, reTrim = /^\s+|\s+$/g;
+                    var supports_querySelectorAll = !! document.querySelectorAll;
+                    var $u = function(selector, _context, append) {
+                            elements = append || [];
+                            context = _context || $u.context;
+                            if (supports_querySelectorAll) {
+                                try {
+                                    arrayFrom(context.querySelectorAll(selector));
+                                    return elements;
+                                } catch (e) {}
+                            }
+                            currentDocument = context.ownerDocument || context;
+                            parse(selector.replace(reTrim, ''));
+                            find();
+                            return elements;
+                        };
+                    var matchSelector = function(node) {
+                            if (parsed.tag) {
+                                var nodeName = node.nodeName.toUpperCase();
+                                if (parsed.tag == '*') {
+                                    if (nodeName < '@') return false; // Fix for comment nodes and closed nodes
+                                } else {
+                                    if (nodeName != parsed.tag) return false;
+                                }
+                            }
+                            if (parsed.id && node.getAttribute('id') != parsed.id) {
+                                return false;
+                            }
+                            if ((parsedClasses = parsed.classes)) {
+                                var className = (' ' + node.className + ' ');
+                                for (var i = parsedClasses.length; i--;) {
+                                    if (className.indexOf(' ' + parsedClasses[i] + ' ') < 0) return false;
+                                }
+                            }
+                            if ((parsedPseudos = parsed.pseudos)) {
+                                for (var i = parsedPseudos.length; i--;) {
+                                    var pseudoClass = pseudos[parsedPseudos[i]];
+                                    if (!(pseudoClass && pseudoClass.call($u, node))) return false;
+                                }
+                            }
+                            return true;
+                        };
+                    var find = function() {
+                            var parsedId = parsed.id,
+                                merge = ((parsedId && parsed.tag || parsed.classes || parsed.pseudos) || (!parsedId && (parsed.classes || parsed.pseudos))) ? arrayFilterAndMerge : arrayMerge;
+                            if (parsedId) {
+                                var el = currentDocument.getElementById(parsedId);
+                                if (el && (currentDocument === context || contains(el))) {
+                                    merge([el]);
+                                }
+                            } else {
+                                merge(context.getElementsByTagName(parsed.tag || '*'));
+                            }
+                        };
+                    var parse = function(selector) {
+                            parsed = {};
+                            while ((selector = selector.replace(/([#.:])?([^#.:]*)/, parser))) {};
+                        };
+                    var parser = function(all, simbol, name) {
+                            if (!simbol) {
+                                parsed.tag = name.toUpperCase();
+                            } else if (simbol == '#') {
+                                parsed.id = name;
+                            } else if (simbol == '.') {
+                                if (parsed.classes) {
+                                    parsed.classes.push(name);
+                                } else {
+                                    parsed.classes = [name];
+                                }
+                            } else if (simbol == ':') {
+                                if (parsed.pseudos) {
+                                    parsed.pseudos.push(name);
+                                } else {
+                                    parsed.pseudos = [name];
+                                }
+                            }
+                            return '';
+                        };
+                    var slice = Array.prototype.slice;
+                    var arrayFrom = function(collection) {
+                            elements = slice.call(collection, 0);
+                        };
+                    var arrayMerge = function(collection) {
+                            for (var i = 0, node; node = collection[i++];) {
+                                elements.push(node);
+                            }
+                        };
+                    try {
+                        slice.call(document.documentElement.childNodes, 0);
+                    } catch (e) {
+                        arrayFrom = arrayMerge;
+                    }
+                    var arrayFilterAndMerge = function(found) {
+                            for (var i = 0, node; node = found[i++];) {
+                                if (matchSelector(node)) elements.push(node);
+                            }
+                        };
+                    var contains = function(node) {
+                            do {
+                                if (node === context) return true;
+                            } while ((node = node.parentNode));
+                            return false;
+                        };
+                    $u.pseudos = pseudos;
+                    $u.context = document;
+                    selector = $u;
+                })(document);
+            }
+            var elements = selector(selectorQuery);
+            for (var i = 0, len = elements.length; i < len; i++) {
+                new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), events);
+            }
+        };
+        Player = function(elementOrId, config, events) {
             this.state = this.currentMetadata = this.playlistMetadata = null;
             /**
              * @cfg {Object} config The main configuration object.
@@ -691,13 +941,27 @@ if (!MTVNPlayer.Player) {
              * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
              *
              */
-            this.config = config;
-            this.id = targetID;
+            this.config = config || {};
+            var create = null,
+                el = null,
+                isElement = (function(o) {
+                    return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+                    typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
+                })(elementOrId);
+            if (isElement) {
+                el = elementOrId;
+                this.id = createId(el);
+                this.config = buildConfig(el, this.config);
+            } else {
+                this.id = elementOrId;
+                el = document.getElementById(this.id);
+            }
             this.events = events || {};
+            this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
+            // make sure the events are valid
             checkEvents(events);
-            // check for target div
-            var targetDiv = document.getElementById(targetID),
-                create = null;
+            // this is called later, and references the iframe or embed created, not the target el.
+            // TODO just store the ref to the element in this.element.
             this.getPlayerElement = (function() {
                 var container = null;
                 return function() {
@@ -714,9 +978,10 @@ if (!MTVNPlayer.Player) {
                 initializeHTML();
                 create = html5.create;
             }
-            if (!targetDiv) {
+            // check for element before creating
+            if (!el) {
                 if (document.readyState === "complete") {
-                    throwError("target div " + targetID + " not found");
+                    throwError("target div " + this.id + " not found");
                 } else {
                     if (jQuery) {
                         (function(ref) {
@@ -724,7 +989,7 @@ if (!MTVNPlayer.Player) {
                                 if (document.getElementById(ref.id)) {
                                     create(ref);
                                 } else {
-                                    throwError("target div " + targetID + " not found");
+                                    throwError("target div " + ref.id + " not found");
                                 }
                             });
                         })(this);
@@ -868,7 +1133,7 @@ if (!MTVNPlayer.Player) {
     /**
      * @member MTVNPlayer
      * @property {Boolean} 
-     * If this is true, you wouldn't have to use the MTVNPlayer.addCallback() method.
+     * Set to true after the API is loaded.
      */
     MTVNPlayer.isReady = true;
 }
