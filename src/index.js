@@ -1038,6 +1038,22 @@ if (!MTVNPlayer.Player) {
             playIndex: function(index) {
                 message.call(this, "playIndex:" + index);
             },
+			/**
+             * Play the next item in the playlist, provided that the current item is not an ad
+             */
+            next: function() {
+				if (this.currentMetadata && !this.currentMetadata.isAd){
+					message.call(this, "next");
+				}
+            },
+			/**
+             * Play the previous item in the playlist, provided that the current item is not an ad
+             */
+            previous: function() {
+				if (this.currentMetadata && !this.currentMetadata.isAd){
+					message.call(this, "previous");
+				}
+            },
             /**
              * Play a new URI
              * @param {String} uri
