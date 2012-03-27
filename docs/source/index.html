@@ -45,8 +45,8 @@ if (!MTVNPlayer.Player) {
      *              onMetadata:function(event) {
      *                  var metadata = event.data;
      *                  // player that dispatched the event
-     *                  var player = event.player;
-     *                  var uri = event.player.config.uri;
+     *                  var player = event.target;
+     *                  var uri = event.target.config.uri;
      *              }
      *      });
      * Attached to player from {@link MTVNPlayer#onPlayer}
@@ -60,7 +60,15 @@ if (!MTVNPlayer.Player) {
     MTVNPlayer.Events = {
 <span id='MTVNPlayer-Events-event-onMetadata'>        /**
 </span>         * @event onMetadata
-         * Fired when the metadata changes. event.data is the metadata.
+         * Fired when the metadata changes. event.data is the metadata. Also see {@link MTVNPlayer.Player#currentMetadata}.
+         *      player.bind(&quot;onMetadata&quot;,function(event) {
+         *          // inspect the metadata object to learn more (documentation on metadata is in progress)
+         *          console.log(&quot;metadata&quot;,event.data);
+         *          
+         *          // at anytime after the MTVNPlayer.Events#READY, 
+         *          // you can access the metadata on the player directly at MTVNPlayer.Player#currentMetadata
+         *          console.log(event.data === player.currentMetadata); // true
+         *      });
          */
         METADATA: &quot;onMetadata&quot;,
 <span id='MTVNPlayer-Events-event-onStateChange'>        /**
@@ -126,15 +134,14 @@ if (!MTVNPlayer.Player) {
      * @param {Object} events Event callbacks, see: {@link MTVNPlayer.Events}
      * @returns MTVNPlayer.Player
      */
-    MTVNPlayer.Player = (function(window) {
+    MTVNPlayer.Player = (function(window, $) {
         &quot;use strict&quot;;
         // static methods variables
         var baseURL = &quot;http://media.mtvnservices.com/&quot;,
             swfobjectBase = baseURL + &quot;player/api/swfobject/&quot;,
             html5 = null,
             flash = null,
-            selector = null,
-            jQuery = window.jQuery,
+            selector = $,
             throwError = function(message) {
                 throw new Error(&quot;Embed API:&quot; + message);
             },
@@ -162,9 +169,13 @@ if (!MTVNPlayer.Player) {
                                 return null;
                             }
                         };
-                    } else if (window.jQuery) {
+                    } else if ($ &amp;&amp; $.parseJSON) {
                         return function(str) {
-                            return jQuery.parseJSON(str);
+                            return $.parseJSON(str);
+                        };
+                    } else {
+                        return function() {
+                            // no json parsing, fail silently.
                         };
                     }
                 }();
@@ -761,9 +772,14 @@ if (!MTVNPlayer.Player) {
          * @param {Function} callback A callback fired when every player is created.
          * 
          *     MTVNPlayer.onPlayer(function(player){
-         *         player.bind(&quot;onReady&quot;,function(event) {  
-         *             // do something
-         *         }    
+         *          // player is the player that was just created.
+         *          // we can now hook into events.
+         *          player.bind(&quot;onReady&quot;,function(event) {  
+         *              // do something when &quot;onReady&quot; fires.
+         *          }    
+         * 
+         *          // or look for information about the player.
+         *          var uri = player.config.uri;
          *     });
          */
         MTVNPlayer.onPlayer = function(callback) {
@@ -784,6 +800,13 @@ if (!MTVNPlayer.Player) {
 </span>         * @member MTVNPlayer
          * Returns an array containing each {@link MTVNPlayer.Player} created.
          * @returns {Array} An array containing each {@link MTVNPlayer.Player} created. 
+         *      var players = MTVNPlayer.getPlayers();
+         *      for(var i = 0, len = players.length; i &lt; len; i++){
+         *          var player = players[i];
+         *          if(player.config.uri === &quot;mgid:cms:video:thedailyshow.com:12345&quot;){
+         *              // do something
+         *          }
+         *      }
          */
         MTVNPlayer.getPlayers = function() {
             var result = [],
@@ -810,7 +833,13 @@ if (!MTVNPlayer.Player) {
          *      &lt;script type=&quot;text/javascript&quot;&gt;
          *              MTVNPlayer.createPlayers(&quot;div.MTVNPlayer&quot;,{width:640,height:320},{
          *                  onPlayheadUpdate:function(event) {
-         *                      // do something
+         *                      // do something custom
+         *                      var player = event.target; // the player that dispatched the event
+         *                      var playheadTime = event.data // some events have a data property with event-specific data
+         *                      if(player.config.uri === &quot;mgid:cms:video:thedailyshow.com:12345&quot;){
+         *                              // here we're checking if the player that dispatched the event has a specific URI.
+         *                              // however, we also could have called MTVNPlayer#createPlayers with a different selector to distingush.
+         *                      }
          *                  }
          *              });
          *      &lt;/script&gt;
@@ -944,8 +973,61 @@ if (!MTVNPlayer.Player) {
                 new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), events);
             }
         };
+        
         Player = function(elementOrId, config, events) {
-            this.state = this.currentMetadata = this.playlistMetadata = null;
+<span id='MTVNPlayer-Player-property-state'>            /**
+</span>            * @property {String} state
+            * The current play state of the player.
+            */
+            this.state = null;
+<span id='MTVNPlayer-Player-property-currentMetadata'>            /**
+</span>            * The current metadata is the metadata that is playing back at this moment.
+            * This could be ad metadata, or it could be content metadata. 
+            * To access the metadata for the content items in the playlist see {@link MTVNPlayer.Player#playlistMetadata}
+            *
+            * *The best way to inspect the metadata is by using a modern browser and calling console.log(&quot;metadata&quot;,metadata);*
+            * @property {Object} currentMetadata
+            *
+            * @property {Number} currentMetadata.index
+            * The index of this metadata in relation to the playlist items. If isAd is true, the index will be -1.
+            *
+            * @property {Number} currentMetadata.duration
+            * The duration of the content. This will update as the duration becomes more accurate.
+            *
+            * @property {Boolean} currentMetadata.live
+            * Whether or not the video that's playing is a live stream.
+            *
+            * @property {Boolean} currentMetadata.isAd
+            * Whether or not the video that's playing is an advertisment.
+            *
+            * @property {Boolean} currentMetadata.isBumper
+            * Whether or not the video that's playing is a bumper.
+            *
+            * @property {Object} currentMetadata.rss
+            * The data in the rss feed maps to this object, mirroring the rss's hierarchy
+            * @property {String} currentMetadata.rss.title
+            * Corresponds to the rss title.
+            * @property {String} currentMetadata.rss.description
+            * Corresponds to the rss description.
+            * @property {String} currentMetadata.rss.link
+            * Corresponds to the rss link.
+            * @property {String} currentMetadata.rss.guid
+            * Corresponds to the rss guid.
+            * @property {Object} currentMetadata.rss.group
+            * Corresponds to the rss group.
+            * @property {Object} currentMetadata.rss.group.categories
+            * Corresponds to the rss group categories
+            * 
+            */
+            this.currentMetadata = null;
+<span id='MTVNPlayer-Player-property-playlistMetadata'>            /**
+</span>            * @property {Object} playlistMetadata
+            * The playlistMetadata is the metadata about all the playlist items.
+            *
+            * @property {Array} playlistMetadata.items 
+            * An array of metadata corresponding to each playlist item, see:{@link MTVNPlayer.Player#currentMetadata}
+            */
+            this.playlistMetadata = null;
 <span id='MTVNPlayer-Player-cfg-config'>            /**
 </span>             * @cfg {Object} config The main configuration object.
              * @cfg {String} [config.uri] (required) The URI of the media.
@@ -1000,9 +1082,9 @@ if (!MTVNPlayer.Player) {
                 if (document.readyState === &quot;complete&quot;) {
                     throwError(&quot;target div &quot; + this.id + &quot; not found&quot;);
                 } else {
-                    if (jQuery) {
+                    if ($) {
                         (function(ref) {
-                            jQuery(document).ready(function() {
+                            $(document).ready(function() {
                                 if (document.getElementById(ref.id)) {
                                     create(ref);
                                 } else {
@@ -1143,7 +1225,7 @@ if (!MTVNPlayer.Player) {
             }
         };
         return Player;
-    }(window));
+    }(window, window.jQuery || window.Zepto));
     if (typeof MTVNPlayer.onAPIReady === &quot;function&quot;) {
         MTVNPlayer.onAPIReady();
     }
