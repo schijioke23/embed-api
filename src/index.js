@@ -308,7 +308,8 @@ if (!MTVNPlayer.Player) {
                         }
                         processEvent(player.events.onMetadata, {
                             data: obj,
-                            target: player
+                            target: player,
+                            type: MTVNPlayer.Events.METADATA
                         });
                     },
                     /**
@@ -317,7 +318,7 @@ if (!MTVNPlayer.Player) {
                      */
                     handleMessage = function(event) {
                         var data = event.data,
-                            player, events;
+                            player, events, eventTypes = MTVNPlayer.Events;
                         if (data && data.indexOf && data.indexOf("logMessage:") === -1) {
                             player = getPlayerInstance(event.source);
                             if (player) {
@@ -326,29 +327,34 @@ if (!MTVNPlayer.Player) {
                                     player.state = getMessageData(data);
                                     processEvent(events.onStateChange, {
                                         data: player.state,
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.STATE_CHANGE
                                     });
                                 } else if (data.indexOf("playlistComplete") === 0) {
                                     processEvent(events.onPlaylistComplete, {
                                         data: null,
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.PLAYLIST_COMPLETE
                                     });
                                 } else if (data.indexOf("metadata:") === 0) {
                                     onMetadata(data, player);
                                 } else if (data.indexOf("mediaStart") === 0) {
                                     processEvent(events.onMediaStart, {
                                         data: null,
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.MEDIA_START
                                     });
                                 } else if (data.indexOf("mediaEnd") === 0) {
                                     processEvent(events.onMediaEnd, {
                                         data: null,
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.MEDIA_END
                                     });
                                 } else if (data.indexOf("playheadUpdate") === 0) {
                                     processEvent(events.onPlayheadUpdate, {
                                         data: parseInt(getMessageData(data), 10),
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.PLAYHEAD_UPDATE
                                     });
                                 } else if (data.indexOf("playlistMetadata:") === 0) {
                                     player.playlistMetadata = jsonParse(getMessageData(data));
@@ -360,7 +366,8 @@ if (!MTVNPlayer.Player) {
                                     executeCallbacks(player);
                                     processEvent(events.onReady, {
                                         data: null,
-                                        target: player
+                                        target: player,
+                                        type: MTVNPlayer.Events.READY
                                     });
                                 } else if (data === "fullscreen") {
                                     if (player.isFullScreen) {
@@ -372,12 +379,14 @@ if (!MTVNPlayer.Player) {
                                 } else if (data.indexOf("overlayRectChange:") === 0) {
                                     processEvent(events.onOverlayRectChange, {
                                         data: jsonParse(getMessageData(data)),
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.OVERLAY_RECT_CHANGE
                                     });
                                 } else if (data.indexOf("onUIStateChange:") === 0) {
                                     processEvent(events.onUIStateChange, {
                                         data: jsonParse(getMessageData(data)),
-                                        target: player
+                                        target: player,
+                                        type: eventTypes.UI_STATE_CHANGE
                                     });
                                 }
                             }
@@ -594,13 +603,15 @@ if (!MTVNPlayer.Player) {
                                 if (fireReadyEvent) {
                                     processEvent(events[readyEvent], {
                                         data: processedMetadata,
-                                        target: player
+                                        target: player,
+                                        type: MTVNPlayer.Events.READY
                                     });
                                 }
                             }
                             processEvent(events[metadataEvent], {
                                 data: processedMetadata,
-                                target: player
+                                target: player,
+                                type: metadataEvent
                             });
                         };
                         element.addEventListener('METADATA', mapString + metadataEvent);
@@ -608,7 +619,8 @@ if (!MTVNPlayer.Player) {
                             player.state = state;
                             processEvent(events[stateEvent], {
                                 data: state,
-                                target: player
+                                target: player,
+                                type: stateEvent
                             });
                         };
                         element.addEventListener('STATE_CHANGE', mapString + stateEvent);
@@ -616,21 +628,24 @@ if (!MTVNPlayer.Player) {
                             player.playhead = playhead;
                             processEvent(events[playheadUpdate], {
                                 data: playhead,
-                                target: player
+                                target: player,
+                                type: playheadUpdate
                             });
                         };
                         element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
                         map[id + playlistCompleteEvent] = function() {
                             processEvent(events[playlistCompleteEvent], {
                                 data: null,
-                                target: player
+                                target: player,
+                                type: playlistCompleteEvent
                             });
                         };
                         element.addEventListener('PLAYLIST_COMPLETE', mapString + playlistCompleteEvent);
                         map[id + mediaStart] = function() {
                             processEvent(events[mediaStart], {
                                 data: null,
-                                target: player
+                                target: player,
+                                type: mediaStart
                             });
                         };
                         // TODO does this fire for ads?
@@ -638,7 +653,8 @@ if (!MTVNPlayer.Player) {
                         map[id + mediaEnd] = function() {
                             processEvent(events[mediaEnd], {
                                 data: null,
-                                target: player
+                                target: player,
+                                type: mediaEnd
                             });
                         };
                         // yes, flash event is media ended unfort.
