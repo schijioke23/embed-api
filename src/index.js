@@ -409,6 +409,7 @@ if (!MTVNPlayer.Player) {
                     element.height = config.height;
                     element.width = config.width;
                     targetDiv.parentNode.replaceChild(element, targetDiv);
+                    player.element = element;
                     if (typeof window.addEventListener !== 'undefined') {
                         window.addEventListener('message', handleMessage, false);
                     } else if (typeof window.attachEvent !== 'undefined') {
@@ -451,10 +452,20 @@ if (!MTVNPlayer.Player) {
                                 allowFullScreen: true
                             },
                             flashVars = config.flashVars || {};
+                            attributes.data = getPath(config);
+                            attributes.width = config.width;
+                            attributes.height = config.height;
                         // we always want script access.
                         params.allowScriptAccess = "always";
                         flashVars.objectID = targetID; // TODO objectID is used by the player.
-                        swfobject.embedSWF(getPath(config), targetID, config.width, config.height, "10.0.0", swfobjectBase + "expressInstall.swf", flashVars, params, attributes);
+                        params.flashVars = (function(fv){
+                            var s = "";
+                            for(var p in fv){
+                                s += p + "=" + fv[p] + "&";
+                            }
+                            return s ? s.slice(0,-1) : "";
+                        })(flashVars);
+                        getPlayerInstance(targetID).element = swfobject.createSWF(attributes,params,targetID);
                     },
                     swfObjectInit = {
                         requested: false,
@@ -1028,6 +1039,13 @@ if (!MTVNPlayer.Player) {
             */
             this.playlistMetadata = null;
             /**
+            * @property {HTMLElement} element
+            * The swf embed or the iframe element. This may be null after invoking new MTVNPlayer.Player
+            * if swfobject needs to be loaded asynchronously. Once swfobject is loaded, the swf embed will be created and this.element will be set.
+            * If this is a problem, load swfobject before creating players.
+            */
+            this.element = null;
+            /**
              * @cfg {Object} config The main configuration object.
              * @cfg {String} [config.uri] (required) The URI of the media.
              * @cfg {Number} [config.width] (required) The width of the player
@@ -1058,17 +1076,7 @@ if (!MTVNPlayer.Player) {
             this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
             // make sure the events are valid
             checkEvents(events);
-            // this is called later, and references the iframe or embed created, not the target el.
-            // TODO just store the ref to the element in this.element.
-            this.getPlayerElement = (function() {
-                var container = null;
-                return function() {
-                    if (!container) {
-                        container = document.getElementById(this.id);
-                    }
-                    return container;
-                };
-            })();
+            
             if (this.isFlash) {
                 initializeFlash();
                 create = flash.create;
@@ -1102,6 +1110,13 @@ if (!MTVNPlayer.Player) {
         };
         // public api
         Player.prototype = {
+            /**
+             * @deprecated 2.1.0 Use {@link MTVNPlayer.Player#element}
+             * @returns HTMLElement the object/embed element for flash or the iframe element for the HTML5 Player.
+             */
+            getPlayerElement:function() {
+                return this.element;
+            },
             /**
              * Begins playing or unpauses.
              */
