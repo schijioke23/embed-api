@@ -318,7 +318,7 @@ if (!MTVNPlayer.Player) {
                      */
                     handleMessage = function(event) {
                         var data = event.data,
-                            player, events, eventTypes = MTVNPlayer.Events;
+                            player, playhead, events, eventTypes = MTVNPlayer.Events;
                         if (data && data.indexOf && data.indexOf("logMessage:") === -1) {
                             player = getPlayerInstance(event.source);
                             if (player) {
@@ -351,8 +351,10 @@ if (!MTVNPlayer.Player) {
                                         type: eventTypes.MEDIA_END
                                     });
                                 } else if (data.indexOf("playheadUpdate") === 0) {
+                                    playhead = parseInt(getMessageData(data), 10);
+                                    player.playhead = playhead;
                                     processEvent(events.onPlayheadUpdate, {
-                                        data: parseInt(getMessageData(data), 10),
+                                        data: playhead,
                                         target: player,
                                         type: eventTypes.PLAYHEAD_UPDATE
                                     });
@@ -452,20 +454,20 @@ if (!MTVNPlayer.Player) {
                                 allowFullScreen: true
                             },
                             flashVars = config.flashVars || {};
-                            attributes.data = getPath(config);
-                            attributes.width = config.width;
-                            attributes.height = config.height;
+                        attributes.data = getPath(config);
+                        attributes.width = config.width;
+                        attributes.height = config.height;
                         // we always want script access.
                         params.allowScriptAccess = "always";
                         flashVars.objectID = targetID; // TODO objectID is used by the player.
-                        params.flashVars = (function(fv){
+                        params.flashVars = (function(fv) {
                             var s = "";
-                            for(var p in fv){
+                            for (var p in fv) {
                                 s += p + "=" + fv[p] + "&";
                             }
-                            return s ? s.slice(0,-1) : "";
+                            return s ? s.slice(0, -1) : "";
                         })(flashVars);
-                        getPlayerInstance(targetID).element = swfobject.createSWF(attributes,params,targetID);
+                        getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
                     },
                     swfObjectInit = {
                         requested: false,
@@ -986,64 +988,68 @@ if (!MTVNPlayer.Player) {
         
         Player = function(elementOrId, config, events) {
             /**
-            * @property {String} state
-            * The current play state of the player.
-            */
+             * @property {String} state
+             * The current play state of the player.
+             */
             this.state = null;
             /**
-            * The current metadata is the metadata that is playing back at this moment.
-            * This could be ad metadata, or it could be content metadata. 
-            * To access the metadata for the content items in the playlist see {@link MTVNPlayer.Player#playlistMetadata}
-            *
-            * *The best way to inspect the metadata is by using a modern browser and calling console.log("metadata",metadata);*
-            * @property {Object} currentMetadata
-            *
-            * @property {Number} currentMetadata.index
-            * The index of this metadata in relation to the playlist items. If isAd is true, the index will be -1.
-            *
-            * @property {Number} currentMetadata.duration
-            * The duration of the content. This will update as the duration becomes more accurate.
-            *
-            * @property {Boolean} currentMetadata.live
-            * Whether or not the video that's playing is a live stream.
-            *
-            * @property {Boolean} currentMetadata.isAd
-            * Whether or not the video that's playing is an advertisment.
-            *
-            * @property {Boolean} currentMetadata.isBumper
-            * Whether or not the video that's playing is a bumper.
-            *
-            * @property {Object} currentMetadata.rss
-            * The data in the rss feed maps to this object, mirroring the rss's hierarchy
-            * @property {String} currentMetadata.rss.title
-            * Corresponds to the rss title.
-            * @property {String} currentMetadata.rss.description
-            * Corresponds to the rss description.
-            * @property {String} currentMetadata.rss.link
-            * Corresponds to the rss link.
-            * @property {String} currentMetadata.rss.guid
-            * Corresponds to the rss guid.
-            * @property {Object} currentMetadata.rss.group
-            * Corresponds to the rss group.
-            * @property {Object} currentMetadata.rss.group.categories
-            * Corresponds to the rss group categories
-            * 
-            */
+             * The current metadata is the metadata that is playing back at this moment.
+             * This could be ad metadata, or it could be content metadata. 
+             * To access the metadata for the content items in the playlist see {@link MTVNPlayer.Player#playlistMetadata}
+             *
+             * *The best way to inspect the metadata is by using a modern browser and calling console.log("metadata",metadata);*
+             * @property {Object} currentMetadata
+             *
+             * @property {Number} currentMetadata.index
+             * The index of this metadata in relation to the playlist items. If isAd is true, the index will be -1.
+             *
+             * @property {Number} currentMetadata.duration
+             * The duration of the content. This will update as the duration becomes more accurate.
+             *
+             * @property {Boolean} currentMetadata.live
+             * Whether or not the video that's playing is a live stream.
+             *
+             * @property {Boolean} currentMetadata.isAd
+             * Whether or not the video that's playing is an advertisment.
+             *
+             * @property {Boolean} currentMetadata.isBumper
+             * Whether or not the video that's playing is a bumper.
+             *
+             * @property {Object} currentMetadata.rss
+             * The data in the rss feed maps to this object, mirroring the rss's hierarchy
+             * @property {String} currentMetadata.rss.title
+             * Corresponds to the rss title.
+             * @property {String} currentMetadata.rss.description
+             * Corresponds to the rss description.
+             * @property {String} currentMetadata.rss.link
+             * Corresponds to the rss link.
+             * @property {String} currentMetadata.rss.guid
+             * Corresponds to the rss guid.
+             * @property {Object} currentMetadata.rss.group
+             * Corresponds to the rss group.
+             * @property {Object} currentMetadata.rss.group.categories
+             * Corresponds to the rss group categories
+             * 
+             */
             this.currentMetadata = null;
             /**
-            * @property {Object} playlistMetadata
-            * The playlistMetadata is the metadata about all the playlist items.
-            *
-            * @property {Array} playlistMetadata.items 
-            * An array of metadata corresponding to each playlist item, see:{@link MTVNPlayer.Player#currentMetadata}
-            */
+             * @property {Object} playlistMetadata
+             * The playlistMetadata is the metadata about all the playlist items.
+             *
+             * @property {Array} playlistMetadata.items 
+             * An array of metadata corresponding to each playlist item, see:{@link MTVNPlayer.Player#currentMetadata}
+             */
             this.playlistMetadata = null;
+            /** @property {Number} playhead 
+             * The current playhead time in seconds.
+             */
+            this.playhead = 0;
             /**
-            * @property {HTMLElement} element
-            * The swf embed or the iframe element. This may be null after invoking new MTVNPlayer.Player
-            * if swfobject needs to be loaded asynchronously. Once swfobject is loaded, the swf embed will be created and this.element will be set.
-            * If this is a problem, load swfobject before creating players.
-            */
+             * @property {HTMLElement} element
+             * The swf embed or the iframe element. This may be null after invoking new MTVNPlayer.Player
+             * if swfobject needs to be loaded asynchronously. Once swfobject is loaded, the swf embed will be created and this.element will be set.
+             * If this is a problem, load swfobject before creating players.
+             */
             this.element = null;
             /**
              * @cfg {Object} config The main configuration object.
@@ -1114,7 +1120,7 @@ if (!MTVNPlayer.Player) {
              * @deprecated 2.1.0 Use {@link MTVNPlayer.Player#element}
              * @returns HTMLElement the object/embed element for flash or the iframe element for the HTML5 Player.
              */
-            getPlayerElement:function() {
+            getPlayerElement: function() {
                 return this.element;
             },
             /**
