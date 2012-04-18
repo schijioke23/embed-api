@@ -1242,6 +1242,19 @@ if (!MTVNPlayer.Player) {
                 } else {
                     this.events[eventName] = null;
                 }
+            },
+            /**
+             * Adds an event listener for an event that will only fire once and then be removed.
+             * @param {String} eventName an {@link MTVNPlayer.Events}.
+             * @param {Function} callback The function to invoke when the event is fired. 
+             */
+            once: function(eventName, callback) {
+                var ref = this,
+                    newCB = function(event) {
+                        callback(event);
+                        ref.unbind(eventName,newCB)
+                    };
+                this.bind(eventName,newCB)
             }
         };
         return Player;
