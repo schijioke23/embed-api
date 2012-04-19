@@ -100,7 +100,12 @@ if (!MTVNPlayer.Player) {
          * If false, the user has remained idle with out interaction for a predetermined amount of time.
          * - data.overlayRect <code>Object</code>: the area that is not obscured by the GUI, a rectangle such as <code>{x:0,y:0,width:640,height:320}</code>
          */
-        UI_STATE_CHANGE: "onUIStateChange"
+        UI_STATE_CHANGE: "onUIStateChange",
+		/**
+         * @event onAirplay
+         * Fired when the airplay button is clicked
+         */
+		AIRPLAY: "onAirplay"
     };
     // swfobject callback
     MTVNPlayer.onSWFObjectLoaded = null;
@@ -389,6 +394,11 @@ if (!MTVNPlayer.Player) {
                                         data: jsonParse(getMessageData(data)),
                                         target: player,
                                         type: eventTypes.UI_STATE_CHANGE
+                                    });
+								} else if (data.indexOf("airplay") === 0) {
+                                    processEvent(events.onAirplay, {
+                                        data: null,
+                                        target: player
                                     });
                                 }
                             }
