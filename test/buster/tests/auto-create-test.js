@@ -1,8 +1,9 @@
+"use strict";
 var buster = buster,
     assert = buster.assert,
     MTVNPlayer = window.MTVNPlayer;
 buster.testCase("player created", {
-    setUp:function() {
+    setUp: function() {
         this.timeout = 10000;
         this.width = 640;
         this.height = 320;
@@ -12,22 +13,24 @@ buster.testCase("player created", {
         el.setAttribute("data-contenturi", this.uri);
         document.body.appendChild(this.el);
     },
-    "auto create player":function(done) {
-        this.el.setAttribute("style", "width:640;height:320;");
+    "auto create player": function(done) {
         this.el.setAttribute("data-flashVars", "fv1=value1");
-            console.log("el",this.el);
         var testRef = this;
         var callback = function(player) {
-            assert.isObject(player,"no player");
-            var config = player.config;
-            assert.equals(config.uri,testRef.uri,"URIs don't match");
-            assert.equals(config.width,testRef.width,"width doesn't match");
-            assert.equals(config.height,testRef.height,"height doesn't match");
-            var fv1 = config.flashVars.fv1;
-            assert.equals(fv1,"value1","flash var 1 fails, value"+fv1);
-            done();
-        };
+                assert.isObject(player, "no player");
+                var config = player.config;
+                assert.isObject(config, "no config");
+                assert.equals(config.uri, testRef.uri, "URIs don't match");
+                assert.equals(config.width, testRef.width, "width doesn't match");
+                assert.equals(config.height, testRef.height, "height doesn't match");
+                var fv1 = config.flashVars.fv1;
+                assert.equals(fv1, "value1", "flash var 1 fails, value" + fv1);
+                done();
+            };
         MTVNPlayer.onPlayer(callback);
-        MTVNPlayer.createPlayers();
+        MTVNPlayer.createPlayers("div.MTVNPlayer", {
+            width: 640,
+            height: 320
+        });
     }
 });

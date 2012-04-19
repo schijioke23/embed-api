@@ -730,6 +730,7 @@ if (!MTVNPlayer.Player) {
                             if (fromObj[prop]) {
                                 var propName = prop.toLowerCase();
                                 if (propName === "flashvars" || propName === "attributes" || propName === "params") {
+                                    toObj[prop] = toObj[prop] || {};
                                     copyProperties(toObj[prop], fromObj[prop]);
                                 } else {
                                     toObj[prop] = fromObj[prop];
