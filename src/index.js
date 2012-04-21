@@ -1078,7 +1078,7 @@ if (!MTVNPlayer.Player) {
             var create = null,
                 el = null,
                 isElement = (function(o) {
-                    return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+                    return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
                     typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
                 })(elementOrId);
             if (isElement) {
@@ -1263,9 +1263,9 @@ if (!MTVNPlayer.Player) {
                 var ref = this,
                     newCB = function(event) {
                         callback(event);
-                        ref.unbind(eventName,newCB)
+                        ref.unbind(eventName,newCB);
                     };
-                this.bind(eventName,newCB)
+                this.bind(eventName,newCB);
             }
         };
         return Player;
