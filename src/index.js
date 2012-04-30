@@ -1,7 +1,7 @@
-/** 
+/**
  * For creating a player inline see MTVNPlayer.Player constructor.
  * For creating a player or group of players defined in HTML see {@link MTVNPlayer#createPlayers}
- * @static 
+ * @static
  */
 var MTVNPlayer = MTVNPlayer || {};
 if (!MTVNPlayer.Player) {
@@ -10,12 +10,12 @@ if (!MTVNPlayer.Player) {
      *
      * All events have a target property (event.target) which is the player that dispatched the event.
      * Some events have a data property (event.data) which contains data specific to the event.
-     * 
+     *
      * # How to listen to events
      * Attached to player instance via {@link MTVNPlayer.Player#bind}:
-     *      player.bind("onMetadata",function(event) {  
+     *      player.bind("onMetadata",function(event) {
      *             var metadata = event.data;
-     *          }    
+     *          }
      *      });
      * Passed in as an Object to the constructor {@link MTVNPlayer.Player}:
      *      var player = new MTVNPlayer.Player("video-player",config,{
@@ -34,11 +34,11 @@ if (!MTVNPlayer.Player) {
      *      });
      * Attached to player from {@link MTVNPlayer#onPlayer}
      *      MTVNPlayer.onPlayer(function(player){
-     *              player.bind("onMetadata",function(event) {  
+     *              player.bind("onMetadata",function(event) {
      *                  var metadata = event.data;
-     *              }    
+     *              }
      *      });
-     * 
+     *
      */
     MTVNPlayer.Events = {
         /**
@@ -47,8 +47,8 @@ if (!MTVNPlayer.Player) {
          *      player.bind("onMetadata",function(event) {
          *          // inspect the metadata object to learn more (documentation on metadata is in progress)
          *          console.log("metadata",event.data);
-         *          
-         *          // at anytime after the MTVNPlayer.Events#READY, 
+         *
+         *          // at anytime after the MTVNPlayer.Events#READY,
          *          // you can access the metadata on the player directly at MTVNPlayer.Player#currentMetadata
          *          console.log(event.data === player.currentMetadata); // true
          *      });
@@ -93,23 +93,22 @@ if (!MTVNPlayer.Player) {
         /**
          * @event onUIStateChange
          * Fired when the UI changes its state, ususally due to user interaction, or lack of.
-         * 
+         *
          * event.data will contain information about the state.
-         
-         * - data.active <code>Boolean</code>: If true, user has activated the UI by clicking or touching. 
+         * - data.active <code>Boolean</code>: If true, user has activated the UI by clicking or touching.
          * If false, the user has remained idle with out interaction for a predetermined amount of time.
          * - data.overlayRect <code>Object</code>: the area that is not obscured by the GUI, a rectangle such as <code>{x:0,y:0,width:640,height:320}</code>
          */
         UI_STATE_CHANGE: "onUIStateChange",
-		/**
+        /**
          * @event onAirplay
          * Fired when the airplay button is clicked
          */
-		AIRPLAY: "onAirplay"
+        AIRPLAY: "onAirplay"
     };
     // swfobject callback
     MTVNPlayer.onSWFObjectLoaded = null;
-    /**  
+    /**
      * @class MTVNPlayer.Player
      * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
      *      var player = new MTVNPlayer.Player(element/id,config,events);
@@ -246,7 +245,7 @@ if (!MTVNPlayer.Player) {
                 if (!event) {
                     return;
                 }
-                if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.) 
+                if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
                     for (var i = event.length; i--;) {
                         event[i](data);
                     }
@@ -395,7 +394,7 @@ if (!MTVNPlayer.Player) {
                                         target: player,
                                         type: eventTypes.UI_STATE_CHANGE
                                     });
-								} else if (data.indexOf("airplay") === 0) {
+                                } else if (data.indexOf("airplay") === 0) {
                                     processEvent(events.onAirplay, {
                                         data: null,
                                         target: player
@@ -527,7 +526,7 @@ if (!MTVNPlayer.Player) {
                         var m = {},
                             rss;
                         m.duration = metadata.duration;
-                        // TODO no live. 
+                        // TODO no live.
                         m.live = false;
                         m.isAd = metadata.isAd;
                         m.isBumper = metadata.isBumper;
@@ -793,14 +792,14 @@ if (!MTVNPlayer.Player) {
          * Whenever a player is created, the callback passed will fire with the player as the first
          * argument, providing an easy way to hook into player events in a decoupled way.
          * @param {Function} callback A callback fired when every player is created.
-         * 
+         *
          *     MTVNPlayer.onPlayer(function(player){
          *          // player is the player that was just created.
          *          // we can now hook into events.
-         *          player.bind("onReady",function(event) {  
+         *          player.bind("onReady",function(event) {
          *              // do something when "onReady" fires.
-         *          }    
-         * 
+         *          }
+         *
          *          // or look for information about the player.
          *          var uri = player.config.uri;
          *     });
@@ -822,7 +821,7 @@ if (!MTVNPlayer.Player) {
         /**
          * @member MTVNPlayer
          * Returns an array containing each {@link MTVNPlayer.Player} created.
-         * @returns {Array} An array containing each {@link MTVNPlayer.Player} created. 
+         * @returns {Array} An array containing each {@link MTVNPlayer.Player} created.
          *      var players = MTVNPlayer.getPlayers();
          *      for(var i = 0, len = players.length; i < len; i++){
          *          var player = players[i];
@@ -873,7 +872,7 @@ if (!MTVNPlayer.Player) {
             }
             if (!selector) {
                 /**
-                 * micro-selector 
+                 * micro-selector
                  * @method selector
                  * @private
                  * author:  Fabio Miranda Costa
@@ -996,7 +995,7 @@ if (!MTVNPlayer.Player) {
                 new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), events);
             }
         };
-        
+
         Player = function(elementOrId, config, events) {
             /**
              * @property {String} state
@@ -1005,7 +1004,7 @@ if (!MTVNPlayer.Player) {
             this.state = null;
             /**
              * The current metadata is the metadata that is playing back at this moment.
-             * This could be ad metadata, or it could be content metadata. 
+             * This could be ad metadata, or it could be content metadata.
              * To access the metadata for the content items in the playlist see {@link MTVNPlayer.Player#playlistMetadata}
              *
              * *The best way to inspect the metadata is by using a modern browser and calling console.log("metadata",metadata);*
@@ -1040,18 +1039,18 @@ if (!MTVNPlayer.Player) {
              * Corresponds to the rss group.
              * @property {Object} currentMetadata.rss.group.categories
              * Corresponds to the rss group categories
-             * 
+             *
              */
             this.currentMetadata = null;
             /**
              * @property {Object} playlistMetadata
              * The playlistMetadata is the metadata about all the playlist items.
              *
-             * @property {Array} playlistMetadata.items 
+             * @property {Array} playlistMetadata.items
              * An array of metadata corresponding to each playlist item, see:{@link MTVNPlayer.Player#currentMetadata}
              */
             this.playlistMetadata = null;
-            /** @property {Number} playhead 
+            /** @property {Number} playhead
              * The current playhead time in seconds.
              */
             this.playhead = 0;
@@ -1078,7 +1077,7 @@ if (!MTVNPlayer.Player) {
             var create = null,
                 el = null,
                 isElement = (function(o) {
-                    return typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+                    return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
                     typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
                 })(elementOrId);
             if (isElement) {
@@ -1093,7 +1092,7 @@ if (!MTVNPlayer.Player) {
             this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
             // make sure the events are valid
             checkEvents(events);
-            
+
             if (this.isFlash) {
                 initializeFlash();
                 create = flash.create;
@@ -1184,7 +1183,11 @@ if (!MTVNPlayer.Player) {
              * @param {Number} value between 0 and the duration of the clip or playlist.
              */
             seek: function(v) {
-                message.call(this, "seek:" + v);
+                if (html5) {
+                    message.call(this, "seek:" + v);
+                } else {
+                    message.call(this, "setPlayheadTime:" + v);
+                }
             },
             /**
              * Returns the embed code used to share this instance of the player
@@ -1203,7 +1206,7 @@ if (!MTVNPlayer.Player) {
             },
             /**
              * Exits full screen and returns the player to its initial embed size.
-             * Does not work with Prime builds older than 1.12. 
+             * Does not work with Prime builds older than 1.12.
              */
             exitFullScreen: function() {
                 if (html5) {
@@ -1219,7 +1222,7 @@ if (!MTVNPlayer.Player) {
             /**
              * Adds an event listener for an event.
              * @param {String} eventName an {@link MTVNPlayer.Events}.
-             * @param {Function} callback The function to invoke when the event is fired. 
+             * @param {Function} callback The function to invoke when the event is fired.
              */
             bind: function(eventName, callback) {
                 checkEventName(eventName);
@@ -1257,15 +1260,15 @@ if (!MTVNPlayer.Player) {
             /**
              * Adds an event listener for an event that will only fire once and then be removed.
              * @param {String} eventName an {@link MTVNPlayer.Events}.
-             * @param {Function} callback The function to invoke when the event is fired. 
+             * @param {Function} callback The function to invoke when the event is fired.
              */
             once: function(eventName, callback) {
                 var ref = this,
                     newCB = function(event) {
                         callback(event);
-                        ref.unbind(eventName,newCB)
+                        ref.unbind(eventName, newCB);
                     };
-                this.bind(eventName,newCB)
+                this.bind(eventName, newCB);
             }
         };
         return Player;
@@ -1275,7 +1278,7 @@ if (!MTVNPlayer.Player) {
     }
     /**
      * @member MTVNPlayer
-     * @property {Boolean} 
+     * @property {Boolean}
      * Set to true after the API is loaded.
      */
     MTVNPlayer.isReady = true;
