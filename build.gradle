@@ -6,7 +6,7 @@ buildscript {
        mavenCentral()
    }
    dependencies {
-		classpath 'com.eriwen:gradle-js-plugin:0.3'
+		classpath 'com.eriwen:gradle-js-plugin:0.1'
    }
 }
 
@@ -14,7 +14,7 @@ apply plugin: 'js'
 
 def srcFile = "${projectDir}/src/index.js"
 def buildNumber = System.getenv().BUILD_NUMBER
-def version = "2.0.0"
+def version = "2.1.0"
 def gitBranch = System.getenv().GIT_BRANCH
 if(gitBranch){
 	gitBranch = gitBranch.replaceAll("origin/","")

@@ -1,14 +1,22 @@
 Please reference http://confluence.mtvi.com/display/BROADBANDMEDIA/Embed+API for API usage.
 
 Documentation:
-http://media.mtvnservices.com/player/api/docs/
+http://mtvn-player.github.com/embed-api/docs/
 
-To run the Embed API test page from the project root:
+After checking out, from the project root run:
+$ npm install
+
+To run the Embed API test page:
 $ node test 
 
 Then visit http://localhost:3131
 
 Using this page is an easy way to work on the main source file (src/index.js) while testing the app.
 
+To run from a different port:
+$ node test 4141
+
 There are also buster unit tests:
+$ buster-server
+Go to http://localhost:1111/ to capture browsers
 $ buster-test -c test/buster/buster.js
