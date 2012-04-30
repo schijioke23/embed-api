@@ -95,17 +95,16 @@ if (!MTVNPlayer.Player) {
          * Fired when the UI changes its state, ususally due to user interaction, or lack of.
          *
          * event.data will contain information about the state.
-
          * - data.active <code>Boolean</code>: If true, user has activated the UI by clicking or touching.
          * If false, the user has remained idle with out interaction for a predetermined amount of time.
          * - data.overlayRect <code>Object</code>: the area that is not obscured by the GUI, a rectangle such as <code>{x:0,y:0,width:640,height:320}</code>
          */
         UI_STATE_CHANGE: "onUIStateChange",
-		/**
+        /**
          * @event onAirplay
          * Fired when the airplay button is clicked
          */
-		AIRPLAY: "onAirplay"
+        AIRPLAY: "onAirplay"
     };
     // swfobject callback
     MTVNPlayer.onSWFObjectLoaded = null;
@@ -395,7 +394,7 @@ if (!MTVNPlayer.Player) {
                                         target: player,
                                         type: eventTypes.UI_STATE_CHANGE
                                     });
-								} else if (data.indexOf("airplay") === 0) {
+                                } else if (data.indexOf("airplay") === 0) {
                                     processEvent(events.onAirplay, {
                                         data: null,
                                         target: player
@@ -1184,7 +1183,11 @@ if (!MTVNPlayer.Player) {
              * @param {Number} value between 0 and the duration of the clip or playlist.
              */
             seek: function(v) {
-                message.call(this, "seek:" + v);
+                if (html5) {
+                    message.call(this, "seek:" + v);
+                } else {
+                    message.call(this, "setPlayheadTime:" + v);
+                }
             },
             /**
              * Returns the embed code used to share this instance of the player
@@ -1263,9 +1266,9 @@ if (!MTVNPlayer.Player) {
                 var ref = this,
                     newCB = function(event) {
                         callback(event);
-                        ref.unbind(eventName,newCB);
+                        ref.unbind(eventName, newCB);
                     };
-                this.bind(eventName,newCB);
+                this.bind(eventName, newCB);
             }
         };
         return Player;
