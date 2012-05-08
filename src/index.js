@@ -190,6 +190,9 @@ if (!MTVNPlayer.Player) {
                 return player;
             },
             message = function(message) {
+                if (!this.ready) {
+                    throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
+                }
                 if (this.isFlash) {
                     if (message === "play") {
                         message = "unpause";
@@ -365,6 +368,7 @@ if (!MTVNPlayer.Player) {
                                 } else if (data.indexOf("playlistMetadata:") === 0) {
                                     player.playlistMetadata = jsonParse(getMessageData(data));
                                 } else if (data === "onReady") {
+                                    player.ready = true;
                                     var fv = player.config.flashVars;
                                     if (fv && fv.sid) {
                                         message.call(player, "setSSID:" + fv.sid);
@@ -688,6 +692,7 @@ if (!MTVNPlayer.Player) {
                             e(id);
                         }
                         var player = getPlayerInstance(id);
+                        player.ready = true;
                         executeCallbacks(player);
                         addFlashEvents(player);
                     };
@@ -997,6 +1002,11 @@ if (!MTVNPlayer.Player) {
         };
 
         Player = function(elementOrId, config, events) {
+            /** 
+             * @property {Boolean} ready
+             * The current ready state of the player
+             */
+            this.ready = false;
             /**
              * @property {String} state
              * The current play state of the player.
