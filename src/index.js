@@ -627,6 +627,7 @@ if (!MTVNPlayer.Player) {
                                 playlistMetadata.index = processedMetadata.index;
                                 player.playlistMetadata = playlistMetadata;
                                 if (fireReadyEvent) {
+                                    player.ready = true;
                                     processEvent(events[readyEvent], {
                                         data: processedMetadata,
                                         target: player,
@@ -692,7 +693,6 @@ if (!MTVNPlayer.Player) {
                             e(id);
                         }
                         var player = getPlayerInstance(id);
-                        player.ready = true;
                         executeCallbacks(player);
                         addFlashEvents(player);
                     };
