@@ -9,7 +9,6 @@ app.configure(function() {
         layout: false
     });
     app.set('basepath', "/test/");
-    app.use(express.logger());
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.methodOverride());
