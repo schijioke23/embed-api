@@ -207,6 +207,9 @@ if (!MTVNPlayer.Player) {
                 return player;
             },
             message = function(message) {
+                if (!player.ready) {
+                    throw new Error(&quot;MTVNPlayer.Player.&quot; + message + &quot;() called before player loaded.&quot;);
+                }
                 if (this.isFlash) {
                     if (message === &quot;play&quot;) {
                         message = &quot;unpause&quot;;
@@ -705,6 +708,7 @@ if (!MTVNPlayer.Player) {
                             e(id);
                         }
                         var player = getPlayerInstance(id);
+                        player.ready = true;
                         executeCallbacks(player);
                         addFlashEvents(player);
                     };
@@ -1014,6 +1018,11 @@ if (!MTVNPlayer.Player) {
         };
 
         Player = function(elementOrId, config, events) {
+<span id='MTVNPlayer-Player-property-ready'>            /** 
+</span>             * @property {Boolean} ready
+             * The current ready state of the player
+             */
+            this.ready = false;
 <span id='MTVNPlayer-Player-property-state'>            /**
 </span>             * @property {String} state
              * The current play state of the player.
