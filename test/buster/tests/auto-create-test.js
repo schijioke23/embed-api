@@ -17,6 +17,7 @@ buster.testCase("player created", {
         this.el.setAttribute("data-flashVars", "fv1=value1");
         var testRef = this;
         var callback = function(player) {
+				MTVNPlayer.removeOnPlayer(callback);
                 assert.isObject(player, "no player");
                 var config = player.config;
                 assert.isObject(config, "no config");

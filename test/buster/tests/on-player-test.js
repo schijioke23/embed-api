@@ -29,6 +29,7 @@ buster.testCase("MTVNPlayer.onPlayer", {
                 MTVNPlayer.onPlayer(function() {
                     assert.calledOnce(spy, "spy not called once");
                     assert.calledTwice(spy2, "spy not called twice");
+					MTVNPlayer.removeOnPlayer(spy2);
                     done();
                 });
                 new MTVNPlayer.Player(testRef.targetId, testRef.playerConfig);
