@@ -6,6 +6,9 @@ http://mtvn-player.github.com/embed-api/docs/
 After checking out, from the project root run:
 $ npm install
 
+To build the project run:
+$ grunt
+
 To run the Embed API test page:
 $ node test 
 
