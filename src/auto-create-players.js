@@ -1,1 +1,1 @@
-MTVNPlayer.createPlayers();
+window.MTVNPlayer.createPlayers();
