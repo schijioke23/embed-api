@@ -6,8 +6,8 @@ module.exports = function(grunt) {
         },
         min: {
             dist: {
-                src: ['build/detailed/<%= pkg.version %>.js'],
-                dest: 'build/<%= pkg.version %>.js'
+                src: ['build/<%= grunt.config("dirname") %>detailed/<%= pkg.version %><%= grunt.config("buildNumber") %>.js'],
+                dest: 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>.js'
             }
         },
         jshint: {
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         concat: {
             dist: {
                 src: ['src/util/module.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js'],
-                dest: 'build/detailed/<%= pkg.version %>.js'
+                dest: 'build/<%= grunt.config("dirname") %>detailed/<%= pkg.version %><%= grunt.config("buildNumber") %>.js'
             }
         },
         watch: {
@@ -26,8 +26,15 @@ module.exports = function(grunt) {
             tasks: 'default'
         }
     });
-    grunt.registerTask('gitbranch', 'set the git branch', function(branch) {
-        grunt.config("gitbranch", branch);
+    grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
+        grunt.config("buildNumber", "-"+buildNumber);
+    });
+    grunt.registerTask('dirname', 'set a subdirectory name, result will be build/subdirectory(s)', function(dir) {
+        if(dir.lastIndexOf("/") !== dir.length - 1){
+            // append / if missing
+            dir += "/";
+        }
+        grunt.config("dirname", dir);
     });
     grunt.registerTask('default', 'lint concat');
     grunt.registerTask('release', 'lint concat min');
