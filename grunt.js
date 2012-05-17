@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: '<json:package.json>',
         lint: {
-            all: ['grunt.js', 'src/**/*.js']
+            all: ['grunt.js', 'src/**/*.js','test/buster/**/*.js']
         },
         min: {
             dist: {
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['grunt.js', 'src/**/*.js'],
+            files: ['grunt.js', 'src/**/*.js','test/buster/**/*.js'],
             tasks: 'default'
         }
     });
