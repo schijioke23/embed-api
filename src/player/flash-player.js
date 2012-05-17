@@ -12,7 +12,11 @@
      */
     flash.initialize = function() {
         flash.initialize = function() {}; // only call once
-        var swfobject = window.swfobject || MTVNPlayer.swfobject,
+        var messageNameMap = {
+            play: "unpause",
+            seek: "setPlayheadTime"
+        },
+            swfobject = window.swfobject || MTVNPlayer.swfobject,
             makeWSwfObject = function(targetID, config) {
                 var attributes = config.attributes || {},
                     params = config.params || {
@@ -47,7 +51,7 @@
             },
             exitFullScreen = function() {
                 try {
-                    this.getPlayerElement().exitFullScreen();
+                    this.element.exitFullScreen();
                 } catch (e) {
                     // fail silently. exit full screen introduced in Prime 1.12
                 }
@@ -121,7 +125,7 @@
                 var events = player.events,
                     map = MTVNPlayer.Player.flashEventMap,
                     id = "player" + Math.round(Math.random() * 1000000),
-                    element = player.getPlayerElement(),
+                    element = player.element,
                     mapString = "MTVNPlayer.Player.flashEventMap." + id,
                     // this list of events is just for legibility. google closure compiler
                     // will in-line the strings
@@ -134,7 +138,7 @@
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
-                    var playlistItems = player.getPlayerElement().getPlaylist().items,
+                    var playlistItems = element.getPlaylist().items,
                         processedMetadata = processMetadata(metadata, playlistItems),
                         playlistMetadata = player.playlistMetadata,
                         fireReadyEvent = false;
@@ -144,7 +148,7 @@
                             // this is our first metadata event
                             fireReadyEvent = true;
                             try {
-                                playlistMetadata = processPlaylistMetadata(player.getPlayerElement().getPlaylistMetadata());
+                                playlistMetadata = processPlaylistMetadata(element.getPlaylistMetadata());
                             } catch (e) {
                                 playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                             }
@@ -263,22 +267,26 @@
             if (!this.ready) {
                 throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
             }
+            // translate api method to flash player method
+            message = messageNameMap[message] || message;
             switch (message) {
-            case "play":
-                message = "unpause";
-                break;
             case "exitFullScreen":
+                // needs to be screened
                 exitFullScreen.call(this);
-                break;
-            case "seek":
-                message = "setPlayheadTime";
-                break;
+                return;
             case "goFullScreen":
                 // do nothing, unsupported in flash
-                break;
+                return;
             default:
-                // pass up to two arguments, no harm if they're null
-                return this.element[message](arguments[1],arguments[2]);
+                break;
+            }
+            // pass up to two arguments
+            if (arguments[1] !== undefined && arguments[2] !== undefined) {
+                return this.element[message](arguments[1], arguments[2]);
+            } else if (arguments[1] !== undefined) {
+                return this.element[message](arguments[1]);
+            } else {
+                return this.element[message]();
             }
         };
         window.mtvnPlayerLoaded = function(e) {
