@@ -3,12 +3,16 @@
     var flash = MTVNPlayer.module("flash"),
         core = MTVNPlayer.module("core"),
         swfobjectBase = core.baseURL + "player/api/swfobject/";
+    if (flash.initialized) {
+        return;
+    }
+    flash.initialized = true;
     /**
      * set up handling of flash external interface calls
      * create functions to map metadata to new format,
      * and handle media player events
      * @method initializeFlash
-     * @private
+     * @ignore
      */
     flash.initialize = function() {
         flash.initialize = function() {}; // only call once
@@ -224,7 +228,7 @@
          * create an embed element
          * Run in the context of {@link MTVNPlayer.Player}
          * @method message
-         * @private
+         * @ignore
          */
         this.create = function(player) {
             var tag, firstScriptTag, targetID = player.id,
@@ -261,7 +265,7 @@
          * Send messages to the swf via flash external interface
          * Run in the context of {@link MTVNPlayer.Player}
          * @method message
-         * @private
+         * @ignore
          */
         this.message = function(message) {
             if (!this.ready) {

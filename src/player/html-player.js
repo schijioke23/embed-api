@@ -2,6 +2,10 @@
     "use strict";
     // HTML5 Player Module
     var html5 = MTVNPlayer.module("html5");
+    if (html5.initialized) {
+        return;
+    }
+    html5.initialized = true;
     html5.initialize = function() {
         html5.initialize = function() {}; //only call this once;
         // private vars
@@ -10,7 +14,7 @@
             /**
              * return the iframe to it's original width and height.
              * @method exitFullScreen
-             * @private
+             * @ignore
              * @param {MTVNPlayer.Player} player
              */
             exitFullScreen = function(player) {
@@ -23,7 +27,7 @@
             },
             /**
              * @method goFullScreen
-             * @private
+             * @ignore
              * @param {IFrameElement} iframeElement
              */
             goFullScreen = function(player) {
@@ -62,14 +66,14 @@
             },
             /**
              * @method getMessageData
-             * @private
+             * @ignore
              */
             getMessageData = function(data) {
                 return data.slice(data.indexOf(":") + 1);
             },
             /**
              * @method onMetadata
-             * @private
+             * @ignore
              * @param {Object} data Event data
              * @param {MTVNPlayer.Player} player A player instance
              */
@@ -88,7 +92,7 @@
             },
             /**
              * @method handleMessage
-             * @private
+             * @ignore
              */
             handleMessage = function(event) {
                 var data = event.data,
@@ -177,7 +181,7 @@
         /**
          * create the player iframe
          * @method create
-         * @private
+         * @ignore
          */
         this.create = function(player) {
             var config = player.config,
@@ -206,7 +210,7 @@
          * Send messages to the iframe via post message.
          * Run in the context of {@link MTVNPlayer.Player}
          * @method message
-         * @private
+         * @ignore
          */
         this.message = function(message) {
             if (!this.ready) {

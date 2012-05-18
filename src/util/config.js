@@ -1,6 +1,17 @@
-(function(MTVNPlayer) {
+/**
+ * @ignore
+ * The config module has helper functions for dealing with the config object.
+ */
+(function(config) {
     "use strict";
-    var config = MTVNPlayer.module("config");
+    if (config.initialized) {
+        return;
+    }
+    config.initialized = true;
+    /**
+     * @ignore
+     * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
+     */
     var copyProperties = config.copyProperties = function(toObj, fromObj) {
             if (fromObj) {
                 for (var prop in fromObj) {
@@ -50,4 +61,4 @@
             };
         return copyProperties(config, configFromEl);
     };
-})(window.MTVNPlayer);
+})(window.MTVNPlayer.module("config"));

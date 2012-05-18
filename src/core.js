@@ -1,8 +1,11 @@
-(function(MTVNPlayer,$) {
+(function(core, $) {
     "use strict";
+    if (core.initialized) {
+        return;
+    }
+    core.initialized = true;
     // private vars
-    var core = MTVNPlayer.module("core"),
-        instances = [],
+    var instances = [],
         baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [];
     // exports
@@ -12,7 +15,7 @@
     core.$ = $;
     /**
      * @method getPath
-     * @private
+     * @ignore
      * @param {Object} config
      * Check if there's a template URL (usually used for testing),
      * otherwise join the baseURL with the config.uri
@@ -25,7 +28,7 @@
     };
     /**
      * @method processEvent
-     * @private
+     * @ignore
      * @param {Object} {Array} event
      * @param {Object} data
      * Check if event is an Array, if so loop through, else just execute.
@@ -44,7 +47,7 @@
     };
     /**
      * @method getPlayerInstance
-     * @private
+     * @ignore
      * @param {ContentWindow} source
      * @returns {MTVNPlayer.Player} A player instance
      */
@@ -64,7 +67,7 @@
     };
     /**
      * @method executeCallbacks
-     * @private
+     * @ignore
      * @param {MTVNPlayer.Player} player
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
@@ -73,4 +76,4 @@
             onPlayerCallbacks[i](player);
         }
     };
-})(window.MTVNPlayer,window.jQuery || window.Zepto);
+})(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);

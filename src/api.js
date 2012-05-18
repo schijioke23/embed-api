@@ -1,9 +1,4 @@
-/**
- * For creating a player inline see MTVNPlayer.Player constructor.
- * For creating a player or group of players defined in HTML see {@link MTVNPlayer#createPlayers}
- * @static
- */
-(function(MTVNPlayer,$) {
+(function(MTVNPlayer, $) {
     "use strict";
     if (!MTVNPlayer.Player) {
         /**
@@ -106,6 +101,38 @@
              * Fired when the airplay button is clicked
              */
             AIRPLAY: "onAirplay"
+        };
+        /**
+         * When a {@link MTVNPlayer.Events#onStateChange} event is fired, the event's data property will be equal to one of these play states. 
+         * At the moment, there may be incongruities between html5 and flash state sequences. 
+         * Flash also has "initializing" and "connecting" states, which aren't available in the html5 player.
+         */
+        MTVNPlayer.PlayState = {
+            /**
+             * The video is playing.
+             * @property
+             */
+            PLAYING: "playing",
+            /**
+             * The video is paused.
+             * @property
+             */
+            PAUSED: "paused",
+            /**
+             * The video is seeking.
+             * @property
+             */
+            SEEKING: "seeking",
+            /**
+             * The video is stopped.
+             * @property
+             */
+            STOPPED: "stopped",
+            /**
+             * The video is buffering.
+             * @property
+             */
+            BUFFERING: "buffering"
         };
         // swfobject callback
         MTVNPlayer.onSWFObjectLoaded = null;
@@ -373,7 +400,9 @@
                  * @cfg {Number} [config.width] (required) The width of the player
                  * @cfg {Number} [config.height] (required) The height of the player
                  * @cfg {Object} [config.flashVars] Flashvars are passed to the flash player
-                 * @cfg {Object} [config.attributes] Probably not useful (see [Adobe Help][1])
+                 * @cfg {Object} [config.params] wmode, allowFullScreen, etc. (allowScriptAccess is always forced to true). See [Adobe Help][1]
+                 * [1]: http://kb2.adobe.com/cps/127/tn_12701.html
+                 * @cfg {Object} [config.attributes] see [Adobe Help][1]
                  * [1]: http://kb2.adobe.com/cps/127/tn_12701.html
                  * @cfg {String} [config.fullScreenCssText] When the HTML5 player goes full screen, this is the css that is set on the iframe.
                  * @cfg {String} [config.templateURL] (For TESTING) A URL to use for the embed of iframe src. The template var for uri is {uri}, such as http://site.com/uri={uri}.
@@ -406,7 +435,7 @@
                     playerModule = MTVNPlayer.module("html5");
                 }
                 playerModule.initialize();
-                this.message  = playerModule.message;
+                this.message = playerModule.message;
                 create = playerModule.create;
 
                 // check for element before creating
@@ -436,7 +465,8 @@
             // public api
             Player.prototype = {
                 /**
-                 * @deprecated 2.1.0 Use {@link MTVNPlayer.Player#element}
+                 * 2.1.0 Use {@link MTVNPlayer.Player#element}
+                 * @deprecated 
                  * @returns HTMLElement the object/embed element for flash or the iframe element for the HTML5 Player.
                  */
                 getPlayerElement: function() {
@@ -470,29 +500,29 @@
                  * Play an item from the playlist specified by the index
                  * @param {Number} index
                  */
-                playIndex: function(index,startTime) {
-                    this.message("playIndex",index,startTime);
+                playIndex: function(index, startTime) {
+                    this.message("playIndex", index, startTime);
                 },
                 /**
                  * Play a new URI
                  * @param {String} uri
                  */
                 playURI: function(uri) {
-                    this.message("playUri",uri);
+                    this.message("playUri", uri);
                 },
                 /**
                  * Change the volume
                  * @param {Number} value between 0 and 1.
                  */
                 setVolume: function(volume) {
-                    this.message("volume",volume);
+                    this.message("volume", volume);
                 },
                 /**
                  * Seeks to the time specified in seconds.
                  * @param {Number} value between 0 and the duration of the clip or playlist.
                  */
                 seek: function(time) {
-                    this.message("seek",time);
+                    this.message("seek", time);
                 },
                 /**
                  * Returns the embed code used to share this instance of the player

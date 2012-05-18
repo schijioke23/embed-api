@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: '<json:package.json>',
         lint: {
-            all: ['grunt.js', 'src/**/*.js','test/buster/**/*.js']
+            all: ['grunt.js', 'src/**/*.js', 'test/buster/**/*.js']
         },
         min: {
             dist: {
@@ -22,15 +22,15 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['grunt.js', 'src/**/*.js','test/buster/**/*.js'],
+            files: ['grunt.js', 'src/**/*.js', 'test/buster/**/*.js'],
             tasks: 'default'
         }
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
-        grunt.config("buildNumber", "-"+buildNumber);
+        grunt.config("buildNumber", "-" + buildNumber);
     });
     grunt.registerTask('dirname', 'set a subdirectory name, result will be build/subdirectory(s)', function(dir) {
-        if(dir.lastIndexOf("/") !== dir.length - 1){
+        if (dir.lastIndexOf("/") !== dir.length - 1) {
             // append / if missing
             dir += "/";
         }

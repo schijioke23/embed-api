@@ -1,6 +1,5 @@
-(function(MTVNPlayer, document) {
+(function(selector, document) {
     "use strict";
-    var selector = MTVNPlayer.module("selector");
     selector.find = function(query) {
         selector.initialize();
         return selector(query);
@@ -8,7 +7,7 @@
     /**
      * micro-selector
      * @method selector
-     * @private
+     * @ignore
      * author:  Fabio Miranda Costa
      * github:  fabiomcosta
      * twitter: @fabiomiranda
@@ -125,4 +124,4 @@
         $u.context = document;
         selector = $u;
     };
-})(window.MTVNPlayer, window.document);
+})(window.MTVNPlayer.module("selector"), window.document);
