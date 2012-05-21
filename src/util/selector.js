@@ -1,7 +1,8 @@
-(function(selector, document) {
+(function(mod, document) {
     "use strict";
-    selector.find = function(query) {
-        selector.initialize();
+    var selector = null;
+    mod.find = function(query) {
+        mod.initialize();
         return selector(query);
     };
     /**
@@ -13,8 +14,8 @@
      * twitter: @fabiomiranda
      * license: MIT-style license
      */
-    selector.initialize = function() {
-        selector.initialize = function() {};
+    mod.initialize = function() {
+        mod.initialize = function() {};
         var elements, parsed, parsedClasses, parsedPseudos, pseudos = {},
             context, currentDocument, reTrim = /^\s+|\s+$/g;
         var supports_querySelectorAll = !! document.querySelectorAll;

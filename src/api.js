@@ -137,6 +137,18 @@
         // swfobject callback
         MTVNPlayer.onSWFObjectLoaded = null;
         /**
+         * @member MTVNPlayer 
+         * When using MTVNPlayer.createPlayers this config (see MTVNPlayer.Player.config) object will be used for every player created.
+         * If MTVNPlayer.createPlayers is passed a config object, it will override anything defined in MTVNPlayer.defaultConfig.
+         */
+        MTVNPlayer.defaultConfig = MTVNPlayer.defaultConfig;
+         /**
+         * @member MTVNPlayer
+         * When using MTVNPlayer.createPlayers this events object will be used for every player created.
+         * If MTVNPlayer.createPlayers is passed a events object, it will override anything defined in MTVNPlayer.defaultEvents.
+         */
+        MTVNPlayer.defaultEvents = MTVNPlayer.defaultEvents;
+        /**
          * @class MTVNPlayer.Player
          * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
          *      var player = new MTVNPlayer.Player(element/id,config,events);
@@ -318,10 +330,12 @@
                 if (!selectorQuery) {
                     selectorQuery = "div.MTVNPlayer";
                 }
-                var elements = MTVNPlayer.module("selector").find(selectorQuery);
+                var elements = MTVNPlayer.module("selector").find(selectorQuery),
+                    copyProperties = MTVNPlayer.module("config").copyProperties;
                 for (var i = 0, len = elements.length; i < len; i++) {
-                    new MTVNPlayer.Player(elements[i], MTVNPlayer.module("config").copyProperties(config || {}, MTVNPlayer.defaultConfig), events);
+                    new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), copyProperties(events || {}, MTVNPlayer.defaultEvents));
                 }
+                return elements.length;
             };
 
             Player = function(elementOrId, config, events) {

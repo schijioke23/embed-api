@@ -22,5 +22,6 @@ app.configure(function() {
 
 app.get("/", routes.index);
 app.get("/player/api/", routes.api);
+app.get("/player/api/auto", routes.apiAuto);
 console.log("listening on port:" + port);
 app.listen(port);
