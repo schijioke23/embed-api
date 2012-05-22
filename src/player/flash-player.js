@@ -147,7 +147,6 @@
                         playlistMetadata = player.playlistMetadata,
                         fireReadyEvent = false;
                     player.currentMetadata = processedMetadata;
-                    if (processedMetadata.index !== -1) { // index is -1 for ads.
                         if (!playlistMetadata) {
                             // this is our first metadata event
                             fireReadyEvent = true;
@@ -157,8 +156,10 @@
                                 playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                             }
                         }
+                    if (processedMetadata.index !== -1) { // index is -1 for ads.
                         playlistMetadata.items[processedMetadata.index] = processedMetadata;
                         playlistMetadata.index = processedMetadata.index;
+                    }
                         player.playlistMetadata = playlistMetadata;
                         if (fireReadyEvent) {
                             player.ready = true;
@@ -168,7 +169,6 @@
                                 type: MTVNPlayer.Events.READY
                             });
                         }
-                    }
                     core.processEvent(events[metadataEvent], {
                         data: processedMetadata,
                         target: player,
