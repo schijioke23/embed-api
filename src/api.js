@@ -426,6 +426,7 @@
                 var create = null,
                     playerModule = null,
                     el = null,
+                    configModule = MTVNPlayer.module("config"),
                     isElement = (function(o) {
                         return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
                         typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
@@ -433,11 +434,12 @@
                 if (isElement) {
                     el = elementOrId;
                     this.id = createId(el);
-                    this.config = MTVNPlayer.module("config").buildConfig(el, this.config);
+                    this.config = configModule.buildConfig(el, this.config);
                 } else {
                     this.id = elementOrId;
                     el = document.getElementById(this.id);
                 }
+                config = configModule.validateConfig(config);
                 this.events = events || {};
                 this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
                 // make sure the events are valid

@@ -8,11 +8,13 @@
         return;
     }
     config.initialized = true;
+    var defaultWidth = null,
+        defaultHeight = null,
     /**
      * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
      */
-    var copyProperties = config.copyProperties = function(toObj, fromObj) {
+    copyProperties = config.copyProperties = function(toObj, fromObj) {
             if (fromObj) {
                 for (var prop in fromObj) {
                     if (fromObj.hasOwnProperty(prop)) {
@@ -60,5 +62,14 @@
                 attributes: getObjectFromNameValue("attributes")
             };
         return copyProperties(config, configFromEl);
+    };
+    config.validateConfig = function(config) {
+        var height = parseInt(config.height,10),
+            width = parseInt(config.width,10);
+        // here is where we would set the default width and height if we decide we want one.
+        // alternatively we could throw an error here.
+        config.width = isNaN(width) ? defaultWidth : width;
+        config.height = isNaN(height) ? defaultHeight : height;
+        return config;
     };
 })(window.MTVNPlayer.module("config"));
