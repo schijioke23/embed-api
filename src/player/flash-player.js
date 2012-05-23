@@ -147,28 +147,28 @@
                         playlistMetadata = player.playlistMetadata,
                         fireReadyEvent = false;
                     player.currentMetadata = processedMetadata;
-                        if (!playlistMetadata) {
-                            // this is our first metadata event
-                            fireReadyEvent = true;
-                            try {
-                                playlistMetadata = processPlaylistMetadata(element.getPlaylistMetadata());
-                            } catch (e) {
-                                playlistMetadata = getPlaylistItemsLegacy(playlistItems);
-                            }
+                    if (!playlistMetadata) {
+                        // this is our first metadata event
+                        fireReadyEvent = true;
+                        try {
+                            playlistMetadata = processPlaylistMetadata(element.getPlaylistMetadata());
+                        } catch (e) {
+                            playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                         }
+                    }
                     if (processedMetadata.index !== -1) { // index is -1 for ads.
                         playlistMetadata.items[processedMetadata.index] = processedMetadata;
                         playlistMetadata.index = processedMetadata.index;
                     }
-                        player.playlistMetadata = playlistMetadata;
-                        if (fireReadyEvent) {
-                            player.ready = true;
-                            core.processEvent(events[readyEvent], {
-                                data: processedMetadata,
-                                target: player,
-                                type: MTVNPlayer.Events.READY
-                            });
-                        }
+                    player.playlistMetadata = playlistMetadata;
+                    if (fireReadyEvent) {
+                        player.ready = true;
+                        core.processEvent(events[readyEvent], {
+                            data: processedMetadata,
+                            target: player,
+                            type: MTVNPlayer.Events.READY
+                        });
+                    }
                     core.processEvent(events[metadataEvent], {
                         data: processedMetadata,
                         target: player,
