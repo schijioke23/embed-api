@@ -15,9 +15,21 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">(function() {
+  <pre class="prettyprint lang-js">var MTVNPlayer = window.MTVNPlayer || {};
+(function(MTVNPlayer) {
     &quot;use strict&quot;;
-    window.MTVNPlayer.createPlayers();
-}());</pre>
+	if (!MTVNPlayer.module) {
+		MTVNPlayer.module = function() {
+			var modules = {};
+			return function(name) {
+				if (modules[name]) {
+					return modules[name];
+				}
+				modules[name] = {};
+				return modules[name];
+			};
+		}();
+	}
+})(MTVNPlayer);</pre>
 </body>
 </html>

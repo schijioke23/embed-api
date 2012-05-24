@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(core, $) {
+    &quot;use strict&quot;;
+    if (core.initialized) {
+        return;
+    }
+    core.initialized = true;
+    // private vars
+    var instances = [],
+        baseURL = &quot;http://media.mtvnservices.com/&quot;,
+        onPlayerCallbacks = [];
+    // exports
+    core.instances = instances;
+    core.baseURL = baseURL;
+    core.onPlayerCallbacks = onPlayerCallbacks;
+    core.$ = $;
+<span id='global-method-getPath'>    /**
+</span>     * @method getPath
+     * @ignore
+     * @param {Object} config
+     * Check if there's a template URL (usually used for testing),
+     * otherwise join the baseURL with the config.uri
+     */
+    core.getPath = function(config) {
+        if (config.templateURL) {
+            return config.templateURL.replace(&quot;{uri}&quot;, config.uri);
+        }
+        return baseURL + config.uri;
+    };
+<span id='global-method-processEvent'>    /**
+</span>     * @method processEvent
+     * @ignore
+     * @param {Object} {Array} event
+     * @param {Object} data
+     * Check if event is an Array, if so loop through, else just execute.
+     */
+    core.processEvent = function(event, data) {
+        if (!event) {
+            return;
+        }
+        if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
+            for (var i = event.length; i--;) {
+                event[i](data);
+            }
+        } else {
+            event(data);
+        }
+    };
+<span id='global-method-getPlayerInstance'>    /**
+</span>     * @method getPlayerInstance
+     * @ignore
+     * @param {ContentWindow} source
+     * @returns {MTVNPlayer.Player} A player instance
+     */
+    core.getPlayerInstance = function(source) {
+        var i, player = null,
+            numberOfInstances = instances.length,
+            currentInstance;
+        for (i = numberOfInstances; i--;) {
+            currentInstance = instances[i];
+            if (currentInstance.source === source) {
+                // compare source (contentWindow) to get events object from the right player. (if flash, source is the embed id)
+                player = currentInstance.player;
+                break;
+            }
+        }
+        return player;
+    };
+<span id='global-method-executeCallbacks'>    /**
+</span>     * @method executeCallbacks
+     * @ignore
+     * @param {MTVNPlayer.Player} player
+     * Fires callbacks registered with MTVNPlayer.onPlayer
+     */
+    core.executeCallbacks = function(player) {
+        for (var i = 0, len = onPlayerCallbacks.length; i &lt; len; i++) {
+            onPlayerCallbacks[i](player);
+        }
+    };
+})(window.MTVNPlayer.module(&quot;core&quot;), window.jQuery || window.Zepto);</pre>
+</body>
+</html>
