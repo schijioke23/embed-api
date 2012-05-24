@@ -1,1 +1,4 @@
-MTVNPlayer.createPlayers();
+(function() {
+    "use strict";
+    window.MTVNPlayer.createPlayers();
+}());
