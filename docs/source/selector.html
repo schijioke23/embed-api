@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(mod, document) {
+    &quot;use strict&quot;;
+    var selector = null;
+    mod.find = function(query) {
+        mod.initialize();
+        return selector(query);
+    };
+<span id='global-method-selector'>    /**
+</span>     * micro-selector
+     * @method selector
+     * @ignore
+     * author:  Fabio Miranda Costa
+     * github:  fabiomcosta
+     * twitter: @fabiomiranda
+     * license: MIT-style license
+     */
+    mod.initialize = function() {
+        mod.initialize = function() {};
+        var elements, parsed, parsedClasses, parsedPseudos, pseudos = {},
+            context, currentDocument, reTrim = /^\s+|\s+$/g;
+        var supports_querySelectorAll = !! document.querySelectorAll;
+        var $u = function(selector, _context, append) {
+                elements = append || [];
+                context = _context || $u.context;
+                if (supports_querySelectorAll) {
+                    try {
+                        arrayFrom(context.querySelectorAll(selector));
+                        return elements;
+                    } catch (e) {}
+                }
+                currentDocument = context.ownerDocument || context;
+                parse(selector.replace(reTrim, ''));
+                find();
+                return elements;
+            };
+        var matchSelector = function(node) {
+                if (parsed.tag) {
+                    var nodeName = node.nodeName.toUpperCase();
+                    if (parsed.tag == '*') {
+                        if (nodeName &lt; '@') return false; // Fix for comment nodes and closed nodes
+                    } else {
+                        if (nodeName != parsed.tag) return false;
+                    }
+                }
+                if (parsed.id &amp;&amp; node.getAttribute('id') != parsed.id) {
+                    return false;
+                }
+                if ((parsedClasses = parsed.classes)) {
+                    var className = (' ' + node.className + ' ');
+                    for (var i = parsedClasses.length; i--;) {
+                        if (className.indexOf(' ' + parsedClasses[i] + ' ') &lt; 0) return false;
+                    }
+                }
+                if ((parsedPseudos = parsed.pseudos)) {
+                    for (var j = parsedPseudos.length; j--;) {
+                        var pseudoClass = pseudos[parsedPseudos[j]];
+                        if (!(pseudoClass &amp;&amp; pseudoClass.call($u, node))) return false;
+                    }
+                }
+                return true;
+            };
+        var find = function() {
+                var parsedId = parsed.id,
+                    merge = ((parsedId &amp;&amp; parsed.tag || parsed.classes || parsed.pseudos) || (!parsedId &amp;&amp; (parsed.classes || parsed.pseudos))) ? arrayFilterAndMerge : arrayMerge;
+                if (parsedId) {
+                    var el = currentDocument.getElementById(parsedId);
+                    if (el &amp;&amp; (currentDocument === context || contains(el))) {
+                        merge([el]);
+                    }
+                } else {
+                    merge(context.getElementsByTagName(parsed.tag || '*'));
+                }
+            };
+        var parse = function(selector) {
+                parsed = {};
+                while ((selector = selector.replace(/([#.:])?([^#.:]*)/, parser))) {}
+            };
+        var parser = function(all, simbol, name) {
+                if (!simbol) {
+                    parsed.tag = name.toUpperCase();
+                } else if (simbol == '#') {
+                    parsed.id = name;
+                } else if (simbol == '.') {
+                    if (parsed.classes) {
+                        parsed.classes.push(name);
+                    } else {
+                        parsed.classes = [name];
+                    }
+                } else if (simbol == ':') {
+                    if (parsed.pseudos) {
+                        parsed.pseudos.push(name);
+                    } else {
+                        parsed.pseudos = [name];
+                    }
+                }
+                return '';
+            };
+        var slice = Array.prototype.slice;
+        var arrayFrom = function(collection) {
+                elements = slice.call(collection, 0);
+            };
+        var arrayMerge = function(collection) {
+                for (var i = 0, len = collection.length; i &lt; len; i++) {
+                    elements.push(collection[i]);
+                }
+            };
+        try {
+            slice.call(document.documentElement.childNodes, 0);
+        } catch (e) {
+            arrayFrom = arrayMerge;
+        }
+        var arrayFilterAndMerge = function(found) {
+                for (var i = 0, len = found.length; i &lt; len; i++) {
+                    var node = found[i];
+                    if (matchSelector(node)) elements.push(node);
+                }
+            };
+        var contains = function(node) {
+                do {
+                    if (node === context) return true;
+                } while ((node = node.parentNode));
+                return false;
+            };
+        $u.pseudos = pseudos;
+        $u.context = document;
+        selector = $u;
+    };
+})(window.MTVNPlayer.module(&quot;selector&quot;), window.document);</pre>
+</body>
+</html>

@@ -15,15 +15,26 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">(function(MTVNPlayer) {
+  <pre class="prettyprint lang-js"><span id='MTVNPlayer'>/**
+</span> * For creating a player inline see MTVNPlayer.Player constructor.
+ * For creating a player or group of players defined in HTML see MTVNPlayer.createPlayers
+ * @static
+ */
+var MTVNPlayer = window.MTVNPlayer || {};
+(function(MTVNPlayer) {
     &quot;use strict&quot;;
-    if (MTVNPlayer.createPlayers() === 0) {
-        // no players were created, maybe the dom isn't ready.
-        // wait and call again when dom ready
-        MTVNPlayer.module(&quot;domready&quot;).on(function() {
-            MTVNPlayer.createPlayers();
-        });
+    if (!MTVNPlayer.module) {
+        MTVNPlayer.module = function() {
+            var modules = {};
+            return function(name) {
+                if (modules[name]) {
+                    return modules[name];
+                }
+                modules[name] = {};
+                return modules[name];
+            };
+        }();
     }
-}(window.MTVNPlayer));</pre>
+})(MTVNPlayer);</pre>
 </body>
 </html>

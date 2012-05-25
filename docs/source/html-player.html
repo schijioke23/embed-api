@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(MTVNPlayer) {
+    &quot;use strict&quot;;
+    // HTML5 Player Module
+    var html5 = MTVNPlayer.module(&quot;html5&quot;);
+    if (html5.initialized) {
+        return;
+    }
+    html5.initialized = true;
+    html5.initialize = function() {
+        html5.initialize = function() {}; //only call this once;
+        // private vars
+        var core = MTVNPlayer.module(&quot;core&quot;),
+            processEvent = core.processEvent,
+<span id='global-method-exitFullScreen'>            /**
+</span>             * return the iframe to it's original width and height.
+             * @method exitFullScreen
+             * @ignore
+             * @param {MTVNPlayer.Player} player
+             */
+            exitFullScreen = function(player) {
+                player.isFullScreen = false;
+                var c = player.config,
+                    i = player.element;
+                i.style.cssText = &quot;postion:static;z-index:auto;&quot;;
+                i.width = c.width;
+                i.height = c.height;
+            },
+<span id='global-method-goFullScreen'>            /**
+</span>             * @method goFullScreen
+             * @ignore
+             * @param {IFrameElement} iframeElement
+             */
+            goFullScreen = function(player) {
+                var iframeElement = player.element,
+                    highestZIndex = player.config.highestZIndex,
+                    cssText = player.config.fullScreenCssText;
+                player.isFullScreen = true;
+                iframeElement.style.cssText = cssText ? cssText : &quot;position:fixed;left:0px;top:0px;z-index:&quot; + (highestZIndex || 2147483645) + &quot;;&quot;;
+                iframeElement.width = window.innerWidth;
+                iframeElement.height = window.innerHeight;
+                window.scrollTo(0, 0);
+            },
+            jsonParse = function(str) {
+                // choose method.
+                jsonParse = function() {
+                    var $ = core.$;
+                    if (window.JSON) {
+                        return function(str) {
+                            if (str) {
+                                return JSON.parse(str);
+                            } else {
+                                return null;
+                            }
+                        };
+                    } else if ($ &amp;&amp; $.parseJSON) {
+                        return function(str) {
+                            return $.parseJSON(str);
+                        };
+                    } else {
+                        return function() {
+                            // no json parsing, fail silently.
+                        };
+                    }
+                }();
+                return jsonParse(str);
+            },
+<span id='global-method-getMessageData'>            /**
+</span>             * @method getMessageData
+             * @ignore
+             */
+            getMessageData = function(data) {
+                return data.slice(data.indexOf(&quot;:&quot;) + 1);
+            },
+<span id='global-method-onMetadata'>            /**
+</span>             * @method onMetadata
+             * @ignore
+             * @param {Object} data Event data
+             * @param {MTVNPlayer.Player} player A player instance
+             */
+            onMetadata = function(data, player) {
+                var obj = jsonParse(getMessageData(data));
+                player.currentMetadata = obj;
+                if (obj.index !== -1) { // index is -1 for ads.
+                    player.playlistMetadata.items[obj.index] = obj;
+                    player.playlistMetadata.index = obj.index;
+                }
+                processEvent(player.events.onMetadata, {
+                    data: obj,
+                    target: player,
+                    type: MTVNPlayer.Events.METADATA
+                });
+            },
+<span id='global-method-handleMessage'>            /**
+</span>             * @method handleMessage
+             * @ignore
+             */
+            handleMessage = function(event) {
+                var data = event.data,
+                    player, playhead, events, eventTypes = MTVNPlayer.Events;
+                if (data &amp;&amp; data.indexOf &amp;&amp; data.indexOf(&quot;logMessage:&quot;) === -1) {
+                    player = core.getPlayerInstance(event.source);
+                    if (player) {
+                        events = player.events;
+                        if (data.indexOf(&quot;playState:&quot;) === 0) {
+                            player.state = getMessageData(data);
+                            processEvent(events.onStateChange, {
+                                data: player.state,
+                                target: player,
+                                type: eventTypes.STATE_CHANGE
+                            });
+                        } else if (data.indexOf(&quot;playlistComplete&quot;) === 0) {
+                            processEvent(events.onPlaylistComplete, {
+                                data: null,
+                                target: player,
+                                type: eventTypes.PLAYLIST_COMPLETE
+                            });
+                        } else if (data.indexOf(&quot;metadata:&quot;) === 0) {
+                            onMetadata(data, player);
+                        } else if (data.indexOf(&quot;mediaStart&quot;) === 0) {
+                            processEvent(events.onMediaStart, {
+                                data: null,
+                                target: player,
+                                type: eventTypes.MEDIA_START
+                            });
+                        } else if (data.indexOf(&quot;mediaEnd&quot;) === 0) {
+                            processEvent(events.onMediaEnd, {
+                                data: null,
+                                target: player,
+                                type: eventTypes.MEDIA_END
+                            });
+                        } else if (data.indexOf(&quot;playheadUpdate&quot;) === 0) {
+                            playhead = parseInt(getMessageData(data), 10);
+                            player.playhead = playhead;
+                            processEvent(events.onPlayheadUpdate, {
+                                data: playhead,
+                                target: player,
+                                type: eventTypes.PLAYHEAD_UPDATE
+                            });
+                        } else if (data.indexOf(&quot;playlistMetadata:&quot;) === 0) {
+                            player.playlistMetadata = jsonParse(getMessageData(data));
+                        } else if (data === &quot;onReady&quot;) {
+                            player.ready = true;
+                            var fv = player.config.flashVars;
+                            if (fv &amp;&amp; fv.sid) {
+                                core.message.call(player, &quot;setSSID:&quot; + fv.sid);
+                            }
+                            core.executeCallbacks(player);
+                            processEvent(events.onReady, {
+                                data: null,
+                                target: player,
+                                type: MTVNPlayer.Events.READY
+                            });
+                        } else if (data === &quot;fullscreen&quot;) {
+                            if (player.isFullScreen) {
+                                exitFullScreen(player);
+                            } else {
+                                player.isFullScreen = true;
+                                goFullScreen(player);
+                            }
+                        } else if (data.indexOf(&quot;overlayRectChange:&quot;) === 0) {
+                            processEvent(events.onOverlayRectChange, {
+                                data: jsonParse(getMessageData(data)),
+                                target: player,
+                                type: eventTypes.OVERLAY_RECT_CHANGE
+                            });
+                        } else if (data.indexOf(&quot;onUIStateChange:&quot;) === 0) {
+                            processEvent(events.onUIStateChange, {
+                                data: jsonParse(getMessageData(data)),
+                                target: player,
+                                type: eventTypes.UI_STATE_CHANGE
+                            });
+                        } else if (data.indexOf(&quot;airplay&quot;) === 0) {
+                            processEvent(events.onAirplay, {
+                                data: null,
+                                target: player
+                            });
+                        }
+                    }
+                }
+            };
+<span id='global-method-create'>        /**
+</span>         * create the player iframe
+         * @method create
+         * @ignore
+         */
+        this.create = function(player) {
+            var config = player.config,
+                element = document.createElement(&quot;iframe&quot;),
+                targetDiv = document.getElementById(player.id);
+            element.setAttribute(&quot;id&quot;, player.id);
+            element.setAttribute(&quot;src&quot;, core.getPath(config));
+            element.setAttribute(&quot;frameborder&quot;, &quot;0&quot;);
+            element.setAttribute(&quot;scrolling&quot;, &quot;no&quot;);
+            element.setAttribute(&quot;type&quot;, &quot;text/html&quot;);
+            element.height = config.height;
+            element.width = config.width;
+            targetDiv.parentNode.replaceChild(element, targetDiv);
+            player.element = element;
+            if (typeof window.addEventListener !== 'undefined') {
+                window.addEventListener('message', handleMessage, false);
+            } else if (typeof window.attachEvent !== 'undefined') {
+                window.attachEvent('onmessage', handleMessage);
+            }
+            core.instances.push({
+                source: element.contentWindow,
+                player: player
+            });
+        };
+<span id='global-method-message'>        /**
+</span>         * Send messages to the iframe via post message.
+         * Run in the context of {@link MTVNPlayer.Player}
+         * @method message
+         * @ignore
+         */
+        this.message = function(message) {
+            if (!this.ready) {
+                throw new Error(&quot;MTVNPlayer.Player.&quot; + message + &quot;() called before player loaded.&quot;);
+            }
+            switch (message) {
+            case &quot;goFullScreen&quot;:
+                goFullScreen.apply(this, [this]);
+                break;
+            case &quot;exitFullScreen&quot;:
+                exitFullScreen.apply(this, [this]);
+                break;
+            default:
+                if (arguments[1] !== undefined) {
+                    message += &quot;:&quot; + arguments[1] + (arguments[2] !== undefined ? &quot;,&quot; + arguments[2] : &quot;&quot;);
+                }
+                return this.element.contentWindow.postMessage(message, &quot;*&quot;);
+            }
+        };
+
+        // set up orientationchange handler for iPad
+        var n = window.navigator.userAgent.toLowerCase();
+        if (n.indexOf(&quot;ipad&quot;) !== -1) {
+            document.addEventListener(&quot;orientationchange&quot;, function() {
+                var i, player = null,
+                    instances = core.instances,
+                    numberOfInstances = instances.length;
+                for (i = numberOfInstances; i--;) {
+                    player = instances[i].player;
+                    if (player.isFullScreen) {
+                        goFullScreen(player);
+                    }
+                }
+            }, false);
+        }
+    };
+})(window.MTVNPlayer);</pre>
+</body>
+</html>
