@@ -511,8 +511,9 @@
                     this.message("unmute");
                 },
                 /**
-                 * Play an item from the playlist specified by the index
+                 * Play an item from the playlist specified by the index and optionally at a certain time in the clip.
                  * @param {Number} index
+                 * @param {Number} startTime value between 0 and the duration of the current clip.
                  */
                 playIndex: function(index, startTime) {
                     this.message("playIndex", index, startTime);
@@ -532,8 +533,8 @@
                     this.message("volume", volume);
                 },
                 /**
-                 * Seeks to the time specified in seconds.
-                 * @param {Number} value between 0 and the duration of the clip or playlist.
+                 * Seeks to the time specified in seconds of the current clip.
+                 * @param {Number} value between 0 and the duration of the current clip.
                  */
                 seek: function(time) {
                     this.message("seek", time);
