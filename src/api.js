@@ -533,8 +533,10 @@
                     this.message("volume", volume);
                 },
                 /**
-                 * Seeks to the time specified in seconds of the current clip.
-                 * @param {Number} value between 0 and the duration of the current clip.
+                 * Seeks to the time specified in seconds relative to the first clip.
+                 * @param {Number} value between 0 and the duration of the playlist. 
+                 * The value is relative to the first clip. It's recommended that when 
+                 * seeking to another clip besides the first, use {@link MTVNPlayer.Player#playIndex}.
                  */
                 seek: function(time) {
                     this.message("seek", time);
