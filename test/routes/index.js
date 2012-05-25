@@ -9,6 +9,11 @@ exports.api = function(req, res) {
         path = dir.indexOf("/test") === -1 ? "" : dir.replace("/test","/");
     res.sendfile(path + "build/detailed/" + version + ".js");
 };
+exports.apiAuto = function(req, res) {
+    var dir = process.cwd(),
+        path = dir.indexOf("/test") === -1 ? "" : dir.replace("/test","/");
+    res.sendfile(path + "build/auto/" + version + ".js");
+};
 exports.sendres = function(req, res, next) {
     console.log("send res");
     res.end(req.params.chunk);
