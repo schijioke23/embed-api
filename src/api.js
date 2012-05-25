@@ -201,6 +201,20 @@
                         }
                     }
                 },
+                getEmbedCodeDimensions = function(config) {
+                    var Dimensions16x9 = {
+                        width: 512,
+                        height: 288
+                    },
+                        Dimensions4x3 = {
+                            width: 360,
+                            height: 293
+                        },
+                        aspect = config.width / config.height,
+                        Diff4x3 = Math.abs(aspect - 4 / 3),
+                        Diff16x9 = Math.abs(aspect - 16 / 9);
+                    return Diff16x9 < Diff4x3 ? Dimensions16x9 : Dimensions4x3;
+                },
                 getEmbedCode = function() {
                     var config = this.config,
                         metadata = this.currentMetadata,
@@ -232,11 +246,12 @@
                             }
                             return copy;
                         })(),
+                        embedDimensions = getEmbedCodeDimensions(config),
                         embedCode = "<div style=\"background-color:#000000;width:{divWidth}px;\"><div style=\"padding:4px;\">" + "<iframe src=\"http://media.mtvnservices.com/embed/{uri}\" width=\"{width}\" height=\"{height}\" frameborder=\"0\"></iframe>" + "{displayMetadata}</div></div>";
                     embedCode = embedCode.replace(/\{uri\}/, config.uri);
-                    embedCode = embedCode.replace(/\{width\}/, config.width);
-                    embedCode = embedCode.replace(/\{divWidth\}/, config.width + 8);
-                    embedCode = embedCode.replace(/\{height\}/, config.height);
+                    embedCode = embedCode.replace(/\{width\}/, embedDimensions.width);
+                    embedCode = embedCode.replace(/\{divWidth\}/, embedDimensions.width + 8);
+                    embedCode = embedCode.replace(/\{height\}/, embedDimensions.height);
                     embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
                     return embedCode;
                 },
