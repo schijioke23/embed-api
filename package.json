@@ -1,6 +1,6 @@
 {
     "name": "mtvn-embed-api-test-app",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
     "description": "Run the node app to test the embed api.",
