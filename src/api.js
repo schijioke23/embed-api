@@ -478,9 +478,11 @@
                 };
                 create = playerModule.create;
                 this.once("onReady", function(event) {
-                    var eventQueue = event.target.eventQueue;
-                    for(var i = 0; i < eventQueue.length; i++) {
-                        playerModule.message.apply(event.target, eventQueue[i]);
+                    var player = event.target,
+                        eventQueue = player.eventQueue,
+                        message = player.message;
+                    for(var i = 0, len = eventQueue.length; i < len; i++) {
+                        message.apply(player, eventQueue[i]);
                     }
                 });
 
