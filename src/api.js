@@ -360,6 +360,11 @@
                  */
                 this.ready = false;
                 /**
+                 * @property {Boolean} eventQueue
+                 * A list of event messages called before the player was ready
+                 */
+                this.eventQueue = [];
+                /**
                  * @property {String} state
                  * The current play state of the player.
                  */
@@ -464,8 +469,20 @@
                     playerModule = MTVNPlayer.module("html5");
                 }
                 playerModule.initialize();
-                this.message = playerModule.message;
+                this.message = function() {
+                    if (!this.ready) {
+                        this.eventQueue.push(arguments);
+                    } else {
+                        playerModule.message.apply(this, arguments);
+                    }
+                };
                 create = playerModule.create;
+                this.once("onReady", function(event) {
+                    var eventQueue = event.target.eventQueue;
+                    for(var i = 0; i < eventQueue.length; i++) {
+                        playerModule.message.apply(event.target, eventQueue[i]);
+                    }
+                });
 
                 // check for element before creating
                 if (!el) {
