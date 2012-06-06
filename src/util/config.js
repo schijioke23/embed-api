@@ -16,12 +16,16 @@
             if (fromObj) {
                 for (var prop in fromObj) {
                     if (fromObj.hasOwnProperty(prop)) {
-                        if (fromObj[prop]) {
+                        if (fromObj[prop] !== undefined) {
                             var propName = prop.toLowerCase();
                             if (propName === "flashvars" || propName === "attributes" || propName === "params") {
                                 toObj[prop] = toObj[prop] || {};
                                 copyProperties(toObj[prop], fromObj[prop]);
                             } else {
+                                // make sure width and height are defined and not zero
+                                if((prop === "width" || prop === "height") && !fromObj[prop]){
+                                    continue;
+                                }
                                 toObj[prop] = fromObj[prop];
                             }
                         }
@@ -54,8 +58,8 @@
             },
             configFromEl = {
                 uri: getDataAttr("contenturi"),
-                width: getStyleAttr("width"),
-                height: getStyleAttr("height"),
+                width: getStyleAttr("width") || null,
+                height: getStyleAttr("height") || null,
                 flashVars: getObjectFromNameValue("flashVars"),
                 attributes: getObjectFromNameValue("attributes")
             };

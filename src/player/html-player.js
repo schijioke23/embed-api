@@ -172,7 +172,14 @@
                         } else if (data.indexOf("airplay") === 0) {
                             processEvent(events.onAirplay, {
                                 data: null,
-                                target: player
+                                target: player,
+                                type: eventTypes.AIRPLAY
+                            });
+                        } else if (data.indexOf("onEndSlate:") === 0) {
+                            processEvent(events.onEndSlate, {
+                                data: jsonParse(getMessageData(data)),
+                                target: player,
+                                type:"onEndSlate"
                             });
                         }
                     }

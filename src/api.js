@@ -180,13 +180,17 @@
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
-                    var events = MTVNPlayer.Events;
-                    for (var event in events) {
-                        if (events.hasOwnProperty(event) && events[event] === eventName) {
-                            return;
-                        }
+                    var check = function(events) {
+                            for (var event in events) {
+                                if (events.hasOwnProperty(event) && events[event] === eventName) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+                    if (!check(MTVNPlayer.Events) && !check(MTVNPlayer.module("ModuleLoader").events)) {
+                        throw new Error("MTVNPlayer.Player event:" + eventName + " doesn't exist.");
                     }
-                    throw new Error("MTVNPlayer.Player event:" + eventName + " doesn't exist.");
                 },
                 /**
                  * @method checkEvents
@@ -441,6 +445,7 @@
                 var create = null,
                     playerModule = null,
                     el = null,
+                    containerElement = document.createElement("div"),
                     isElement = (function(o) {
                         return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
                         typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
@@ -453,6 +458,11 @@
                     this.id = elementOrId;
                     el = document.getElementById(this.id);
                 }
+
+                // wrap the player element in a container div
+                el.parentNode.insertBefore(containerElement, el);
+                containerElement.appendChild(el);
+
                 this.events = events || {};
                 this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
                 // make sure the events are valid
