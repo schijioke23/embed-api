@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MTVN Video Player</title>
+        <script type="text/javascript" charset="utf-8">
+            var MTVNPlayer = MTVNPlayer || {};
+            MTVNPlayer.defaultEvents = {
+                onReady:function(event){
+                    // do something in the onReady event for every player
+                }
+            };
+        </script>
+    </head>
+    <body>
+    
+        <!-- DEFINE PLAYERS -->
+        <div class="MTVNPlayer" data-contenturi="mgid:cms:video:nick.com:920786"></div>
+    
+        <!--LOAD SCRIPT -->
+        <script type="text/javascript" src="/player/api/"></script>	
+        
+       <!-- CREATE PLAYERS -->
+        <script type="text/javascript">
+            MTVNPlayer.createPlayers("div.MTVNPlayer",{width:640,height:320},{
+                // these events will combine with the default events, not override them
+                onReady:function(event){
+                    // this will fire for all players created with this createPlayers method.
+                    // if you have different players, you could set up distinct behavior here and
+                    // common behavior in the defaultEvents.
+                }
+            });
+        </script>
+        
+    </body>
+</html>

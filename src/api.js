@@ -346,9 +346,9 @@
                     selectorQuery = "div.MTVNPlayer";
                 }
                 var elements = MTVNPlayer.module("selector").find(selectorQuery),
-                    copyProperties = MTVNPlayer.module("config").copyProperties;
+                    configModule = MTVNPlayer.module("config");
                 for (var i = 0, len = elements.length; i < len; i++) {
-                    new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), copyProperties(events || {}, MTVNPlayer.defaultEvents));
+                    new MTVNPlayer.Player(elements[i], configModule.copyProperties(config || {}, MTVNPlayer.defaultConfig), configModule.copyEvents(events || {}, MTVNPlayer.defaultEvents));
                 }
                 return elements.length;
             };
