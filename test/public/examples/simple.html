@@ -14,7 +14,11 @@
         
         <!-- CREATE PLAYERS -->
         <script type="text/javascript">
-            MTVNPlayer.createPlayers("div.MTVNPlayer",{width:640,height:320});
+            MTVNPlayer.createPlayers("div.MTVNPlayer",{width:640,height:320},{
+                    onReady:function(event){
+                        // this will fire for all players created with this createPlayers method
+                    }
+                });
         </script>
         
     </body>
