@@ -72,7 +72,7 @@
             PLAYHEAD_UPDATE: "onPlayheadUpdate",
             /**
              * @event onPlaylistComplete
-             * Fired once per playlist item (content + ads/bumpers)
+             * Fired at the end of a playlist
              */
             PLAYLIST_COMPLETE: "onPlaylistComplete",
             /**
@@ -168,10 +168,6 @@
                     throw new Error("Embed API:" + message);
                 },
                 document = window.document,
-                isIDevice = (function() {
-                    var n = window.navigator.userAgent.toLowerCase();
-                    return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1;
-                })(),
                 Player,
                 /**
                  * @method checkEventName
@@ -454,7 +450,7 @@
                     el = document.getElementById(this.id);
                 }
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
 
