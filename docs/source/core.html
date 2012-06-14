@@ -26,10 +26,36 @@
         baseURL = &quot;http://media.mtvnservices.com/&quot;,
         onPlayerCallbacks = [];
     // exports
+<span id='global-property-instances'>    /**
+</span>     * @property instances
+     * @ignore
+     * An array of all the player instances.
+     */
     core.instances = instances;
+<span id='global-property-baseURL'>    /**
+</span>     * @property baseURL
+     * @ignore
+     * The base URL for the player request and for swf object. 
+     */
     core.baseURL = baseURL;
+<span id='global-property-onPlayerCallbacks'>    /**
+</span>     * @property onPlayerCallbacks
+     * @ignore
+     * These are fired when a player laods. 
+     */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
+
+<span id='global-property-isHTML5Player'>    /**
+</span>     * @property isHTML5Player
+     * @ignore
+     * The logic that determines whether we're using flash or html
+     */
+    core.isHTML5Player = function() {
+        var n = window.navigator.userAgent.toLowerCase();
+        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1;
+    }();
+    
 <span id='global-method-getPath'>    /**
 </span>     * @method getPath
      * @ignore

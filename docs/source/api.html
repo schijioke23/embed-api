@@ -89,7 +89,7 @@
             PLAYHEAD_UPDATE: &quot;onPlayheadUpdate&quot;,
 <span id='MTVNPlayer-Events-event-onPlaylistComplete'>            /**
 </span>             * @event onPlaylistComplete
-             * Fired once per playlist item (content + ads/bumpers)
+             * Fired at the end of a playlist
              */
             PLAYLIST_COMPLETE: &quot;onPlaylistComplete&quot;,
 <span id='MTVNPlayer-Events-event-onOverlayRectChange'>            /**
@@ -185,10 +185,6 @@
                     throw new Error(&quot;Embed API:&quot; + message);
                 },
                 document = window.document,
-                isIDevice = (function() {
-                    var n = window.navigator.userAgent.toLowerCase();
-                    return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1;
-                })(),
                 Player,
 <span id='MTVNPlayer-Player-method-checkEventName'>                /**
 </span>                 * @method checkEventName
@@ -471,7 +467,7 @@
                     el = document.getElementById(this.id);
                 }
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
 
