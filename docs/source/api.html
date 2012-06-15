@@ -274,6 +274,12 @@
                     return newID;
                 };
             // end private vars
+<span id='MTVNPlayer-property-isHTML5Player'>            /**
+</span>             * @member MTVNPlayer
+             * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
+             * otherwise they'll be flash players. This is determined by checking the user agent.
+             */
+            MTVNPlayer.isHTML5Player = core.isHTML5Player;
 <span id='MTVNPlayer-method-onPlayer'>            /**
 </span>             * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
@@ -329,6 +335,7 @@
 <span id='MTVNPlayer-method-createPlayers'>            /**
 </span>             * @member MTVNPlayer
              * Create players from elements in the page.
+             * This should be used if you need to create multiple players that are the same.
              * @param {String} selector default is &quot;div.MTVNPlayer&quot;
              * @param {Object} config {@link MTVNPlayer.Player#config}
              * @param {Object} events {@link MTVNPlayer.Events}
