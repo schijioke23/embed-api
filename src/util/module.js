@@ -1,6 +1,6 @@
 /**
- * For creating a player inline see MTVNPlayer.Player constructor.
- * For creating a player or group of players defined in HTML see MTVNPlayer.createPlayers
+ * For creating a player inline you can use the MTVNPlayer.Player constructor.
+ * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
  * @static
  */
 var MTVNPlayer = window.MTVNPlayer || {};
