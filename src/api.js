@@ -259,6 +259,12 @@
             // end private vars
             /**
              * @member MTVNPlayer
+             * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
+             * otherwise they'll be flash players. This is determined by checking the user agent.
+             */
+            MTVNPlayer.isHTML5Player = core.isHTML5Player;
+            /**
+             * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
              * argument, providing an easy way to hook into player events in a decoupled way.
              * @param {Function} callback A callback fired when every player is created.
@@ -312,6 +318,7 @@
             /**
              * @member MTVNPlayer
              * Create players from elements in the page.
+             * This should be used if you need to create multiple players that are the same.
              * @param {String} selector default is "div.MTVNPlayer"
              * @param {Object} config {@link MTVNPlayer.Player#config}
              * @param {Object} events {@link MTVNPlayer.Events}
