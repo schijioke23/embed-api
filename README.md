@@ -15,7 +15,7 @@ The embed API provides a unified way to embed and use different video players. O
 The Embed API is loaded just like any other javascript file. If you include it in the head, it is considered "blocking" and will be loaded before your page. You can put it in the footer to avoid this. 
 
 If you know the Embed API is loaded, you can use it right away. However, if you want to decouple your logic, you can use some boilerplate code to listen for an `onAPIReady` event. 
-See more [here](#a4).
+See more [here](#a4-1).
 
 
 <a name="a2"/>
@@ -160,6 +160,7 @@ MTVNPlayer.defaultEvents = {onMediaStart:function(event){}};
 *These callbacks are great way to write decoupled code, you don't need to know when or how the API is loaded, 
 or how a player is created, but you can define logic based on these events.*
 
+<a name="a4-1"/>
 ##### MTVNPlayer.addCallback
 This code snippit gives you a decoupled way to know when the Embed API is loaded. Once it is, you can create players, or you can listen for player creation with [MTVNPlayer.onPlayer](#a4-1).
 
