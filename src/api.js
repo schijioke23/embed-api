@@ -357,6 +357,10 @@
             };
 
             Player = function(elementOrId, config, events) {
+                // in case constructor is called without new.
+                if (!(this instanceof Player)) {
+                    return new Player(elementOrId, config, events);
+                }
                 /** 
                  * @property {Boolean} ready
                  * The current ready state of the player
@@ -484,7 +488,7 @@
                     var player = event.target,
                         eventQueue = player.eventQueue,
                         message = player.message;
-                    for(var i = 0, len = eventQueue.length; i < len; i++) {
+                    for (var i = 0, len = eventQueue.length; i < len; i++) {
                         message.apply(player, eventQueue[i]);
                     }
                 });
