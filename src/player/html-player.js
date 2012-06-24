@@ -78,11 +78,20 @@
              * @param {MTVNPlayer.Player} player A player instance
              */
             onMetadata = function(data, player) {
-                var obj = jsonParse(getMessageData(data));
+                var obj = jsonParse(getMessageData(data)),
+                    newIndex = obj.index,
+                    oldIndex = player.playlistMetadata.index;
                 player.currentMetadata = obj;
-                if (obj.index !== -1) { // index is -1 for ads.
+                if (newIndex !== -1) { // index is -1 for ads.
                     player.playlistMetadata.items[obj.index] = obj;
                     player.playlistMetadata.index = obj.index;
+                    if (newIndex !== oldIndex) {
+                        processEvent(player.events.onIndexChange, {
+                            data: newIndex,
+                            target: player,
+                            type: MTVNPlayer.Events.INDEX_CHANGE
+                        });
+                    }
                 }
                 processEvent(player.events.onMetadata, {
                     data: obj,

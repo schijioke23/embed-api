@@ -97,7 +97,15 @@
              */
             UI_STATE_CHANGE: "onUIStateChange",
             /**
+             * @event onIndexChange
+             * Fired when the index of the current playlist item changes, ignoring ads.
+             *
+             * event.data contains the index
+             */
+            INDEX_CHANGE: "onIndexChange",
+            /**
              * @event onAirplay
+             * @private
              * Fired when the airplay button is clicked
              */
             AIRPLAY: "onAirplay"

@@ -1,7 +1,7 @@
 var MTVNPlayer = MTVNPlayer || {};
 (function(window){
     if(!MTVNPlayer.EventTracker){
-		MTVNPlayer.EventTracker = function(player){
+		MTVNPlayer.EventTracker = function(player, logToConsole){
 			var outputID = "eventLogOutput",
 				output = function(output){
 					if(!output){
@@ -66,9 +66,9 @@ var MTVNPlayer = MTVNPlayer || {};
 				if(MTVNPlayer.Events[eventName] !== MTVNPlayer.Events.PLAYHEAD_UPDATE){
 					eventFunc.apply(player,[MTVNPlayer.Events[eventName],(function(eventName){
 						return function(event){
-							log("<b>"+eventName+"</b>" + (event.data ? ":"+event.data : ""));
-							if(console && console.log){
-								console.log(event.target.id + ":" + eventName,event.data ? event.data : "");
+							log("<b>"+eventName+"</b>" + (event.data !== undefined ? ":"+event.data : ""));
+							if(logToConsole && console && console.log){
+								console.log(event.target.id + ":" + eventName,event.data !== undefined ? event.data : "");
 							}
 						};
 					})(eventName)]);

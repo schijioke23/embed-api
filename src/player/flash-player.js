@@ -139,13 +139,16 @@
                     readyEvent = MTVNPlayer.Events.READY,
                     mediaEnd = MTVNPlayer.Events.MEDIA_END,
                     mediaStart = MTVNPlayer.Events.MEDIA_START,
+                    onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
                     var playlistItems = element.getPlaylist().items,
                         processedMetadata = processMetadata(metadata, playlistItems),
                         playlistMetadata = player.playlistMetadata,
-                        fireReadyEvent = false;
+                        fireReadyEvent = false,
+                        newIndex = processedMetadata.index,
+                        lastIndex = playlistMetadata ? playlistMetadata.index : -1;
                     player.currentMetadata = processedMetadata;
                     if (!playlistMetadata) {
                         // this is our first metadata event
@@ -156,9 +159,16 @@
                             playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                         }
                     }
-                    if (processedMetadata.index !== -1) { // index is -1 for ads.
-                        playlistMetadata.items[processedMetadata.index] = processedMetadata;
-                        playlistMetadata.index = processedMetadata.index;
+                    if (newIndex !== -1) { // index is -1 for ads.
+                        playlistMetadata.items[newIndex] = processedMetadata;
+                        playlistMetadata.index = newIndex;
+                        if(lastIndex !== newIndex){
+                            core.processEvent(events[onIndexChange],{
+                                data:newIndex,
+                                target:player,
+                                type:onIndexChange
+                            });
+                        }
                     }
                     player.playlistMetadata = playlistMetadata;
                     if (fireReadyEvent) {
@@ -166,7 +176,7 @@
                         core.processEvent(events[readyEvent], {
                             data: processedMetadata,
                             target: player,
-                            type: MTVNPlayer.Events.READY
+                            type: readyEvent
                         });
                     }
                     core.processEvent(events[metadataEvent], {
