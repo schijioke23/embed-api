@@ -1,8 +1,7 @@
 (function(MTVNPlayer) {
     "use strict";
     var flash = MTVNPlayer.module("flash"),
-        core = MTVNPlayer.module("core"),
-        swfobjectBase = core.baseURL + "player/api/swfobject/";
+        core = MTVNPlayer.module("core");
     if (flash.initialized) {
         return;
     }
@@ -20,7 +19,7 @@
             play: "unpause",
             seek: "setPlayheadTime"
         },
-            swfobject = window.swfobject || MTVNPlayer.swfobject,
+            swfobject = flash.getSWFObject(),
             makeWSwfObject = function(targetID, config) {
                 var attributes = config.attributes || {},
                     params = config.params || {
@@ -41,17 +40,6 @@
                     return s ? s.slice(0, -1) : "";
                 })(flashVars);
                 core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
-            },
-            swfObjectInit = {
-                requested: false,
-                items: []
-            },
-            onSWFObjectLoaded = function(loadedSwfObject) {
-                swfobject = loadedSwfObject;
-                delete MTVNPlayer.onSWFObjectLoaded;
-                for (var items = swfObjectInit.items, i = items.length; i--;) {
-                    items[i]();
-                }
             },
             exitFullScreen = function() {
                 try {
@@ -162,11 +150,11 @@
                     if (newIndex !== -1) { // index is -1 for ads.
                         playlistMetadata.items[newIndex] = processedMetadata;
                         playlistMetadata.index = newIndex;
-                        if(lastIndex !== newIndex){
-                            core.processEvent(events[onIndexChange],{
-                                data:newIndex,
-                                target:player,
-                                type:onIndexChange
+                        if (lastIndex !== newIndex) {
+                            core.processEvent(events[onIndexChange], {
+                                data: newIndex,
+                                target: player,
+                                type: onIndexChange
                             });
                         }
                     }
@@ -231,8 +219,6 @@
                 // yes, flash event is media ended unfort.
                 element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
             };
-        // static properties
-        MTVNPlayer.onSWFObjectLoaded = onSWFObjectLoaded;
         MTVNPlayer.Player.flashEventMap = {};
         /**
          * create an embed element
@@ -247,29 +233,7 @@
                 source: targetID,
                 player: player
             });
-            if (typeof(swfobject) === "undefined") {
-                // queue request
-                swfObjectInit.items.push((function(elementId, elementConfig) {
-                    var callBack = function() {
-                            makeWSwfObject(elementId, elementConfig);
-                        };
-                    return callBack;
-                }(targetID, config)));
-                // load swf object
-                if (!swfObjectInit.requested) {
-                    swfObjectInit.requested = true;
-                    tag = document.createElement('script');
-                    tag.src = swfobjectBase + "swfobject.js";
-                    tag.language = "javascript";
-                    firstScriptTag = document.getElementsByTagName('script')[0];
-                    if (!firstScriptTag) {
-                        firstScriptTag = document.body; // for buster tests
-                    }
-                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-                }
-            } else {
-                makeWSwfObject(targetID, config);
-            }
+            makeWSwfObject(targetID, config);
         };
         /**
          * Send messages to the swf via flash external interface
