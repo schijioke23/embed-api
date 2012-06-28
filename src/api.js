@@ -579,7 +579,7 @@
                  * @param {Number} value between 0 and 1.
                  */
                 setVolume: function(volume) {
-                    this.message("volume", volume);
+                    this.message("setVolume", volume);
                 },
                 /**
                  * Seeks to the time specified in seconds relative to the first clip.
