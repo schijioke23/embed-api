@@ -9,10 +9,36 @@
         baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [];
     // exports
+    /**
+     * @property instances
+     * @ignore
+     * An array of all the player instances.
+     */
     core.instances = instances;
+    /**
+     * @property baseURL
+     * @ignore
+     * The base URL for the player request and for swf object. 
+     */
     core.baseURL = baseURL;
+    /**
+     * @property onPlayerCallbacks
+     * @ignore
+     * These are fired when a player laods. 
+     */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
+
+    /**
+     * @property isHTML5Player
+     * @ignore
+     * The logic that determines whether we're using flash or html
+     */
+    core.isHTML5Player = function() {
+        var n = window.navigator.userAgent.toLowerCase();
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1;
+    }();
+    
     /**
      * @method getPath
      * @ignore

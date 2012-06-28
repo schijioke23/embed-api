@@ -72,7 +72,7 @@
             PLAYHEAD_UPDATE: "onPlayheadUpdate",
             /**
              * @event onPlaylistComplete
-             * Fired once per playlist item (content + ads/bumpers)
+             * Fired at the end of a playlist
              */
             PLAYLIST_COMPLETE: "onPlaylistComplete",
             /**
@@ -97,7 +97,15 @@
              */
             UI_STATE_CHANGE: "onUIStateChange",
             /**
+             * @event onIndexChange
+             * Fired when the index of the current playlist item changes, ignoring ads.
+             *
+             * event.data contains the index
+             */
+            INDEX_CHANGE: "onIndexChange",
+            /**
              * @event onAirplay
+             * @private
              * Fired when the airplay button is clicked
              */
             AIRPLAY: "onAirplay"
@@ -168,10 +176,6 @@
                     throw new Error("Embed API:" + message);
                 },
                 document = window.document,
-                isIDevice = (function() {
-                    var n = window.navigator.userAgent.toLowerCase();
-                    return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1;
-                })(),
                 Player,
                 /**
                  * @method checkEventName
@@ -267,6 +271,12 @@
             // end private vars
             /**
              * @member MTVNPlayer
+             * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
+             * otherwise they'll be flash players. This is determined by checking the user agent.
+             */
+            MTVNPlayer.isHTML5Player = core.isHTML5Player;
+            /**
+             * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
              * argument, providing an easy way to hook into player events in a decoupled way.
              * @param {Function} callback A callback fired when every player is created.
@@ -320,6 +330,7 @@
             /**
              * @member MTVNPlayer
              * Create players from elements in the page.
+             * This should be used if you need to create multiple players that are the same.
              * @param {String} selector default is "div.MTVNPlayer"
              * @param {Object} config {@link MTVNPlayer.Player#config}
              * @param {Object} events {@link MTVNPlayer.Events}
@@ -350,19 +361,28 @@
                     selectorQuery = "div.MTVNPlayer";
                 }
                 var elements = MTVNPlayer.module("selector").find(selectorQuery),
-                    copyProperties = MTVNPlayer.module("config").copyProperties;
+                    configModule = MTVNPlayer.module("config");
                 for (var i = 0, len = elements.length; i < len; i++) {
-                    new MTVNPlayer.Player(elements[i], copyProperties(config || {}, MTVNPlayer.defaultConfig), copyProperties(events || {}, MTVNPlayer.defaultEvents));
+                    new MTVNPlayer.Player(elements[i], configModule.copyProperties(config || {}, MTVNPlayer.defaultConfig), configModule.copyEvents(events || {}, MTVNPlayer.defaultEvents));
                 }
                 return elements.length;
             };
 
             Player = function(elementOrId, config, events) {
+                // in case constructor is called without new.
+                if (!(this instanceof Player)) {
+                    return new Player(elementOrId, config, events);
+                }
                 /** 
                  * @property {Boolean} ready
                  * The current ready state of the player
                  */
                 this.ready = false;
+                /**
+                 * @property {Boolean} eventQueue
+                 * A list of event messages called before the player was ready
+                 */
+                this.eventQueue = [];
                 /**
                  * @property {String} state
                  * The current play state of the player.
@@ -464,7 +484,7 @@
                 containerElement.appendChild(el);
 
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !isIDevice : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
 
@@ -474,8 +494,22 @@
                     playerModule = MTVNPlayer.module("html5");
                 }
                 playerModule.initialize();
-                this.message = playerModule.message;
+                this.message = function() {
+                    if (!this.ready) {
+                        this.eventQueue.push(arguments);
+                    } else {
+                        playerModule.message.apply(this, arguments);
+                    }
+                };
                 create = playerModule.create;
+                this.once("onReady", function(event) {
+                    var player = event.target,
+                        eventQueue = player.eventQueue,
+                        message = player.message;
+                    for (var i = 0, len = eventQueue.length; i < len; i++) {
+                        message.apply(player, eventQueue[i]);
+                    }
+                });
 
                 // check for element before creating
                 if (!el) {
@@ -555,7 +589,7 @@
                  * @param {Number} value between 0 and 1.
                  */
                 setVolume: function(volume) {
-                    this.message("volume", volume);
+                    this.message("setVolume", volume);
                 },
                 /**
                  * Seeks to the time specified in seconds relative to the first clip.

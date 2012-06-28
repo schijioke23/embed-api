@@ -84,6 +84,10 @@
 				
 				onAirplay = function(event) {
 					console.log(event.target.id+": onAirplay");
+				},
+                
+                onIndexChange = function(event) {
+    				console.log(event.target.id+": onIndexChange",event.data);
 				}
 			    
 			    events = {onReady:onReady,
@@ -93,6 +97,7 @@
 			        onStateChange:onStateChange,
 			        onPlaylistComplete:onPlaylistComplete,
 			        onUIStateChange:onUIStateChange,
+			        onIndexChange:onIndexChange,
 					onOverlayRectChange:onOverlayRectChange,
 					onAirplay:onAirplay},
 			        
@@ -121,7 +126,7 @@
 			        },
 			        events);
 			        
-				new MTVNPlayer.EventTracker(player1);
+				new MTVNPlayer.EventTracker(player1,false);
             });
             
            
