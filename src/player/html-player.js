@@ -151,7 +151,7 @@
                             player.ready = true;
                             var fv = player.config.flashVars;
                             if (fv && fv.sid) {
-                                core.message.call(player, "setSSID:" + fv.sid);
+                                player.message.call(player, "setSSID:" + fv.sid);
                             }
                             core.executeCallbacks(player);
                             processEvent(events.onReady, {
@@ -186,34 +186,39 @@
                         }
                     }
                 }
+            },
+            createElement = function(player) {
+                var config = player.config,
+                    element = document.createElement("iframe"),
+                    targetDiv = document.getElementById(player.id);
+                element.setAttribute("id", player.id);
+                element.setAttribute("src", core.getPath(config));
+                element.setAttribute("frameborder", "0");
+                element.setAttribute("scrolling", "no");
+                element.setAttribute("type", "text/html");
+                element.height = config.height;
+                element.width = config.width;
+                targetDiv.parentNode.replaceChild(element, targetDiv);
+                player.element = element;
             };
         /**
          * create the player iframe
          * @method create
          * @ignore
          */
-        this.create = function(player) {
-            var config = player.config,
-                element = document.createElement("iframe"),
-                targetDiv = document.getElementById(player.id);
-            element.setAttribute("id", player.id);
-            element.setAttribute("src", core.getPath(config));
-            element.setAttribute("frameborder", "0");
-            element.setAttribute("scrolling", "no");
-            element.setAttribute("type", "text/html");
-            element.height = config.height;
-            element.width = config.width;
-            targetDiv.parentNode.replaceChild(element, targetDiv);
-            player.element = element;
+        this.create = function(player, exists) {
+            if (!exists) {
+                createElement(player);
+            }
+            core.instances.push({
+                source: player.id,
+                player: player
+            });
             if (typeof window.addEventListener !== 'undefined') {
                 window.addEventListener('message', handleMessage, false);
             } else if (typeof window.attachEvent !== 'undefined') {
                 window.attachEvent('onmessage', handleMessage);
             }
-            core.instances.push({
-                source: element.contentWindow,
-                player: player
-            });
         };
         /**
          * Send messages to the iframe via post message.
@@ -239,7 +244,6 @@
                 return this.element.contentWindow.postMessage(message, "*");
             }
         };
-
         // set up orientationchange handler for iPad
         var n = window.navigator.userAgent.toLowerCase();
         if (n.indexOf("ipad") !== -1) {
