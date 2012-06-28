@@ -151,7 +151,7 @@
                             player.ready = true;
                             var fv = player.config.flashVars;
                             if (fv && fv.sid) {
-                                core.message.call(player, "setSSID:" + fv.sid);
+                                player.message.call(player, "setSSID:" + fv.sid);
                             }
                             core.executeCallbacks(player);
                             processEvent(events.onReady, {
@@ -192,28 +192,35 @@
          * @method create
          * @ignore
          */
-        this.create = function(player) {
+        this.create = function(player, exists) {
             var config = player.config,
-                element = document.createElement("iframe"),
-                targetDiv = document.getElementById(player.id);
-            element.setAttribute("id", player.id);
-            element.setAttribute("src", core.getPath(config));
-            element.setAttribute("frameborder", "0");
-            element.setAttribute("scrolling", "no");
-            element.setAttribute("type", "text/html");
-            element.height = config.height;
-            element.width = config.width;
-            targetDiv.parentNode.replaceChild(element, targetDiv);
-            player.element = element;
+                targetID = player.id;
+
+            if ( !exists ) {
+                var element = document.createElement("iframe"),
+                    targetDiv = document.getElementById(targetID);
+
+                element.setAttribute("id", player.id);
+                element.setAttribute("src", core.getPath(config));
+                element.setAttribute("frameborder", "0");
+                element.setAttribute("scrolling", "no");
+                element.setAttribute("type", "text/html");
+                element.height = config.height;
+                element.width = config.width;
+                targetDiv.parentNode.replaceChild(element, targetDiv);
+                player.element = element;
+            }
+
+            core.instances.push({
+                source: targetID,
+                player: player
+            });
+
             if (typeof window.addEventListener !== 'undefined') {
                 window.addEventListener('message', handleMessage, false);
             } else if (typeof window.attachEvent !== 'undefined') {
                 window.attachEvent('onmessage', handleMessage);
             }
-            core.instances.push({
-                source: element.contentWindow,
-                player: player
-            });
         };
         /**
          * Send messages to the iframe via post message.

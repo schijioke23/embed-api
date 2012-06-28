@@ -226,14 +226,16 @@
          * @method message
          * @ignore
          */
-        this.create = function(player) {
+        this.create = function(player,exists) {
             var tag, firstScriptTag, targetID = player.id,
                 config = player.config;
             core.instances.push({
                 source: targetID,
                 player: player
             });
-            makeWSwfObject(targetID, config);
+            if (!exists) {
+                makeWSwfObject(targetID, config);
+            }
         };
         /**
          * Send messages to the swf via flash external interface
