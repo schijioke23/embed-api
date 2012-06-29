@@ -159,7 +159,7 @@
                             player.ready = true;
                             var fv = player.config.flashVars;
                             if (fv &amp;&amp; fv.sid) {
-                                core.message.call(player, &quot;setSSID:&quot; + fv.sid);
+                                player.message.call(player, &quot;setSSID:&quot; + fv.sid);
                             }
                             core.executeCallbacks(player);
                             processEvent(events.onReady, {
