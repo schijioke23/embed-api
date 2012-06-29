@@ -218,7 +218,7 @@
                 createElement(player);
             }
             core.instances.push({
-                source: player.id,
+                source: player.element.contentWindow,
                 player: player
             });
             if (typeof window.addEventListener !== 'undefined') {
