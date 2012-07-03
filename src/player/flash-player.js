@@ -128,6 +128,7 @@
                     mediaEnd = MTVNPlayer.Events.MEDIA_END,
                     mediaStart = MTVNPlayer.Events.MEDIA_START,
                     onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
+                    onEndSlate = "onEndSlate",
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
@@ -218,6 +219,15 @@
                 };
                 // yes, flash event is media ended unfort.
                 element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
+                // fired when the end slate is shown, if the player's configuration is set to do so.
+                map[id + onEndSlate] = function(data) {
+                    core.processEvent(events[onEndSlate], {
+                        data: data,
+                        target: player,
+                        type: onEndSlate
+                    });
+                };
+                element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
             };
         MTVNPlayer.Player.flashEventMap = {};
         /**

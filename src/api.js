@@ -187,14 +187,15 @@
                     var check = function(events) {
                             for (var event in events) {
                                 if (events.hasOwnProperty(event) && events[event] === eventName) {
-                                    return true;
+                                    return true; // has event
                                 }
                             }
                             return false;
                         };
-                    if (!check(MTVNPlayer.Events) && !check(MTVNPlayer.module("ModuleLoader").events)) {
-                        throw new Error("MTVNPlayer.Player event:" + eventName + " doesn't exist.");
+                    if (check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
+                        return;
                     }
+                    throw new Error("MTVNPlayer.Player event:" + eventName + " doesn't exist.");
                 },
                 /**
                  * @method checkEvents
