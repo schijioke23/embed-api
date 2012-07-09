@@ -4,14 +4,9 @@
         EndSlateModule = {
             eventName: "onEndSlate",
             yepnope: {
-                test: window.jQuery || window.Zepto,
-                yep: {
-                    js: baseUrl + "/end-slate.js"
-                },
+                test: window.MTVNPlayer.EndSlate,
                 nope: {
-                    js: baseUrl + (navigator.appName.match(/Explorer/) ? "/end-slate.jquery.js" : "/end-slate.zepto.js")
-                },
-                both: {
+                    js: baseUrl + "/end-slate.js",
                     css: baseUrl + "/style.css"
                 },
                 callback: {
