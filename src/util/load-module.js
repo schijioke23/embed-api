@@ -1,6 +1,6 @@
 (function(MTVNPlayer, yepnope) {
     var ModuleLoader = MTVNPlayer.module("ModuleLoader"),
-        baseUrl = MTVNPlayer.moduleBaseUrl || "http://media.mtvnservices.com/player/embed/api/module/",
+        baseUrl = MTVNPlayer.moduleBaseUrl || "http://media.mtvnservices.com/player/embed/api/module/end-slate",
         EndSlateModule = {
             eventName: "onEndSlate",
             yepnope: {
@@ -18,7 +18,7 @@
                         for (i; i < len; i++) {
                             queue[i]();
                         }
-                        queue = [];
+                        EndSlateModule.queue = [];
                     }
                 }
             },
