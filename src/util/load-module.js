@@ -29,10 +29,16 @@
                 EndSlateModule.queue.push(function() {
                     new(window.MTVNPlayer.EndSlate)(event.data, event.target);
                 });
-                yepnope(EndSlateModule.yepnope);
+                // we remove yepnope from the window, and yepnope tries to reference window.yepnope in it's own function
+                // so we make a dummy object providing that reference.
+                yepnope.call({
+                    yepnope: yepnope
+                }, EndSlateModule.yepnope);
             }
         };
-    ModuleLoader.Events = {END_SLATE:EndSlateModule.eventName};
+    ModuleLoader.Events = {
+        END_SLATE: EndSlateModule.eventName
+    };
     /**
      * When any player is created, listen for an end slate event
      */
