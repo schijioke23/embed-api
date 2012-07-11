@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/load-module.js', 'src/util/clean-up.js', 'build/version.js'],
+    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/load-module.js', 'src/util/finish.js', 'build/version.js'],
         targetPath = 'build/<%= grunt.config("dirname") %>',
         fileName = '<%= pkg.version %><%= grunt.config("buildNumber") %>.js',
         detailedPath = targetPath + 'detailed/' + fileName,

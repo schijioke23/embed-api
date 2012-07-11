@@ -675,9 +675,6 @@
             };
             return Player;
         }(window));
-        if (typeof MTVNPlayer.onAPIReady === "function") {
-            MTVNPlayer.onAPIReady();
-        }
         /**
          * @member MTVNPlayer
          * @property {Boolean}
