@@ -4,6 +4,7 @@ module.exports = function(grunt) {
         fileName = '<%= pkg.version %><%= grunt.config("buildNumber") %>.js',
         detailedPath = targetPath + 'detailed/' + fileName,
         autoPath = targetPath + 'auto/' + fileName,
+        syndicatedPath = targetPath + 'syndicated/' + fileName,
         minPath = targetPath + fileName;
     grunt.loadNpmTasks('grunt-contrib');
     grunt.initConfig({
@@ -37,6 +38,10 @@ module.exports = function(grunt) {
             auto: {
                 src: sourceFiles.concat(['src/third-party/domready.js', 'src/auto-create-players.js']),
                 dest: autoPath
+            },
+            syndicated: {
+                src: sourceFiles.concat(['src/syndicated.js']),
+                dest: syndicatedPath
             }
         },
         watch: {
@@ -45,9 +50,10 @@ module.exports = function(grunt) {
         }
     });
     grunt.registerTask('version', 'write some javascript that contains the version.', function(dir) {
-        var version = grunt.config("pkg").version;
-        grunt.log.writeln("building version:" + version);
-        grunt.file.write("build/version.js", "MTVNPlayer.version=\"" + version + "\";");
+        var version = grunt.config("pkg").version,
+            date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
+        grunt.log.writeln("building version:" + version + " at " + date);
+        grunt.file.write("build/version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\""+date+"\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);
