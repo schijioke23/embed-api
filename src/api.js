@@ -383,11 +383,6 @@
                  */
                 this.ready = false;
                 /**
-                 * @property {Boolean} eventQueue
-                 * A list of event messages called before the player was ready
-                 */
-                this.eventQueue = [];
-                /**
                  * @property {String} state
                  * The current play state of the player.
                  */
@@ -466,15 +461,11 @@
                  *
                  */
                 this.config = config || {};
-                var create = null,
-                    playerModule = null,
+                // private vars
+                var playerModule = null,
                     el = null,
-                    containerElement = document.createElement("div"),
-                    isElement = (function(o) {
-                        return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
-                        typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
-                    })(elementOrId);
-                if (isElement) {
+                    containerElement = document.createElement("div");
+                if (core.isElement(elementOrId)) {
                     el = elementOrId;
                     this.id = createId(el);
                     this.config = MTVNPlayer.module("config").buildConfig(el, this.config);
@@ -491,29 +482,11 @@
                 this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
-
-                if (this.isFlash) {
-                    playerModule = MTVNPlayer.module("flash");
-                } else {
-                    playerModule = MTVNPlayer.module("html5");
-                }
+                // The module contains platform specific code
+                playerModule = MTVNPlayer.module(this.isFlash ? "flash" : "html5");
                 playerModule.initialize();
-                this.message = function() {
-                    if (!this.ready) {
-                        this.eventQueue.push(arguments);
-                    } else {
-                        playerModule.message.apply(this, arguments);
-                    }
-                };
-                create = playerModule.create;
-                this.once("onReady", function(event) {
-                    var player = event.target,
-                        eventQueue = player.eventQueue,
-                        message = player.message;
-                    for (var i = 0, len = eventQueue.length; i < len; i++) {
-                        message.apply(player, eventQueue[i]);
-                    }
-                });
+                // do more initializing that's across player modules.
+                core.playerInit(this,playerModule);
                 
                 // check for element before creating
                 if (!el) {
@@ -521,10 +494,11 @@
                         throwError("target div " + this.id + " not found");
                     } else {
                         if ($) {
+                            // wait for document ready, then try again.
                             (function(ref) {
                                 $(document).ready(function() {
                                     if (document.getElementById(ref.id)) {
-                                        create(ref);
+                                        playerModule.create(ref);
                                     } else {
                                         throwError("target div " + ref.id + " not found");
                                     }
@@ -536,7 +510,7 @@
                     }
                     return;
                 } else {
-                    create(this);
+                    playerModule.create(this);
                 }
             };
             // public api

@@ -27,6 +27,7 @@
                 this.element = selector.find("object")[0];
             }
             playerModule.create(this, true);
+            MTVNPlayer.module("core").playerInit(this,playerModule);
         };
     WindowPlayer.prototype = MTVNPlayer.Player.prototype;
     new WindowPlayer();
