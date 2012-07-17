@@ -52,11 +52,15 @@ module.exports = function(grunt) {
     grunt.registerTask('version', 'write some javascript that contains the version.', function(dir) {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
-        grunt.log.writeln("building version:" + version + " at " + date);
+        grunt.log.writeln("building version:" + version);
         grunt.file.write("build/version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);
+    });
+    grunt.registerTask('finish', 'clean up', function() {
+        grunt.helper("clean", "build/version.js");
+        grunt.log.writeln("Compiled: " + grunt.template.today("mm-dd hh:mm:ss"));
     });
     grunt.registerTask('dirname', 'set a subdirectory name, result will be build/subdirectory(s)', function(dir) {
         if (dir.lastIndexOf("/") !== dir.length - 1) {
@@ -65,6 +69,6 @@ module.exports = function(grunt) {
         }
         grunt.config("dirname", dir);
     });
-    grunt.registerTask('default', 'clean version lint concat');
-    grunt.registerTask('release', 'clean version lint concat min');
+    grunt.registerTask('default', 'clean version lint concat finish');
+    grunt.registerTask('release', 'clean version lint concat min finish');
 };
