@@ -97,7 +97,15 @@
              */
             UI_STATE_CHANGE: "onUIStateChange",
             /**
+             * @event onIndexChange
+             * Fired when the index of the current playlist item changes, ignoring ads.
+             *
+             * event.data contains the index
+             */
+            INDEX_CHANGE: "onIndexChange",
+            /**
              * @event onAirplay
+             * @private
              * Fired when the airplay button is clicked
              */
             AIRPLAY: "onAirplay"
@@ -357,11 +365,20 @@
             };
 
             Player = function(elementOrId, config, events) {
+                // in case constructor is called without new.
+                if (!(this instanceof Player)) {
+                    return new Player(elementOrId, config, events);
+                }
                 /** 
                  * @property {Boolean} ready
                  * The current ready state of the player
                  */
                 this.ready = false;
+                /**
+                 * @property {Boolean} eventQueue
+                 * A list of event messages called before the player was ready
+                 */
+                this.eventQueue = [];
                 /**
                  * @property {String} state
                  * The current play state of the player.
@@ -467,8 +484,22 @@
                     playerModule = MTVNPlayer.module("html5");
                 }
                 playerModule.initialize();
-                this.message = playerModule.message;
+                this.message = function() {
+                    if (!this.ready) {
+                        this.eventQueue.push(arguments);
+                    } else {
+                        playerModule.message.apply(this, arguments);
+                    }
+                };
                 create = playerModule.create;
+                this.once("onReady", function(event) {
+                    var player = event.target,
+                        eventQueue = player.eventQueue,
+                        message = player.message;
+                    for (var i = 0, len = eventQueue.length; i < len; i++) {
+                        message.apply(player, eventQueue[i]);
+                    }
+                });
 
                 // check for element before creating
                 if (!el) {
@@ -548,7 +579,7 @@
                  * @param {Number} value between 0 and 1.
                  */
                 setVolume: function(volume) {
-                    this.message("volume", volume);
+                    this.message("setVolume", volume);
                 },
                 /**
                  * Seeks to the time specified in seconds relative to the first clip.

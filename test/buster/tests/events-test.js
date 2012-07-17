@@ -17,6 +17,15 @@
             document.body.appendChild(this.el);
             this.player = new MTVNPlayer.Player(this.targetId, this.playerConfig);
         },
+        "event queue": function(done) {
+            var player = this.player;
+            var onStateChange = function(event) {
+                assert(event.data, "state is not defined");
+                done();
+            };
+            player.once("onStateChange", onStateChange);
+            player.play();
+        },
         "check playhead": function(done) {
             var player = this.player;
             var onReady = function() {
@@ -51,10 +60,10 @@
             var player = this.player;
             var onReady = function() {
                     var onStateChange = function(event) {
-                            assert(event.data, "state is not defined");
-                            player.unbind("onStateChange", onStateChange);
-                            done();
-                        };
+                        assert(event.data, "state is not defined");
+                        player.unbind("onStateChange", onStateChange);
+                        done();
+                    };
                     player.bind("onStateChange", onStateChange);
                     player.play();
                 };

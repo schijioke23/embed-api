@@ -1,6 +1,6 @@
 {
     "name": "mtvn-embed-api-test-app",
-    "version": "2.2.5",
+    "version": "2.3.0",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
     "description": "Run the node app to test the embed api.",
@@ -10,7 +10,9 @@
     },
     "dependencies": {
         "express": "2.5.8",
-        "grunt": "0.3.9"
+        "grunt": "*",
+        "grunt-contrib":"*",
+        "buster": "0.6.0"
     },
     "license": "MIT",
     "engine": {
