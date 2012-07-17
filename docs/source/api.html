@@ -113,8 +113,16 @@
              * - data.overlayRect &lt;code&gt;Object&lt;/code&gt;: the area that is not obscured by the GUI, a rectangle such as &lt;code&gt;{x:0,y:0,width:640,height:320}&lt;/code&gt;
              */
             UI_STATE_CHANGE: &quot;onUIStateChange&quot;,
+<span id='MTVNPlayer-Events-event-onIndexChange'>            /**
+</span>             * @event onIndexChange
+             * Fired when the index of the current playlist item changes, ignoring ads.
+             *
+             * event.data contains the index
+             */
+            INDEX_CHANGE: &quot;onIndexChange&quot;,
 <span id='MTVNPlayer-Events-event-onAirplay'>            /**
 </span>             * @event onAirplay
+             * @private
              * Fired when the airplay button is clicked
              */
             AIRPLAY: &quot;onAirplay&quot;
@@ -374,11 +382,20 @@
             };
 
             Player = function(elementOrId, config, events) {
+                // in case constructor is called without new.
+                if (!(this instanceof Player)) {
+                    return new Player(elementOrId, config, events);
+                }
 <span id='MTVNPlayer-Player-property-ready'>                /** 
 </span>                 * @property {Boolean} ready
                  * The current ready state of the player
                  */
                 this.ready = false;
+<span id='MTVNPlayer-Player-property-eventQueue'>                /**
+</span>                 * @property {Boolean} eventQueue
+                 * A list of event messages called before the player was ready
+                 */
+                this.eventQueue = [];
 <span id='MTVNPlayer-Player-property-state'>                /**
 </span>                 * @property {String} state
                  * The current play state of the player.
@@ -484,8 +501,22 @@
                     playerModule = MTVNPlayer.module(&quot;html5&quot;);
                 }
                 playerModule.initialize();
-                this.message = playerModule.message;
+                this.message = function() {
+                    if (!this.ready) {
+                        this.eventQueue.push(arguments);
+                    } else {
+                        playerModule.message.apply(this, arguments);
+                    }
+                };
                 create = playerModule.create;
+                this.once(&quot;onReady&quot;, function(event) {
+                    var player = event.target,
+                        eventQueue = player.eventQueue,
+                        message = player.message;
+                    for (var i = 0, len = eventQueue.length; i &lt; len; i++) {
+                        message.apply(player, eventQueue[i]);
+                    }
+                });
 
                 // check for element before creating
                 if (!el) {
@@ -565,7 +596,7 @@
                  * @param {Number} value between 0 and 1.
                  */
                 setVolume: function(volume) {
-                    this.message(&quot;volume&quot;, volume);
+                    this.message(&quot;setVolume&quot;, volume);
                 },
 <span id='MTVNPlayer-Player-method-seek'>                /**
 </span>                 * Seeks to the time specified in seconds relative to the first clip.

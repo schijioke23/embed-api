@@ -69,7 +69,7 @@
             if (fromObj) {
                 for (var prop in fromObj) {
                     if (fromObj.hasOwnProperty(prop)) {
-                        if (fromObj[prop] !== undefined) {
+                        if (fromObj[prop] !== undefined &amp;&amp; fromObj[prop] !== null) {
                             var propName = prop.toLowerCase();
                             if (propName === &quot;flashvars&quot; || propName === &quot;attributes&quot; || propName === &quot;params&quot;) {
                                 toObj[prop] = toObj[prop] || {};
@@ -92,7 +92,7 @@
                 return el.getAttribute(&quot;data-&quot; + attr);
             },
             getStyleAttr = function(attr) {
-                return el.style[attr];
+                return parseInt(el.style[attr], 10);
             },
             getObjectFromNameValue = function(attr) {
                 attr = getDataAttr(attr);
