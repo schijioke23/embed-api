@@ -1,11 +1,10 @@
 module.exports = function(grunt) {
     var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/load-module.js', 'src/util/finish.js', 'build/version.js'],
-        targetPath = 'build/<%= grunt.config("dirname") %>',
-        fileName = '<%= pkg.version %><%= grunt.config("buildNumber") %>.js',
-        detailedPath = targetPath + 'detailed/' + fileName,
-        autoPath = targetPath + 'auto/' + fileName,
-        syndicatedPath = targetPath + 'syndicated/' + fileName,
-        minPath = targetPath + fileName;
+        targetPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
+        detailedPath = targetPath + "api.js",
+        autoPath = targetPath + 'auto.min.js',
+        syndicatedPath = targetPath + 'syndicated.min.js',
+        minPath = targetPath + 'api.min.js';
     grunt.loadNpmTasks('grunt-contrib');
     grunt.initConfig({
         pkg: '<json:package.json>',
