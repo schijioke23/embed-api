@@ -7,7 +7,7 @@ exports.index = function(req, res) {
 exports.api = function(req, res) {
     var dir = process.cwd(),
         path = dir.indexOf("/test") === -1 ? "" : dir.replace("/test","/");
-    res.sendfile(path + "build/detailed/" + version + ".js");
+    res.sendfile(path + "build/" + version + "/api.js");
 };
 exports.apiAuto = function(req, res) {
     var dir = process.cwd(),
