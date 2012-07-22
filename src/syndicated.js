@@ -1,34 +1,31 @@
-(function(window) {
+(function(MTVNPlayer) {
     "use strict";
-    var MTVNPlayer = window.MTVNPlayer,
-        selector = MTVNPlayer.module("selector"),
-        isHTML5Player = MTVNPlayer.isHTML5Player,
-        // TODO Perhaps the syndicated page can instantiate a MTVNPlayer.Player
-        // when we are going to use flash, instead of wrapping.
-        // it would set the templateURL itself
-        WindowPlayer = function() {
-            var playerModule = MTVNPlayer.module(isHTML5Player ? "html5" : "flash");
-            playerModule.initialize();
-            this.id = "WindowPlayer";
-            this.message = playerModule.message;
-            this.config = {
-                width: "100%",
-                height: "100%"
-            };
-            this.events = {};
-            if (isHTML5Player) {
-                this.element = {};
-                this.element.contentWindow = window;
-                this.bind("onReady", function(event) {
+    if (MTVNPlayer.isHTML5Player) {
+        var WindowPlayer = function() {
+                var playerModule = MTVNPlayer.module("html5");
+                playerModule.initialize();
+                this.id = "WindowPlayer";
+                this.message = playerModule.message;
+                this.config = {
+                    width: "100%",
+                    height: "100%"
+                };
+                this.events = {};
+                // this will be overriden by the real element once onReady fires.
+                this.element = {
+                    contentWindow: window
+                };
+                this.once("onReady", function(event) {
                     // TODO "playerView" is specified in the HTML5 Player
-                    event.target.element = selector.find("#playerView");
+                    event.target.element = document.getElementById("playerView");
+                    // since in this case, the element is a div and not an iframe
+                    // we set its contentWindow property.
+                    event.target.element.contentWindow = window;
                 });
-            } else {
-                this.element = selector.find("object")[0];
-            }
-            playerModule.create(this, true);
-            MTVNPlayer.module("core").playerInit(this,playerModule);
-        };
-    WindowPlayer.prototype = MTVNPlayer.Player.prototype;
-    new WindowPlayer();
-})(window);
+                playerModule.create(this, true);
+                MTVNPlayer.module("core").playerInit(this, playerModule);
+            };
+        WindowPlayer.prototype = MTVNPlayer.Player.prototype;
+        new WindowPlayer();
+    }
+})(window.MTVNPlayer);
