@@ -598,6 +598,13 @@
                 exitFullScreen: function() {
                     this.message("exitFullScreen");
                 },
+                 /**
+                 * Show user clip screen.
+                 * For flash only (api v2.4.0)
+                 */
+                createUserClip: function() {
+                    this.message("createUserClip");
+                },
                 /**
                  * Adds an event listener for an event.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
