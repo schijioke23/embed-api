@@ -50,7 +50,7 @@
             if (!this.ready) {
                 eventQueue.push(arguments);
             } else {
-                playerModule.message.apply(this, arguments);
+                return playerModule.message.apply(this, arguments);
             }
         };
         player.once("onReady", function(event) {

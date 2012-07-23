@@ -603,7 +603,7 @@
                  * For flash only (api v2.4.0)
                  */
                 createUserClip: function() {
-                    this.message("createUserClip");
+                    return this.message("createUserClip");
                 },
                 /**
                  * Adds an event listener for an event.
