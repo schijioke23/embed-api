@@ -258,7 +258,7 @@
                             }
                             return copy;
                         })(),
-                        embedDimensions = getEmbedCodeDimensions(config, this.player.element),
+                        embedDimensions = getEmbedCodeDimensions(config, this.element),
                         embedCode = "<div style=\"background-color:#000000;width:{divWidth}px;\"><div style=\"padding:4px;\">" + "<iframe src=\"http://media.mtvnservices.com/embed/{uri}\" width=\"{width}\" height=\"{height}\" frameborder=\"0\"></iframe>" + "{displayMetadata}</div></div>";
                     embedCode = embedCode.replace(/\{uri\}/, config.uri);
                     embedCode = embedCode.replace(/\{width\}/, embedDimensions.width);
