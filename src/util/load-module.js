@@ -1,6 +1,6 @@
 (function(MTVNPlayer, yepnope) {
     var ModuleLoader = MTVNPlayer.module("ModuleLoader"),
-        baseUrl = "http://media.mtvnservices.com/player/embed/api/module",
+        baseUrl = "http://media.mtvnservices.com/player/api/module",
         getPath = function(module) {
             return module.baseUrl + module.path + (module.version ? "/" : "") + module.version;
         },
