@@ -48,7 +48,7 @@
                     // fail silently. exit full screen introduced in Prime 1.12
                 }
             },
-            processMetadata = function(metadata, playlistItems, index) {
+            processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
                 var m = {},
                     rss;
                 m.duration = metadata.duration;
@@ -56,13 +56,20 @@
                 m.live = false;
                 m.isAd = metadata.isAd;
                 m.isBumper = metadata.isBumper;
-                if (index !== undefined) {
+                if (index !== undefined && index !== null) {
                     m.index = index;
+                } else if (playlistMetadataItems) {
+                    m.index = function(guid) {
+                        for (var i = playlistMetadataItems.length; i--;) {
+                            if (playlistMetadataItems[i].rss.guid === guid) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }(metadata.guid);
                 } else {
                     m.index = function(guid) {
-                        var len = playlistItems.length,
-                            i;
-                        for (i = len; i--;) {
+                        for (var i = playlistItems.length; i--;) {
                             if (playlistItems[i].metaData.guid === guid) {
                                 return i;
                             }
@@ -133,8 +140,8 @@
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
                     var playlistItems = element.getPlaylist().items,
-                        processedMetadata = processMetadata(metadata, playlistItems),
                         playlistMetadata = player.playlistMetadata,
+                        processedMetadata = processMetadata(metadata, playlistItems, null, playlistMetadata ? playlistMetadata.items : null),
                         fireReadyEvent = false,
                         newIndex = processedMetadata.index,
                         lastIndex = playlistMetadata ? playlistMetadata.index : -1;
