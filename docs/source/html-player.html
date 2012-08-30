@@ -41,6 +41,10 @@
                 i.style.cssText = &quot;postion:static;z-index:auto;&quot;;
                 i.width = c.width;
                 i.height = c.height;
+                processEvent(player.events.onFullScreenChange, {
+                    target: player,
+                    type: MTVNPlayer.Events.FULL_SCREEN_CHANGE
+                });
             },
 <span id='global-method-goFullScreen'>            /**
 </span>             * @method goFullScreen
@@ -56,6 +60,10 @@
                 iframeElement.width = window.innerWidth;
                 iframeElement.height = window.innerHeight;
                 window.scrollTo(0, 0);
+                processEvent(player.events.onFullScreenChange, {
+                    target: player,
+                    type: MTVNPlayer.Events.FULL_SCREEN_CHANGE
+                });
             },
             jsonParse = function(str) {
                 // choose method.
@@ -180,7 +188,6 @@
                             if (player.isFullScreen) {
                                 exitFullScreen(player);
                             } else {
-                                player.isFullScreen = true;
                                 goFullScreen(player);
                             }
                         } else if (data.indexOf(&quot;overlayRectChange:&quot;) === 0) {
@@ -198,7 +205,14 @@
                         } else if (data.indexOf(&quot;airplay&quot;) === 0) {
                             processEvent(events.onAirplay, {
                                 data: null,
-                                target: player
+                                target: player,
+                                type: eventTypes.AIRPLAY
+                            });
+                        } else if (data.indexOf(&quot;onEndSlate:&quot;) === 0) {
+                            processEvent(events.onEndSlate, {
+                                data: jsonParse(getMessageData(data)),
+                                target: player,
+                                type: &quot;onEndSlate&quot;
                             });
                         }
                     }

@@ -120,6 +120,14 @@
              * event.data contains the index
              */
             INDEX_CHANGE: &quot;onIndexChange&quot;,
+<span id='MTVNPlayer-Events-event-onFullScreenChange'>            /**
+</span>             * @event onFullScreenChange
+             * @private
+             * HTML5 only. Fired when the player.isFullScreen property has been changed. 
+             * The player may or may not visually be in full screen, it depends on its context.
+             * Check {@link MTVNPlayer.isFullScreen} to see if the player is in full screen or not.
+             */
+            FULL_SCREEN_CHANGE: &quot;onFullScreenChange&quot;,
 <span id='MTVNPlayer-Events-event-onAirplay'>            /**
 </span>             * @event onAirplay
              * @private
@@ -201,11 +209,16 @@
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
-                    var events = MTVNPlayer.Events;
-                    for (var event in events) {
-                        if (events.hasOwnProperty(event) &amp;&amp; events[event] === eventName) {
-                            return;
-                        }
+                    var check = function(events) {
+                            for (var event in events) {
+                                if (events.hasOwnProperty(event) &amp;&amp; events[event] === eventName) {
+                                    return true; // has event
+                                }
+                            }
+                            return false;
+                        };
+                    if (check(MTVNPlayer.Events) || check(MTVNPlayer.module(&quot;ModuleLoader&quot;).Events)) {
+                        return;
                     }
                     throw new Error(&quot;MTVNPlayer.Player event:&quot; + eventName + &quot; doesn't exist.&quot;);
                 },
@@ -222,16 +235,19 @@
                         }
                     }
                 },
-                getEmbedCodeDimensions = function(config) {
-                    var Dimensions16x9 = {
-                        width: 512,
-                        height: 288
-                    },
+                getEmbedCodeDimensions = function(config, el) {
+                    // we don't need to know the exaxt dimensions, just enough to get the ratio
+                    var width = config.width === &quot;100%&quot; ? el.clientWidth : config.width,
+                        height = config.height === &quot;100%&quot; ? el.clientHeight : config.height,
+                        Dimensions16x9 = {
+                            width: 512,
+                            height: 288
+                        },
                         Dimensions4x3 = {
                             width: 360,
                             height: 293
                         },
-                        aspect = config.width / config.height,
+                        aspect = width / height,
                         Diff4x3 = Math.abs(aspect - 4 / 3),
                         Diff16x9 = Math.abs(aspect - 16 / 9);
                     return Diff16x9 &lt; Diff4x3 ? Dimensions16x9 : Dimensions4x3;
@@ -267,7 +283,7 @@
                             }
                             return copy;
                         })(),
-                        embedDimensions = getEmbedCodeDimensions(config),
+                        embedDimensions = getEmbedCodeDimensions(config, this.element),
                         embedCode = &quot;&lt;div style=\&quot;background-color:#000000;width:{divWidth}px;\&quot;&gt;&lt;div style=\&quot;padding:4px;\&quot;&gt;&quot; + &quot;&lt;iframe src=\&quot;http://media.mtvnservices.com/embed/{uri}\&quot; width=\&quot;{width}\&quot; height=\&quot;{height}\&quot; frameborder=\&quot;0\&quot;&gt;&lt;/iframe&gt;&quot; + &quot;{displayMetadata}&lt;/div&gt;&lt;/div&gt;&quot;;
                     embedCode = embedCode.replace(/\{uri\}/, config.uri);
                     embedCode = embedCode.replace(/\{width\}/, embedDimensions.width);
@@ -391,11 +407,6 @@
                  * The current ready state of the player
                  */
                 this.ready = false;
-<span id='MTVNPlayer-Player-property-eventQueue'>                /**
-</span>                 * @property {Boolean} eventQueue
-                 * A list of event messages called before the player was ready
-                 */
-                this.eventQueue = [];
 <span id='MTVNPlayer-Player-property-state'>                /**
 </span>                 * @property {String} state
                  * The current play state of the player.
@@ -475,14 +486,11 @@
                  *
                  */
                 this.config = config || {};
-                var create = null,
-                    playerModule = null,
+                // private vars
+                var playerModule = null,
                     el = null,
-                    isElement = (function(o) {
-                        return typeof window.HTMLElement === &quot;object&quot; ? o instanceof window.HTMLElement : //DOM2
-                        typeof o === &quot;object&quot; &amp;&amp; o.nodeType === 1 &amp;&amp; typeof o.nodeName === &quot;string&quot;;
-                    })(elementOrId);
-                if (isElement) {
+                    containerElement = document.createElement(&quot;div&quot;);
+                if (core.isElement(elementOrId)) {
                     el = elementOrId;
                     this.id = createId(el);
                     this.config = MTVNPlayer.module(&quot;config&quot;).buildConfig(el, this.config);
@@ -490,44 +498,32 @@
                     this.id = elementOrId;
                     el = document.getElementById(this.id);
                 }
+
+                // wrap the player element in a container div
+                el.parentNode.insertBefore(containerElement, el);
+                containerElement.appendChild(el);
+
                 this.events = events || {};
                 this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
-
-                if (this.isFlash) {
-                    playerModule = MTVNPlayer.module(&quot;flash&quot;);
-                } else {
-                    playerModule = MTVNPlayer.module(&quot;html5&quot;);
-                }
+                // The module contains platform specific code
+                playerModule = MTVNPlayer.module(this.isFlash ? &quot;flash&quot; : &quot;html5&quot;);
                 playerModule.initialize();
-                this.message = function() {
-                    if (!this.ready) {
-                        this.eventQueue.push(arguments);
-                    } else {
-                        playerModule.message.apply(this, arguments);
-                    }
-                };
-                create = playerModule.create;
-                this.once(&quot;onReady&quot;, function(event) {
-                    var player = event.target,
-                        eventQueue = player.eventQueue,
-                        message = player.message;
-                    for (var i = 0, len = eventQueue.length; i &lt; len; i++) {
-                        message.apply(player, eventQueue[i]);
-                    }
-                });
-
+                // do more initializing that's across player modules.
+                core.playerInit(this,playerModule);
+                
                 // check for element before creating
                 if (!el) {
                     if (document.readyState === &quot;complete&quot;) {
                         throwError(&quot;target div &quot; + this.id + &quot; not found&quot;);
                     } else {
                         if ($) {
+                            // wait for document ready, then try again.
                             (function(ref) {
                                 $(document).ready(function() {
                                     if (document.getElementById(ref.id)) {
-                                        create(ref);
+                                        playerModule.create(ref);
                                     } else {
                                         throwError(&quot;target div &quot; + ref.id + &quot; not found&quot;);
                                     }
@@ -539,7 +535,7 @@
                     }
                     return;
                 } else {
-                    create(this);
+                    playerModule.create(this);
                 }
             };
             // public api
@@ -627,6 +623,13 @@
                 exitFullScreen: function() {
                     this.message(&quot;exitFullScreen&quot;);
                 },
+<span id='MTVNPlayer-Player-method-createUserClip'>                 /**
+</span>                 * Show user clip screen.
+                 * For flash only (api v2.4.0)
+                 */
+                createUserClip: function() {
+                    return this.message(&quot;createUserClip&quot;);
+                },
 <span id='MTVNPlayer-Player-method-bind'>                /**
 </span>                 * Adds an event listener for an event.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
@@ -681,9 +684,6 @@
             };
             return Player;
         }(window));
-        if (typeof MTVNPlayer.onAPIReady === &quot;function&quot;) {
-            MTVNPlayer.onAPIReady();
-        }
 <span id='MTVNPlayer-property-isReady'>        /**
 </span>         * @member MTVNPlayer
          * @property {Boolean}

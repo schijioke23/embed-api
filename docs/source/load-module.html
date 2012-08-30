@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(MTVNPlayer, yepnope) {
+    var ModuleLoader = MTVNPlayer.module(&quot;ModuleLoader&quot;),
+        baseUrl = &quot;http://media.mtvnservices.com/player/api/module&quot;,
+        getPath = function(module) {
+            return module.baseUrl + module.path + (module.version ? &quot;/&quot; : &quot;&quot;) + module.version;
+        },
+        executeCallbacks = function(module) {
+            var callbacks = module.callbacks;
+            while (callbacks.length &gt; 0) {
+                callbacks.shift()();
+            }
+        },
+        EndSlateModule = {
+            callbacks: [],
+            baseUrl: baseUrl,
+            path: &quot;/end-slate&quot;,
+            version: &quot;0.0.3&quot;,
+            eventName: &quot;onEndSlate&quot;,
+            onModuleRequested: function(event) {
+                EndSlateModule.callbacks.push(function() {
+                    new(window.MTVNPlayer.EndSlate)(event.data, event.target);
+                });
+                // we remove yepnope from the window, 
+                // and yepnope tries to reference window.yepnope in its own function (unfortunately)
+                // so we make a dummy object providing that reference.
+                yepnope.call({
+                    yepnope: yepnope
+                }, {
+                    test: window.MTVNPlayer.EndSlate,
+                    nope: {
+                        js: getPath(EndSlateModule) + &quot;/end-slate.js&quot;,
+                        css: getPath(EndSlateModule) + &quot;/style.css&quot;
+                    },
+                    callback: {
+                        css: function() {},
+                        js: function() {
+                            executeCallbacks(EndSlateModule);
+                        }
+                    }
+                });
+            }
+        };
+    // Exports
+    ModuleLoader.Events = {
+        END_SLATE: EndSlateModule.eventName
+    };
+    // Export module configs so they can be adjusted for testing.
+    ModuleLoader.EndSlateModule = EndSlateModule;
+<span id='global-property-'>    /**
+</span>     * When any player is created, listen for an end slate event
+     */
+    MTVNPlayer.onPlayer(function(player) {
+        player.bind(EndSlateModule.eventName, EndSlateModule.onModuleRequested);
+    });
+})(window.MTVNPlayer, window.yepnope);</pre>
+</body>
+</html>

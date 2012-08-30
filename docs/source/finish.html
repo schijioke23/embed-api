@@ -15,26 +15,16 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='MTVNPlayer'>/**
-</span> * For creating a player inline you can use the MTVNPlayer.Player constructor.
- * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
- * @static
- */
-var MTVNPlayer = window.MTVNPlayer || {};
-(function(MTVNPlayer) {
+  <pre class="prettyprint lang-js">(function(MTVNPlayer) {
     &quot;use strict&quot;;
-    if (!MTVNPlayer.module) {
-        MTVNPlayer.module = function() {
-            var modules = {};
-            return function(name) {
-                if (modules[name]) {
-                    return modules[name];
-                }
-                modules[name] = {};
-                return modules[name];
-            };
-        }();
+    // return any dependencies the Embed API may have leaked into global.
+    MTVNPlayer.noConflict();
+    // remove the noConflict function from the api 
+    delete MTVNPlayer.noConflict;
+    // execute any on API callbacks.
+    if (typeof MTVNPlayer.onAPIReady === &quot;function&quot;) {
+        MTVNPlayer.onAPIReady();
     }
-})(MTVNPlayer);</pre>
+})(window.MTVNPlayer);</pre>
 </body>
 </html>

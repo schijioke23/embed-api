@@ -65,7 +65,7 @@
                     // fail silently. exit full screen introduced in Prime 1.12
                 }
             },
-            processMetadata = function(metadata, playlistItems, index) {
+            processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
                 var m = {},
                     rss;
                 m.duration = metadata.duration;
@@ -73,13 +73,20 @@
                 m.live = false;
                 m.isAd = metadata.isAd;
                 m.isBumper = metadata.isBumper;
-                if (index !== undefined) {
+                if (index !== undefined &amp;&amp; index !== null) {
                     m.index = index;
+                } else if (playlistMetadataItems) {
+                    m.index = function(guid) {
+                        for (var i = playlistMetadataItems.length; i--;) {
+                            if (playlistMetadataItems[i].rss.guid === guid) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }(metadata.guid);
                 } else {
                     m.index = function(guid) {
-                        var len = playlistItems.length,
-                            i;
-                        for (i = len; i--;) {
+                        for (var i = playlistItems.length; i--;) {
                             if (playlistItems[i].metaData.guid === guid) {
                                 return i;
                             }
@@ -145,12 +152,13 @@
                     mediaEnd = MTVNPlayer.Events.MEDIA_END,
                     mediaStart = MTVNPlayer.Events.MEDIA_START,
                     onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
+                    onEndSlate = &quot;onEndSlate&quot;,
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
                     var playlistItems = element.getPlaylist().items,
-                        processedMetadata = processMetadata(metadata, playlistItems),
                         playlistMetadata = player.playlistMetadata,
+                        processedMetadata = processMetadata(metadata, playlistItems, null, playlistMetadata ? playlistMetadata.items : null),
                         fireReadyEvent = false,
                         newIndex = processedMetadata.index,
                         lastIndex = playlistMetadata ? playlistMetadata.index : -1;
@@ -235,6 +243,15 @@
                 };
                 // yes, flash event is media ended unfort.
                 element.addEventListener(&quot;MEDIA_ENDED&quot;, mapString + mediaEnd);
+                // fired when the end slate is shown, if the player's configuration is set to do so.
+                map[id + onEndSlate] = function(data) {
+                    core.processEvent(events[onEndSlate], {
+                        data: data,
+                        target: player,
+                        type: onEndSlate
+                    });
+                };
+                element.addEventListener(&quot;ON_ENDSLATE&quot;, mapString + onEndSlate);
             };
         MTVNPlayer.Player.flashEventMap = {};
 <span id='global-method-message'>        /**

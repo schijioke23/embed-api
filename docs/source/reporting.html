@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='global-property-'>/**
+</span>* Trying something new here. A way to keep the API clean for utility methods specific to things like reporting.
+* These modules are on a player, as opposed to the modules on MTVNPlayer.
+*/
+(function(MTVNPlayer) {
+    MTVNPlayer.onPlayer(function(player) {
+        player.module(&quot;reporting&quot;).logGUIEvent = function(eventName, eventData) {
+            player.message(&quot;logGUIEvent&quot;, eventName, eventData);
+        };
+    });
+})(window.MTVNPlayer);</pre>
+</body>
+</html>

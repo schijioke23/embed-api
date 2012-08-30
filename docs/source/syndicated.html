@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(MTVNPlayer) {
+    &quot;use strict&quot;;
+    if (MTVNPlayer.isHTML5Player) {
+        var WindowPlayer = function() {
+                var playerModule = MTVNPlayer.module(&quot;html5&quot;);
+                playerModule.initialize();
+                this.id = &quot;WindowPlayer&quot;;
+                this.message = playerModule.message;
+                this.config = {
+                    width: &quot;100%&quot;,
+                    height: &quot;100%&quot;
+                };
+                this.events = {};
+                // this will be overriden by the real element once onReady fires.
+                this.element = {
+                    contentWindow: window
+                };
+                this.once(&quot;onReady&quot;, function(event) {
+                    // TODO &quot;playerView&quot; is specified in the HTML5 Player
+                    event.target.element = document.getElementById(&quot;playerView&quot;);
+                    // since in this case, the element is a div and not an iframe
+                    // we set its contentWindow property.
+                    event.target.element.contentWindow = window;
+                });
+                playerModule.create(this, true);
+                MTVNPlayer.module(&quot;core&quot;).playerInit(this, playerModule);
+            };
+        WindowPlayer.prototype = MTVNPlayer.Player.prototype;
+        new WindowPlayer();
+    }
+})(window.MTVNPlayer);
+</pre>
+</body>
+</html>
