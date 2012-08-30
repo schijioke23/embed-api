@@ -12,7 +12,8 @@ module.exports = function(grunt) {
             folder: ["build/*"]
         },
         lint: {
-            all: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js']
+            devel: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js'],
+            release: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js']
         },
         min: {
             dist: {
@@ -25,8 +26,17 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            options: {
-                browser: true
+            devel: {
+                options: {
+                    browser: true,
+                    devel: true,
+                    debug: true
+                }
+            },
+            release: {
+                options: {
+                    browser: true
+                }
             }
         },
         concat: {
@@ -68,6 +78,6 @@ module.exports = function(grunt) {
         }
         grunt.config("dirname", dir);
     });
-    grunt.registerTask('default', 'clean version lint concat finish');
-    grunt.registerTask('release', 'clean version lint concat min finish');
+    grunt.registerTask('default', 'clean version lint:devel concat finish');
+    grunt.registerTask('release', 'clean version lint:release concat min finish');
 };

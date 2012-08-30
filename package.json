@@ -1,9 +1,9 @@
 {
-    "name": "mtvn-embed-api-test-app",
+    "name": "mtvn-embed-api",
     "version": "2.4.0",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
-    "description": "Run the node app to test the embed api.",
+    "description": "The embed api provides a unified interface for different player implementations.",
     "repository": {
         "type": "git",
         "url": "https://mtvn-player@github.com/mtvn-player/embed-api.git"
