@@ -30,6 +30,39 @@
     core.$ = $;
 
     /**
+     * Initialization that is common across player modules (meaning flash/html5).
+     * This is here mostly to keep it out of the constructor.
+     */
+    core.playerInit = function(player, playerModule) {
+        // A list of event messages called before the player was ready
+        var eventQueue = [];
+        player.module = function() {
+            var modules = {};
+            return function(name) {
+                if (modules[name]) {
+                    return modules[name];
+                }
+                modules[name] = {};
+                return modules[name];
+            };
+        }();
+        player.message = function() {
+            if (!this.ready) {
+                eventQueue.push(arguments);
+            } else {
+                return playerModule.message.apply(this, arguments);
+            }
+        };
+        player.once("onReady", function(event) {
+            var player = event.target,
+                message = player.message;
+            for (var i = 0, len = eventQueue.length; i < len; i++) {
+                message.apply(player, eventQueue[i]);
+            }
+        });
+    };
+
+    /**
      * @property isHTML5Player
      * @ignore
      * The logic that determines whether we're using flash or html
@@ -38,7 +71,15 @@
         var n = window.navigator.userAgent.toLowerCase();
         return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1;
     }();
-    
+
+    /**
+     * Utility function. Check if the argument is a element.
+     */
+    core.isElement = function(o) {
+        return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
+        typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
+    };
+
     /**
      * @method getPath
      * @ignore

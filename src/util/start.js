@@ -19,3 +19,13 @@ var MTVNPlayer = window.MTVNPlayer || {};
         }();
     }
 })(MTVNPlayer);
+
+(function(context){
+    // we're leaking yepnope into global. 
+    // noConflict will be called after we store references
+    // to the modules that we're using.
+    var oldYepNope = context.yepnope;
+    MTVNPlayer.noConflict = function(){
+        context.yepnope = oldYepNope;
+    };
+})(window);

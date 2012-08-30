@@ -1,8 +1,9 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/module.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'build/version.js'],
+    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/load-module.js', 'src/util/finish.js', 'build/version.js'],
         targetPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
+        syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
     grunt.loadNpmTasks('grunt-contrib');
     grunt.initConfig({
@@ -11,7 +12,8 @@ module.exports = function(grunt) {
             folder: ["build/*"]
         },
         lint: {
-            all: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js']
+            devel: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js'],
+            release: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js']
         },
         min: {
             dist: {
@@ -24,8 +26,17 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            options: {
-                browser: true
+            devel: {
+                options: {
+                    browser: true,
+                    devel: true,
+                    debug: true
+                }
+            },
+            release: {
+                options: {
+                    browser: true
+                }
             }
         },
         concat: {
@@ -36,6 +47,10 @@ module.exports = function(grunt) {
             auto: {
                 src: sourceFiles.concat(['src/third-party/domready.js', 'src/auto-create-players.js']),
                 dest: autoPath
+            },
+            syndicated: {
+                src: sourceFiles.concat(['src/syndicated.js']),
+                dest: syndicatedPath
             }
         },
         watch: {
@@ -63,6 +78,6 @@ module.exports = function(grunt) {
         }
         grunt.config("dirname", dir);
     });
-    grunt.registerTask('default', 'clean version lint concat finish');
-    grunt.registerTask('release', 'clean version lint concat min finish');
+    grunt.registerTask('default', 'clean version lint:devel concat finish');
+    grunt.registerTask('release', 'clean version lint:release concat min finish');
 };

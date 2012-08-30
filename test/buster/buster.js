@@ -1,5 +1,5 @@
 var config = module.exports,
-    path = "build/detailed/" + require("../../package.json").version + ".js";
+    path = "build/" + require("../../package.json").version + "/api.js";
 
 console.log("testing API version:" + path);
 
