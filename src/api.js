@@ -659,8 +659,8 @@
                 once: function(eventName, callback) {
                     var ref = this,
                         newCB = function(event) {
-                            callback(event);
                             ref.unbind(eventName, newCB);
+                            callback(event);
                         };
                     this.bind(eventName, newCB);
                 }
