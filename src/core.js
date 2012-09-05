@@ -32,6 +32,7 @@
     /**
      * Initialization that is common across player modules (meaning flash/html5).
      * This is here mostly to keep it out of the constructor.
+     * @ignore
      */
     core.playerInit = function(player, playerModule) {
         // A list of event messages called before the player was ready
@@ -74,6 +75,7 @@
 
     /**
      * Utility function. Check if the argument is a element.
+     * @ignore
      */
     core.isElement = function(o) {
         return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
