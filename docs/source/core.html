@@ -49,6 +49,7 @@
 <span id='global-method-playerInit'>    /**
 </span>     * Initialization that is common across player modules (meaning flash/html5).
      * This is here mostly to keep it out of the constructor.
+     * @ignore
      */
     core.playerInit = function(player, playerModule) {
         // A list of event messages called before the player was ready
@@ -91,6 +92,7 @@
 
 <span id='global-method-isElement'>    /**
 </span>     * Utility function. Check if the argument is a element.
+     * @ignore
      */
     core.isElement = function(o) {
         return typeof window.HTMLElement === &quot;object&quot; ? o instanceof window.HTMLElement : //DOM2
