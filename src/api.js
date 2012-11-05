@@ -105,7 +105,6 @@
             INDEX_CHANGE: "onIndexChange",
             /**
              * @event onFullScreenChange
-             * @private
              * HTML5 only. Fired when the player.isFullScreen property has been changed. 
              * The player may or may not visually be in full screen, it depends on its context.
              * Check {@link MTVNPlayer.isFullScreen} to see if the player is in full screen or not.
