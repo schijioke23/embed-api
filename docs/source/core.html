@@ -85,10 +85,18 @@
      * @ignore
      * The logic that determines whether we're using flash or html
      */
-    core.isHTML5Player = function() {
-        var n = window.navigator.userAgent.toLowerCase();
-        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1;
-    }();
+    core.isHTML5Player = function(userAgent) {
+        var n = userAgent ? userAgent.toLowerCase() : &quot;&quot;,
+            checkSilk = function(n) {
+                if(n.indexOf(&quot;silk&quot;) !== -1){
+                    var reg = /silk\/(\d)/ig,
+                        result = parseInt(reg.exec(n)[1],10);
+                        return !isNaN(result) &amp;&amp; result &gt;= 2;
+                }
+                return false;
+            };
+        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n);
+    };
 
 <span id='global-method-isElement'>    /**
 </span>     * Utility function. Check if the argument is a element.

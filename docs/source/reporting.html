@@ -20,6 +20,7 @@
 * These modules are on a player, as opposed to the modules on MTVNPlayer.
 */
 (function(MTVNPlayer) {
+    &quot;use strict&quot;;
     MTVNPlayer.onPlayer(function(player) {
         player.module(&quot;reporting&quot;).logGUIEvent = function(eventName, eventData) {
             player.message(&quot;logGUIEvent&quot;, eventName, eventData);

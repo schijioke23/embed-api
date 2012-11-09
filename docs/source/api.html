@@ -100,7 +100,12 @@
             OVERLAY_RECT_CHANGE: &quot;onOverlayRectChange&quot;,
 <span id='MTVNPlayer-Events-event-onReady'>            /**
 </span>             * @event onReady
-             * Fired once the API and metadata are available
+             * Fired when the player has loaded and the metadata is available. 
+             * You can bind/unbind to events before this fires.
+             * You can also invoke most methods before the event, the only exception is
+             * {@link MTVNPlayer.Player#getEmbedCode}, since it returns a value which
+             * won't be ready until the metadata is ready. Other methods will be queued and 
+             * then executed when the player is ready to invoke them.
              */
             READY: &quot;onReady&quot;,
 <span id='MTVNPlayer-Events-event-onUIStateChange'>            /**
@@ -124,7 +129,7 @@
 </span>             * @event onFullScreenChange
              * HTML5 only. Fired when the player.isFullScreen property has been changed. 
              * The player may or may not visually be in full screen, it depends on its context.
-             * Check {@link MTVNPlayer.isFullScreen} to see if the player is in full screen or not.
+             * Check {@link MTVNPlayer.Player#isFullScreen} to see if the player is in full screen or not.
              */
             FULL_SCREEN_CHANGE: &quot;onFullScreenChange&quot;,
 <span id='MTVNPlayer-Events-event-onAirplay'>            /**
@@ -184,7 +189,7 @@
 </span></span>         * @class MTVNPlayer.Player
          * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
          *      var player = new MTVNPlayer.Player(element/id,config,events);
-         *      player.bind(&quot;onReady&quot;,function(event){player.mute();});
+         *      player.bind(&quot;onMetadata&quot;,function(event){console.log(&quot;onMetadata&quot;,event.data);});
          *      player.pause();
          * @constructor
          * Create a new MTVNPlayer.Player
@@ -302,7 +307,7 @@
              * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
              * otherwise they'll be flash players. This is determined by checking the user agent.
              */
-            MTVNPlayer.isHTML5Player = core.isHTML5Player;
+            MTVNPlayer.isHTML5Player = core.isHTML5Player(window.navigator.userAgent);
 <span id='MTVNPlayer-method-onPlayer'>            /**
 </span>             * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
@@ -312,8 +317,8 @@
              *     MTVNPlayer.onPlayer(function(player){
              *          // player is the player that was just created.
              *          // we can now hook into events.
-             *          player.bind(&quot;onReady&quot;,function(event) {
-             *              // do something when &quot;onReady&quot; fires.
+             *          player.bind(&quot;onPlayheadUpdate&quot;,function(event) {
+             *              // do something when &quot;onPlayheadUpdate&quot; fires.
              *          }
              *
              *          // or look for information about the player.
@@ -485,6 +490,11 @@
                  *
                  */
                 this.config = config || {};
+<span id='MTVNPlayer-Player-property-isFullScreen'>                 /**
+</span>                 * @property {HTMLElement} isFullScreen
+                 * HTML5 only. See {@link MTVNPlayer.Events#onFullScreenChange}
+                 */
+                this.isFullScreen = false;
                 // private vars
                 var playerModule = null,
                     el = null,
