@@ -1,0 +1,14 @@
+{
+    "package": {
+        "video": {
+            "item": {
+                "beacons": {
+                    "beacon": {
+                        "url": "beacon1",
+                        "startTime": "0"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -290,7 +290,7 @@
              * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
              * otherwise they'll be flash players. This is determined by checking the user agent.
              */
-            MTVNPlayer.isHTML5Player = core.isHTML5Player;
+            MTVNPlayer.isHTML5Player = core.isHTML5Player(window.navigator.userAgent);
             /**
              * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first

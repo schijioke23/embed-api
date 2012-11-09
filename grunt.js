@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/load-module.js', 'src/util/finish.js', 'build/version.js'],
-        targetPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
+    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 
+    'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
+        targetPath = 'dist/',
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
         syndicatedPath = targetPath + 'syndicated.min.js',
@@ -23,6 +24,10 @@ module.exports = function(grunt) {
             auto: {
                 src: autoPath,
                 dest: autoPath
+            },
+            syndicated:{
+                src: syndicatedPath,
+                dest: syndicatedPath
             }
         },
         jshint: {
@@ -62,13 +67,12 @@ module.exports = function(grunt) {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
         grunt.log.writeln("building version:" + version);
-        grunt.file.write("build/version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
+        grunt.file.write(targetPath  +  "version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);
     });
     grunt.registerTask('finish', 'clean up', function() {
-        grunt.helper("clean", "build/version.js");
         grunt.log.writeln("Compiled: " + grunt.template.today("mm-dd hh:mm:ss"));
     });
     grunt.registerTask('dirname', 'set a subdirectory name, result will be build/subdirectory(s)', function(dir) {
@@ -77,6 +81,16 @@ module.exports = function(grunt) {
             dir += "/";
         }
         grunt.config("dirname", dir);
+    });
+    grunt.registerTask("prepare_deploy", "take the build output and prepare it for deployment", function(build) {
+        var dest = "deploy/" + grunt.config("pkg").version + (build ? "-" + build : ""),
+            files = grunt.file.expandFiles("dist/*");
+        if (files.length === 0) {
+            grunt.log.error("run grunt release first");
+        }
+        files.forEach(function(file) {
+            grunt.file.copy(file, dest + file.replace("dist", ""));
+        });
     });
     grunt.registerTask('default', 'clean version lint:devel concat finish');
     grunt.registerTask('release', 'clean version lint:release concat min finish');

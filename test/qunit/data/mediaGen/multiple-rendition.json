@@ -1,0 +1,27 @@
+{
+    "package": {
+        "version": "1.4",
+        "video": {
+            "item": {
+                "startTime": "0",
+                "rendition": [{
+                    "cdn": "level3",
+                    "duration": "252",
+                    "width": "384",
+                    "height": "216",
+                    "type": "video/mp4",
+                    "bitrate": "450",
+                    "src": "rendition1src"
+                }, {
+                    "cdn": "level3",
+                    "duration": "252",
+                    "width": "512",
+                    "height": "288",
+                    "type": "video/mp4",
+                    "bitrate": "625",
+                    "src": "rendition2src"
+                }]
+            }
+        }
+    }
+}

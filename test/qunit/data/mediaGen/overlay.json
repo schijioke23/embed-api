@@ -1,0 +1,27 @@
+{
+    "package": {
+        "version": "1.7",
+        "video": {
+            "item": [{
+                "rendition": {
+                    "cdn": "level3",
+                    "type": "video/mp4",
+                    "duration": "56",
+                    "height":"216",
+                    "width": "384",
+                    "src": "rendition1src"
+                }
+            }, {
+                "placement": "overlay",
+                "format": "png",
+                "xPercent": "5",
+                "yPercent": "5",
+                "startTime": "0",
+                "duration": "15",
+                "width": "50",
+                "height": "48",
+                "src": "http://nick.mtvnimages.com/nick-assets/video/video-ratings/TV_G.png"
+            }]
+        }
+    }
+}
