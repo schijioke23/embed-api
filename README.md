@@ -3,6 +3,7 @@
 The embed API provides a unified way to embed and use different video players. On iOS devices, an HTML5 player will be created, in all other scenarios a flash player will be created.
 
 - [API Docs][docs]
+- Change Log: See History.md
 - [Loading](#a1)
 - [Usage](#a2)
     - [config](#b1)
