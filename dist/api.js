@@ -3062,4 +3062,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/09/2012 04:11:17";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/10/2012 12:11:09";
