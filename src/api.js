@@ -83,7 +83,12 @@
             OVERLAY_RECT_CHANGE: "onOverlayRectChange",
             /**
              * @event onReady
-             * Fired once the API and metadata are available
+             * Fired when the player has loaded and the metadata is available. 
+             * You can bind/unbind to events before this fires.
+             * You can also invoke most methods before the event, the only exception is
+             * {@link MTVNPlayer.Player#getEmbedCode}, since it returns a value which
+             * won't be ready until the metadata is ready. Other methods will be queued and 
+             * then executed when the player is ready to invoke them.
              */
             READY: "onReady",
             /**
@@ -105,10 +110,9 @@
             INDEX_CHANGE: "onIndexChange",
             /**
              * @event onFullScreenChange
-             * @private
              * HTML5 only. Fired when the player.isFullScreen property has been changed. 
              * The player may or may not visually be in full screen, it depends on its context.
-             * Check {@link MTVNPlayer.isFullScreen} to see if the player is in full screen or not.
+             * Check {@link MTVNPlayer.Player#isFullScreen} to see if the player is in full screen or not.
              */
             FULL_SCREEN_CHANGE: "onFullScreenChange",
             /**
@@ -168,7 +172,7 @@
          * @class MTVNPlayer.Player
          * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
          *      var player = new MTVNPlayer.Player(element/id,config,events);
-         *      player.bind("onReady",function(event){player.mute();});
+         *      player.bind("onMetadata",function(event){console.log("onMetadata",event.data);});
          *      player.pause();
          * @constructor
          * Create a new MTVNPlayer.Player
@@ -286,7 +290,7 @@
              * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
              * otherwise they'll be flash players. This is determined by checking the user agent.
              */
-            MTVNPlayer.isHTML5Player = core.isHTML5Player;
+            MTVNPlayer.isHTML5Player = core.isHTML5Player(window.navigator.userAgent);
             /**
              * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
@@ -296,8 +300,8 @@
              *     MTVNPlayer.onPlayer(function(player){
              *          // player is the player that was just created.
              *          // we can now hook into events.
-             *          player.bind("onReady",function(event) {
-             *              // do something when "onReady" fires.
+             *          player.bind("onPlayheadUpdate",function(event) {
+             *              // do something when "onPlayheadUpdate" fires.
              *          }
              *
              *          // or look for information about the player.
@@ -469,6 +473,11 @@
                  *
                  */
                 this.config = config || {};
+                 /**
+                 * @property {HTMLElement} isFullScreen
+                 * HTML5 only. See {@link MTVNPlayer.Events#onFullScreenChange}
+                 */
+                this.isFullScreen = false;
                 // private vars
                 var playerModule = null,
                     el = null,
@@ -659,8 +668,8 @@
                 once: function(eventName, callback) {
                     var ref = this,
                         newCB = function(event) {
-                            callback(event);
                             ref.unbind(eventName, newCB);
+                            callback(event);
                         };
                     this.bind(eventName, newCB);
                 }

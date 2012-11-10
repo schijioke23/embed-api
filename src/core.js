@@ -32,6 +32,7 @@
     /**
      * Initialization that is common across player modules (meaning flash/html5).
      * This is here mostly to keep it out of the constructor.
+     * @ignore
      */
     core.playerInit = function(player, playerModule) {
         // A list of event messages called before the player was ready
@@ -67,13 +68,22 @@
      * @ignore
      * The logic that determines whether we're using flash or html
      */
-    core.isHTML5Player = function() {
-        var n = window.navigator.userAgent.toLowerCase();
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1;
-    }();
+    core.isHTML5Player = function(userAgent) {
+        var n = userAgent ? userAgent.toLowerCase() : "",
+            checkSilk = function(n) {
+                if(n.indexOf("silk") !== -1){
+                    var reg = /silk\/(\d)/ig,
+                        result = parseInt(reg.exec(n)[1],10);
+                        return !isNaN(result) && result >= 2;
+                }
+                return false;
+            };
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n);
+    };
 
     /**
      * Utility function. Check if the argument is a element.
+     * @ignore
      */
     core.isElement = function(o) {
         return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
