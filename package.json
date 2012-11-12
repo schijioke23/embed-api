@@ -1,6 +1,6 @@
 {
     "name": "mtvn-embed-api",
-    "version": "2.4.1",
+    "version": "2.4.3",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
     "description": "The embed api provides a unified interface for different player implementations.",
