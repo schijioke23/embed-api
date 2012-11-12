@@ -1,7 +1,18 @@
-2.4.1 / 2012-11-10 
+2.4.3 / 2012-11-29 
+==================
+
+  * [BRBPL-3350](http://jira.mtvi.com/browse/BRBPL-3350) Fix Prime 2 play state inconsistencies. 
+
+
+2.4.2 / 2012-11-10 
 ==================
 
   * [BRBPL-3232](http://jira.mtvi.com/browse/BRBPL-3232) Kindle Fire support. 
+  
+  
+2.4.1 / 2012-11-10 (broken, bug fix in 2.4.2)
+==================
+
   * Fix for [once](http://mtvn-player.github.com/embed-api/docs/#!/api/MTVNPlayer.Player-method-once) method: unbind the event before calling the callback, in case the callback triggers the event again.
  
 

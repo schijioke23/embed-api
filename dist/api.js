@@ -1343,6 +1343,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 };
                 element.addEventListener('METADATA', mapString + metadataEvent);
                 map[id + stateEvent] = function(state) {
+                    state = state.replace("playstates.","");
                     player.state = state;
                     core.processEvent(events[stateEvent], {
                         data: state,
@@ -2233,7 +2234,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 containerElement.appendChild(el);
 
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
@@ -3062,4 +3063,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.4.1";MTVNPlayer.build="11/10/2012 12:11:53";
+MTVNPlayer.version="2.4.3";MTVNPlayer.build="11/29/2012 02:11:53";
