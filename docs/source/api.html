@@ -513,7 +513,7 @@
                 containerElement.appendChild(el);
 
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
