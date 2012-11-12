@@ -7,15 +7,14 @@ exports.index = function(req, res) {
 exports.api = function(req, res) {
     var dir = process.cwd(),
         path = dir.indexOf("/test") === -1 ? "" : dir.replace("/test","/");
-    res.sendfile(path + "build/" + version + "/api.js");
+    res.sendfile(path + "dist/api.js");
 };
 exports.apiAuto = function(req, res) {
     var dir = process.cwd(),
         path = dir.indexOf("/test") === -1 ? "" : dir.replace("/test","/");
-    res.sendfile(path + "build/auto/" + version + ".js");
+    res.sendfile(path + "dist/auto.min.js");
 };
 exports.sendres = function(req, res, next) {
-    console.log("send res");
     res.end(req.params.chunk);
 };
 exports.redirect = function(req, res, next) {
