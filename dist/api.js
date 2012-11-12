@@ -2233,7 +2233,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 containerElement.appendChild(el);
 
                 this.events = events || {};
-                this.isFlash = this.config.isFlash === undefined ? !core.isHTML5Player : this.config.isFlash;
+                this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
@@ -3062,4 +3062,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/10/2012 12:11:09";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/12/2012 02:11:05";
