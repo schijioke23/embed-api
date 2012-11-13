@@ -1179,13 +1179,13 @@ var MTVNPlayer = window.MTVNPlayer || {};
             play: "unpause",
             seek: "setPlayheadTime"
         },
-            swfobject = flash.getSWFObject(),
+        swfobject = flash.getSWFObject(),
             makeWSwfObject = function(targetID, config) {
                 var attributes = config.attributes || {},
-                    params = config.params || {
-                        allowFullScreen: true
-                    },
-                    flashVars = config.flashVars || {};
+                params = config.params || {
+                    allowFullScreen: true
+                },
+                flashVars = config.flashVars || {};
                 attributes.data = core.getPath(config);
                 attributes.width = config.width;
                 attributes.height = config.height;
@@ -1197,7 +1197,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                     for (var p in fv) {
                         s += p + "=" + fv[p] + "&";
                     }
-                    return s ? s.slice(0, -1) : "";
+                    return s ? s.slice(0, - 1) : "";
                 })(flashVars);
                 core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
             },
@@ -1210,7 +1210,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
             },
             processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
                 var m = {},
-                    rss;
+                rss;
                 m.duration = metadata.duration;
                 // TODO no live.
                 m.live = false;
@@ -1257,7 +1257,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
             },
             processPlaylistMetadata = function(metadata) {
                 var m = {},
-                    items = metadata.items,
+                items = metadata.items,
                     numberOfItems = items.length,
                     i;
                 m.description = metadata.description;
@@ -1273,7 +1273,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 var m = {
                     items: []
                 },
-                    numberOfItems = playlistItems.length,
+                numberOfItems = playlistItems.length,
                     i;
                 for (i = numberOfItems; i--;) {
                     m.items[i] = processMetadata(playlistItems[i].metaData, null, i);
@@ -1395,6 +1395,19 @@ var MTVNPlayer = window.MTVNPlayer || {};
                     });
                 };
                 element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
+            },
+            /**
+             * @private
+             * Set the flash object's dimensions to 100%,
+             * and the container's dimensions to the config settings.
+             */ 
+            adjustElementDimensions = function(element, config) {
+                function getDim(dim) {
+                    return isNaN(dim) ? dim : dim + "px";
+                }
+                element.parentElement.style.width = getDim(config.width);
+                element.parentElement.style.height = getDim(config.height);
+                element.width = element.height = "100%";
             };
         MTVNPlayer.Player.flashEventMap = {};
         /**
@@ -1412,6 +1425,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
             });
             if (!exists) {
                 makeWSwfObject(targetID, config);
+                adjustElementDimensions(player.element, config);
             }
         };
         /**
@@ -2985,9 +2999,10 @@ var docElement            = doc.documentElement,
 })( this, document );
 
 /**
-* Trying something new here. A way to keep the API clean for utility methods specific to things like reporting.
-* These modules are on a player, as opposed to the modules on MTVNPlayer.
-*/
+ * @private
+ * Trying something new here. A way to keep the API clean for utility methods specific to things like reporting.
+ * These modules are on a player, as opposed to the modules on MTVNPlayer.
+ */
 (function(MTVNPlayer) {
     "use strict";
     MTVNPlayer.onPlayer(function(player) {
@@ -3062,4 +3077,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/12/2012 02:11:05";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/13/2012 12:11:40";

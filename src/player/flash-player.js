@@ -19,13 +19,13 @@
             play: "unpause",
             seek: "setPlayheadTime"
         },
-            swfobject = flash.getSWFObject(),
+        swfobject = flash.getSWFObject(),
             makeWSwfObject = function(targetID, config) {
                 var attributes = config.attributes || {},
-                    params = config.params || {
-                        allowFullScreen: true
-                    },
-                    flashVars = config.flashVars || {};
+                params = config.params || {
+                    allowFullScreen: true
+                },
+                flashVars = config.flashVars || {};
                 attributes.data = core.getPath(config);
                 attributes.width = config.width;
                 attributes.height = config.height;
@@ -37,7 +37,7 @@
                     for (var p in fv) {
                         s += p + "=" + fv[p] + "&";
                     }
-                    return s ? s.slice(0, -1) : "";
+                    return s ? s.slice(0, - 1) : "";
                 })(flashVars);
                 core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
             },
@@ -50,7 +50,7 @@
             },
             processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
                 var m = {},
-                    rss;
+                rss;
                 m.duration = metadata.duration;
                 // TODO no live.
                 m.live = false;
@@ -97,7 +97,7 @@
             },
             processPlaylistMetadata = function(metadata) {
                 var m = {},
-                    items = metadata.items,
+                items = metadata.items,
                     numberOfItems = items.length,
                     i;
                 m.description = metadata.description;
@@ -113,7 +113,7 @@
                 var m = {
                     items: []
                 },
-                    numberOfItems = playlistItems.length,
+                numberOfItems = playlistItems.length,
                     i;
                 for (i = numberOfItems; i--;) {
                     m.items[i] = processMetadata(playlistItems[i].metaData, null, i);
@@ -235,6 +235,19 @@
                     });
                 };
                 element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
+            },
+            /**
+             * @private
+             * Set the flash object's dimensions to 100%,
+             * and the container's dimensions to the config settings.
+             */ 
+            adjustElementDimensions = function(element, config) {
+                function getDim(dim) {
+                    return isNaN(dim) ? dim : dim + "px";
+                }
+                element.parentElement.style.width = getDim(config.width);
+                element.parentElement.style.height = getDim(config.height);
+                element.width = element.height = "100%";
             };
         MTVNPlayer.Player.flashEventMap = {};
         /**
@@ -252,6 +265,7 @@
             });
             if (!exists) {
                 makeWSwfObject(targetID, config);
+                adjustElementDimensions(player.element, config);
             }
         };
         /**
