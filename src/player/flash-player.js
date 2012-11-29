@@ -183,6 +183,7 @@
                 };
                 element.addEventListener('METADATA', mapString + metadataEvent);
                 map[id + stateEvent] = function(state) {
+                    state = state.replace("playstates.","");
                     player.state = state;
                     core.processEvent(events[stateEvent], {
                         data: state,
