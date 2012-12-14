@@ -108,8 +108,16 @@ var MTVNPlayer = window.MTVNPlayer || {};
                         return !isNaN(result) && result >= 2;
                 }
                 return false;
+            },
+            checkAndroid = function(n) {
+                if(n.indexOf("android") !== -1){
+                    var reg = /android (\d)/ig,
+                        result = parseInt(reg.exec(n)[1],10);
+                        return !isNaN(result) && result >= 4;
+                }
+                return false;
             };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n);
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n);
     };
 
     /**
@@ -1343,6 +1351,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 };
                 element.addEventListener('METADATA', mapString + metadataEvent);
                 map[id + stateEvent] = function(state) {
+                    state = state.replace("playstates.","");
                     player.state = state;
                     core.processEvent(events[stateEvent], {
                         data: state,
@@ -3077,4 +3086,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="11/13/2012 12:11:40";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="12/14/2012 03:12:02";
