@@ -1,3 +1,9 @@
+2.4.4 / 2012-12-14 
+==================
+
+  * [BRBPL-3353](http://jira.mtvi.com/browse/BRBPL-3353) Load HTML5 for Android 4 and up.
+
+
 2.4.3 / 2012-11-29 
 ==================
 

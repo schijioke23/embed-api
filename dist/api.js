@@ -108,8 +108,16 @@ var MTVNPlayer = window.MTVNPlayer || {};
                         return !isNaN(result) && result >= 2;
                 }
                 return false;
+            },
+            checkAndroid = function(n) {
+                if(n.indexOf("android") !== -1){
+                    var reg = /android (\d)/ig,
+                        result = parseInt(reg.exec(n)[1],10);
+                        return !isNaN(result) && result >= 4;
+                }
+                return false;
             };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n);
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n);
     };
 
     /**
@@ -3063,4 +3071,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.4.3";MTVNPlayer.build="11/29/2012 02:11:53";
+MTVNPlayer.version="2.4.3";MTVNPlayer.build="12/14/2012 03:12:53";
