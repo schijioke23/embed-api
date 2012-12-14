@@ -94,8 +94,16 @@
                         return !isNaN(result) &amp;&amp; result &gt;= 2;
                 }
                 return false;
+            },
+            checkAndroid = function(n) {
+                if(n.indexOf(&quot;android&quot;) !== -1){
+                    var reg = /android (\d)/ig,
+                        result = parseInt(reg.exec(n)[1],10);
+                        return !isNaN(result) &amp;&amp; result &gt;= 4;
+                }
+                return false;
             };
-        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n);
+        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n) || checkAndroid(n);
     };
 
 <span id='global-method-isElement'>    /**
