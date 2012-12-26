@@ -1,0 +1,4 @@
+{
+      "test_page": "test/qunit/test.html",
+      "launch_in_ci" : ["Chrome","Firefox","Safari"]
+}

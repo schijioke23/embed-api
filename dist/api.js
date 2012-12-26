@@ -102,10 +102,10 @@ var MTVNPlayer = window.MTVNPlayer || {};
     core.isHTML5Player = function(userAgent) {
         var n = userAgent ? userAgent.toLowerCase() : "",
             checkSilk = function(n) {
-                if(n.indexOf("silk") !== -1){
+                if (n.indexOf("silk") !== -1) {
                     var reg = /silk\/(\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) && result >= 2;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) && result >= 2;
                 }
                 return false;
             },
@@ -130,6 +130,21 @@ var MTVNPlayer = window.MTVNPlayer || {};
     };
 
     /**
+     * Utility function. Append css to the head.
+     * @ignore
+     */
+    core.appendStyle = function(cssText) {
+        var styles = document.createElement("style");
+        styles.setAttribute("type", "text/css");
+        document.getElementsByTagName("head")[0].appendChild(styles);
+        if (styles.styleSheet) {
+            styles.styleSheet.cssText = cssText;
+        } else {
+            styles.appendChild(document.createTextNode(cssText));
+        }
+    };
+
+    /**
      * @method getPath
      * @ignore
      * @param {Object} config
@@ -150,6 +165,10 @@ var MTVNPlayer = window.MTVNPlayer || {};
      * Check if event is an Array, if so loop through, else just execute.
      */
     core.processEvent = function(event, data) {
+        // trigger a jQuery event if there's an $el.
+        if(data && data.target && data.target.$el){
+            data.target.$el.trigger("MTVNPlayer:"+data.type, data);
+        }
         if (!event) {
             return;
         }
@@ -244,56 +263,75 @@ var MTVNPlayer = window.MTVNPlayer || {};
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
      */
     var copyProperties = config.copyProperties = function(toObj, fromObj) {
-            if (fromObj) {
-                for (var prop in fromObj) {
-                    if (fromObj.hasOwnProperty(prop)) {
-                        if (fromObj[prop] !== undefined && fromObj[prop] !== null) {
-                            var propName = prop.toLowerCase();
-                            if (propName === "flashvars" || propName === "attributes" || propName === "params") {
-                                toObj[prop] = toObj[prop] || {};
-                                copyProperties(toObj[prop], fromObj[prop]);
-                            } else {
-                                // make sure width and height are defined and not zero
-                                if ((prop === "width" || prop === "height") && !fromObj[prop]) {
-                                    continue;
-                                }
-                                toObj[prop] = fromObj[prop];
+        if (fromObj) {
+            for (var prop in fromObj) {
+                if (fromObj.hasOwnProperty(prop)) {
+                    if (fromObj[prop] !== undefined && fromObj[prop] !== null) {
+                        var propName = prop.toLowerCase();
+                        if (propName === "flashvars" || propName === "attributes" || propName === "params") {
+                            toObj[prop] = toObj[prop] || {};
+                            copyProperties(toObj[prop], fromObj[prop]);
+                        } else {
+                            // make sure width and height are defined and not zero
+                            if ((prop === "width" || prop === "height") && !fromObj[prop]) {
+                                continue;
                             }
+                            toObj[prop] = fromObj[prop];
                         }
                     }
                 }
             }
-            return toObj;
-        };
+        }
+        return toObj;
+    };
     config.buildConfig = function(el, config) {
         var getDataAttr = function(attr) {
-                return el.getAttribute("data-" + attr);
-            },
-            getStyleAttr = function(attr) {
-                return parseInt(el.style[attr], 10);
-            },
-            getObjectFromNameValue = function(attr) {
-                attr = getDataAttr(attr);
-                if (attr) {
-                    var i, result = {},
-                        pairs = attr.split("&"),
-                        pair;
-                    for (i = pairs.length; i--;) {
-                        pair = pairs[i].split("=");
-                        if (pair && pair.length == 2) {
-                            result[pair[0]] = pair[1];
-                        }
+            return el.getAttribute("data-" + attr);
+        },
+        getStyleAttr = function(attr) {
+            return parseInt(el.style[attr], 10);
+        },
+        getObjectFromNameValue = function(attr) {
+            attr = getDataAttr(attr);
+            if (attr) {
+                var i, result = {},
+                pairs = attr.split("&"),
+                    pair;
+                for (i = pairs.length; i--;) {
+                    pair = pairs[i].split("=");
+                    if (pair && pair.length == 2) {
+                        result[pair[0]] = pair[1];
                     }
-                    return result;
                 }
-            },
-            configFromEl = {
-                uri: getDataAttr("contenturi"),
-                width: getStyleAttr("width") || null,
-                height: getStyleAttr("height") || null,
-                flashVars: getObjectFromNameValue("flashVars"),
-                attributes: getObjectFromNameValue("attributes")
-            };
+                return result;
+            }
+        },
+        /**
+         * Allow the element to define some custom flashvars instead of
+         * using querystring format on the data-flashVars object.
+         */
+        copyCustomPropertiesToFlashVars = function(obj) {
+            var customProperties = ["autoPlay", "sid", "ssid"],
+                i, propValue, propName;
+            for (i = customProperties.length; i--;) {
+                propName = customProperties[i];
+                propValue = getDataAttr(propName);
+                if (propValue) {
+                    if (!obj) {
+                        obj = {};
+                    }
+                    obj[propName] = propValue;
+                }
+            }
+            return obj;
+        },
+        configFromEl = {
+            uri: getDataAttr("contenturi"),
+            width: getStyleAttr("width") || null,
+            height: getStyleAttr("height") || null,
+            flashVars: copyCustomPropertiesToFlashVars(getObjectFromNameValue("flashVars")),
+            attributes: getObjectFromNameValue("attributes")
+        };
         return copyProperties(config, configFromEl);
     };
 })(window.MTVNPlayer.module("config"));
@@ -3020,6 +3058,93 @@ var docElement            = doc.documentElement,
         };
     });
 })(window.MTVNPlayer);
+ (function(MTVNPlayer, $) {
+     "use strict";
+     if ($) {
+         var eventPrefix = "MTVNPlayer:",
+             // support for MTVN.config.player
+             legacyConfig = function(MTVN) {
+                 if (MTVN && MTVN.config && MTVN.config.player) {
+                     return MTVN.config.player;
+                 }
+             }(window.MTVN),
+             // default config creates players at 100% width and height,
+             // also copy the properties from MTVN.player.config or MTVNPlayer.defaultConfig.
+             defaultConfig = MTVNPlayer.module("config").copyProperties({
+                 "width": "100%",
+                 "height": "100%"
+             }, legacyConfig || MTVNPlayer.defaultConfig),
+             // inject styles once.
+             setStyles = function() {
+                 setStyles = function() {};
+                 var rules = "\n.MTVNPlayer_placeholder {cursor:pointer; position: relative;}\n" + ".MTVNPlayer_placeholder_button {\n" + "position:absolute;\n" + "height: 100%;\n" + "width: 100%;\n" + "top:0;\n" + "left:0;\n" + "background: no-repeat url(http://media.mtvnservices.com/player/images/Button_playBig_upSkin.png) center;\n" + "}\n" + "\n" + ".MTVNPlayer_placeholder_button:hover {\n" + "background-image: url(http://media.mtvnservices.com/player/images/Button_playBig_overSkin.png)\n" + "}\n";
+                 MTVNPlayer.module("core").appendStyle(rules);
+             },
+             // allow $("MTVNPlayer").trigger("MTVNPlayer:playIndex",[0,20]);.
+             mapMethods = function(el) {
+                 var player = el.data("player"),
+                     invoke = function(event, arg1, arg2) {
+                         var method = event.type.replace(eventPrefix, "");
+                         player[method].apply(player, [arg1, arg2]);
+                     };
+                 for (var prop in MTVNPlayer.Player.prototype) {
+                     el.bind(eventPrefix + prop, invoke);
+                 }
+             },
+             // creates a player and hooks up 
+             createPlayer = function($el) {
+                 $el.append("<div class=\"playerTarget\"/>");
+                 var config = MTVNPlayer.module("config").buildConfig($el[0], defaultConfig),
+                     player = new MTVNPlayer.Player($el.find(".playerTarget")[0], config);
+                 $el.data("player", player);
+                 player.$el = $el;
+                 mapMethods($el);
+             };
+         // main plugin function
+         $.fn.player = function(options) {
+             // callback is fired after an MTVNPlayer is created.
+             var callback = $.isFunction(options) ? options : function() {},
+                 // first we look for .MTVNPlayer, then we refine to .MTVNPlayers with contenturis.
+                 self = this.not(function() {
+                     return $(this).data("contenturi") ? false : true;
+                 });
+             if (self.length > 0) {
+                 // prepare placeholders.
+                 self.each(function() {
+                     var $el = $(this);
+                     if ($el.children().length > 0) { // if element has children, assume placeholders.
+                         // inject placeholder styles.
+                         setStyles();
+                         // wrap the placeholder and add the button.
+                         $el.html(function(idx, old) {
+                             return '<div class="MTVNPlayer_placeholder">' + old + '<div class=\"MTVNPlayer_placeholder_button\"></div></div>';
+                         });
+                         // when clicked, create a player.
+                         $el.delegate("div.MTVNPlayer_placeholder", "click", function(e) {
+                             e.preventDefault();
+                             // store markup for later use
+                             $el.find("div.MTVNPlayer_placeholder").hide();
+                             $el.bind("MTVNPlayer:showPlaceholder", function() {
+                                 $el.children().not("div.MTVNPlayer_placeholder").remove();
+                                 $el.find("div.MTVNPlayer_placeholder").show();
+                                 delete $el.data().player;
+                             });
+                             $el.data("autoplay", true);
+                             createPlayer($el);
+                             callback();
+                         });
+                     } else { // else add the div for the player to grow into.
+                         createPlayer($el);
+                         callback();
+                     }
+                 });
+             } else {
+                 // nothing happened. 
+                 callback();
+             }
+         };
+     }
+ })(window.MTVNPlayer, window.jQuery || window.Zepto);
 (function(MTVNPlayer, yepnope) {
     var ModuleLoader = MTVNPlayer.module("ModuleLoader"),
         baseUrl = "http://media.mtvnservices.com/player/api/module",
@@ -3086,4 +3211,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="12/14/2012 03:12:02";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="12/26/2012 11:12:36";

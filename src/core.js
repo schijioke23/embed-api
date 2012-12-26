@@ -71,10 +71,10 @@
     core.isHTML5Player = function(userAgent) {
         var n = userAgent ? userAgent.toLowerCase() : "",
             checkSilk = function(n) {
-                if(n.indexOf("silk") !== -1){
+                if (n.indexOf("silk") !== -1) {
                     var reg = /silk\/(\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) && result >= 2;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) && result >= 2;
                 }
                 return false;
             },
@@ -99,6 +99,21 @@
     };
 
     /**
+     * Utility function. Append css to the head.
+     * @ignore
+     */
+    core.appendStyle = function(cssText) {
+        var styles = document.createElement("style");
+        styles.setAttribute("type", "text/css");
+        document.getElementsByTagName("head")[0].appendChild(styles);
+        if (styles.styleSheet) {
+            styles.styleSheet.cssText = cssText;
+        } else {
+            styles.appendChild(document.createTextNode(cssText));
+        }
+    };
+
+    /**
      * @method getPath
      * @ignore
      * @param {Object} config
@@ -119,6 +134,10 @@
      * Check if event is an Array, if so loop through, else just execute.
      */
     core.processEvent = function(event, data) {
+        // trigger a jQuery event if there's an $el.
+        if(data && data.target && data.target.$el){
+            data.target.$el.trigger("MTVNPlayer:"+data.type, data);
+        }
         if (!event) {
             return;
         }

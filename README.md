@@ -7,16 +7,21 @@ The embed API provides a unified way to embed and use different video players. O
 - [Loading](#a1)
 - [Usage](#a2)
     - [config](#b1)
-	- [events](#b2)
+    - [events](#b2)
+    - [placeholders](#b3)
 - [Contributing and testing](#a3)
 - [Advanced usage](#a4)
+    - [Defining defaults](#a4-1)
+    - [MTVNPlayer.addCallback](#a4-2)
+    - [MTVNPlayer.onPlayer](#a4-3)
+    - [jQuery/Zepto Support](#a4-4)
 
 <a name="a1"/>
 ## Loading
 The Embed API is loaded just like any other javascript file. If you include it in the head, it is considered "blocking" and will be loaded before your page. You can put it in the footer to avoid this. 
 
 If you know the Embed API is loaded, you can use it right away. However, if you want to decouple your logic, you can use some boilerplate code to listen for an `onAPIReady` event. 
-See more [here](#a4-1).
+See more [here](#a4-2).
 
 
 <a name="a2"/>
@@ -54,7 +59,7 @@ MTVNPlayer.createPlayers("div.MTVNPlayer",config,events);
 ```
 
 All this method does is find an array of elements that match the selector, and then it takes each element and passes it to the [MTVNPlayer.Player][constructor] constructor.
-
+<a name="a2-1"/>
 #### Element attributes
 When passing an element to the [MTVNPlayer.Player][constructor] constructor, or using [MTVNPlayer.createPlayers][createPlayers], the element can have properties that act as its config. These properites match the config properties but are preceded with `data-`.
 
@@ -93,6 +98,38 @@ Each function has one argument with two properties:
 - target: The player that dispatched the event
 - data: An optional property that contains data about the event.
 
+<a name="b3"/>
+#### Placeholders
+A placeholder is markup defined by you that will take the place of the player until the placeholder is clicked. This allows you to create a lighter version of the poster screen, and delay a video player download to improve the load time of the page.
+
+###### Placeholder markup
+A play button image will be layered over the img below by the embed api. 
+When the placeholder is clicked, an `MTVNPlayer.Player` will be created.
+
+```html
+<a class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
+    <img 
+    src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:661024?height=288&width=512"
+    height="512"
+    width="288">
+</a>
+```
+###### Placeholder configuration
+The configuration for the `MTVNPlayer.Player` will come from [MTVNPlayer.defaultConfig](#a4-1), and from the [data attributes](#a2-1) defined on the placeholder itself. The data attributes will override the config values.
+
+###### Placeholder invokation
+The placeholder code is invoked by calling player() on a collection of jQuery elements. Using the markup defined above, the call would look like this:
+```javascript
+    $(".MTVNPlayer").player();
+```
+###### Empty Placeholder
+If `$(".MTVNPlayer").player();` is invoked, and the placeholder has no children, a player will be created immediately.
+```html
+<div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
+</div>
+```
+
+See [jQuery/Zepto support](#a4-4) for more on this.
 
 <a name="a3"/>
 ## Contributing and testing.
@@ -137,6 +174,7 @@ $ buster-test -c test/buster/buster.js
 <a name="a4"/>
 ## Advanced Usage
 
+<a name="a4-1"/>
 ### Defining defaults
 
 > Use with caution. Defaults are global and will apply to all players. They also could be overriden mistakenly.
@@ -161,9 +199,9 @@ MTVNPlayer.defaultEvents = {onMediaStart:function(event){}};
 *These callbacks are great way to write decoupled code, you don't need to know when or how the API is loaded, 
 or how a player is created, but you can define logic based on these events.*
 
-<a name="a4-1"/>
+<a name="a4-2"/>
 ##### MTVNPlayer.addCallback
-This code snippit gives you a decoupled way to know when the Embed API is loaded. Once it is, you can create players, or you can listen for player creation with [MTVNPlayer.onPlayer](#a4-1).
+This code snippit gives you a decoupled way to know when the Embed API is loaded. Once it is, you can create players, or you can listen for player creation with [MTVNPlayer.onPlayer](#a4-3).
 
 ```javascript
 var MTVNPlayer = MTVNPlayer || {};
@@ -171,7 +209,7 @@ var MTVNPlayer = MTVNPlayer || {};
         this.onAPIReady = function(e){
             return e ? function(){e();n();} : n;
         }(this.onAPIReady);
-	};
+    };
     MTVNPlayer.addCallback(function(){
         // The API is ready. Create as many players as you like.
         var player = new MTVNPlayer.Player("player", {uri:"mgid:cms:video:nick.com:920786"});
@@ -182,7 +220,7 @@ var MTVNPlayer = MTVNPlayer || {};
         });
     });
 ```
-<a name="a4-1"/>
+<a name="a4-3"/>
 ##### MTVNPlayer.onPlayer
 
 This function, only available when the API is loaded, will let you know every time there is a new player created. 
@@ -193,6 +231,30 @@ MTVNPlayer.onPlayer(function(player){
     player.bind("onStateChange",function(event){});
     });
 });
+```
+<a name="a4-4"/>
+#### jQuery/Zepto support
+
+Main benefits:
+- Tie into [placeholder](#b3) mark up and create the player when the placeholder is clicked.
+- Use jQuery style event handlers and method invokations.
+
+_Requires jQuery 1.4.4_
+
+##### Events
+Events work similar to hooking into a `MTVNPlayer.Player` instance. Except you bind like so:
+```javascript
+// you bind off the jQuery-wrapped placeholder element.
+$().bind("MTVNPlayer:onReady", callback);
+```
+Also, your callback will be different. It will be a jQuery callback: the first arguement will be the jQuery event, and the second will be the `MTVNPlayer.Player` [events object](#b2).
+
+##### Methods
+Methods can be triggered by calling `trigger` on a jQuery collection.
+```javascript
+// you trigger off the jQuery-wrapped placeholder element.
+$().trigger("MTVNPlayer:pause");
+$().trigger("MTVNPlayer:playIndex",[1,10]); // Pass arguments as an array.
 ```
 
 [docs]: http://mtvn-player.github.com/embed-api/docs/
