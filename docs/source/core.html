@@ -88,10 +88,10 @@
     core.isHTML5Player = function(userAgent) {
         var n = userAgent ? userAgent.toLowerCase() : &quot;&quot;,
             checkSilk = function(n) {
-                if(n.indexOf(&quot;silk&quot;) !== -1){
+                if (n.indexOf(&quot;silk&quot;) !== -1) {
                     var reg = /silk\/(\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) &amp;&amp; result &gt;= 2;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) &amp;&amp; result &gt;= 2;
                 }
                 return false;
             },
@@ -115,6 +115,21 @@
         typeof o === &quot;object&quot; &amp;&amp; o.nodeType === 1 &amp;&amp; typeof o.nodeName === &quot;string&quot;;
     };
 
+<span id='global-method-appendStyle'>    /**
+</span>     * Utility function. Append css to the head.
+     * @ignore
+     */
+    core.appendStyle = function(cssText) {
+        var styles = document.createElement(&quot;style&quot;);
+        styles.setAttribute(&quot;type&quot;, &quot;text/css&quot;);
+        document.getElementsByTagName(&quot;head&quot;)[0].appendChild(styles);
+        if (styles.styleSheet) {
+            styles.styleSheet.cssText = cssText;
+        } else {
+            styles.appendChild(document.createTextNode(cssText));
+        }
+    };
+
 <span id='global-method-getPath'>    /**
 </span>     * @method getPath
      * @ignore
@@ -136,6 +151,10 @@
      * Check if event is an Array, if so loop through, else just execute.
      */
     core.processEvent = function(event, data) {
+        // trigger a jQuery event if there's an $el.
+        if(data &amp;&amp; data.target &amp;&amp; data.target.$el){
+            data.target.$el.trigger(&quot;MTVNPlayer:&quot;+data.type, data);
+        }
         if (!event) {
             return;
         }
