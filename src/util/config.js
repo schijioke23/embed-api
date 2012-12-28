@@ -2,8 +2,9 @@
  * @ignore
  * The config module has helper functions for dealing with the config object.
  */
-(function(config) {
+(function(MTVNPlayer) {
     "use strict";
+    var config = MTVNPlayer.module("config");
     if (config.initialized) {
         return;
     }
@@ -46,20 +47,30 @@
     };
     /**
      * @ignore
+     */
+    var exists = function(value) {
+        return value !== undefined && value !== null;
+    },
+    /**
+     * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
      */
-    var copyProperties = config.copyProperties = function(toObj, fromObj) {
+    copyProperties = config.copyProperties = function(toObj, fromObj, override) {
         if (fromObj) {
             for (var prop in fromObj) {
                 if (fromObj.hasOwnProperty(prop)) {
-                    if (fromObj[prop] !== undefined && fromObj[prop] !== null) {
+                    if (exists(fromObj[prop])) {
                         var propName = prop.toLowerCase();
                         if (propName === "flashvars" || propName === "attributes" || propName === "params") {
                             toObj[prop] = toObj[prop] || {};
-                            copyProperties(toObj[prop], fromObj[prop]);
+                            copyProperties(toObj[prop], fromObj[prop], override);
                         } else {
                             // make sure width and height are defined and not zero
                             if ((prop === "width" || prop === "height") && !fromObj[prop]) {
+                                continue;
+                            }
+                            // don't override if the prop exists
+                            if (!override && exists(toObj[prop])) {
                                 continue;
                             }
                             toObj[prop] = fromObj[prop];
@@ -71,6 +82,7 @@
         return toObj;
     };
     config.buildConfig = function(el, config) {
+        config = copyProperties(config, window.MTVNPlayer.defaultConfig);
         var getDataAttr = function(attr) {
             return el.getAttribute("data-" + attr);
         },
@@ -118,6 +130,6 @@
             flashVars: copyCustomPropertiesToFlashVars(getObjectFromNameValue("flashVars")),
             attributes: getObjectFromNameValue("attributes")
         };
-        return copyProperties(config, configFromEl);
+        return copyProperties(config, configFromEl, true);
     };
-})(window.MTVNPlayer.module("config"));
+})(window.MTVNPlayer);

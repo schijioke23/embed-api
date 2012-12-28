@@ -9,24 +9,43 @@
   <!-- this must be after the qunit.js -->
   <script src="/testem.js"></script>
   <script src="../../dist/api.js"></script>
+  <!-- QUnit Module -->
+  <script type="text/javascript">
+      module("API", {
+          // the tests could have their own modules defined per source file, 
+          // but in the meantime...
+        teardown: function() {
+            window.MTVNPlayer.defaultConfig = undefined;
+        },
+      });
+  </script>
+  <!-- FIXTURES -->
   <script type="text/template" id="test1">
       <a class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
         <img 
         src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:661024?height=288&width=512"
         height="512"
-        width="288">
+        width="288">1
       </a>
   </script>
   <script type="text/template" id="test2">
-      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
-      </div>
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024"></div>
   </script>
-  <script src="../public/libs/jquery-plugin-legacy.js"></script>
+  <script type="text/template" id="config-test1">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024" data-flashVars="autoPlay=true&sid=12345"></div>
+  </script>
+  <script type="text/template" id="config-test2">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024" data-autoPlay="true" data-sid="12345"></div>
+  </script>
+  <script type="text/template" id="config-test3">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024"></div>
+  </script>
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
-  <script src="placeholder.js"></script>
-  <script src="user-agent.js"></script>
+  <script type="text/javascript" src="placeholder.js"></script>
+  <script type="text/javascript" src="user-agent.js"></script>
+  <script type="text/javascript" src="config-test.js"></script>
 </body>
 </html>
