@@ -19,8 +19,9 @@
 </span> * @ignore
  * The config module has helper functions for dealing with the config object.
  */
-(function(config) {
+(function(MTVNPlayer) {
     &quot;use strict&quot;;
+    var config = MTVNPlayer.module(&quot;config&quot;);
     if (config.initialized) {
         return;
     }
@@ -61,22 +62,32 @@
         }
         return toObj;
     };
+<span id='global-method-exists'>    /**
+</span>     * @ignore
+     */
+    var exists = function(value) {
+        return value !== undefined &amp;&amp; value !== null;
+    },
 <span id='global-property-copyProperties'>    /**
 </span>     * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
      */
-    var copyProperties = config.copyProperties = function(toObj, fromObj) {
+    copyProperties = config.copyProperties = function(toObj, fromObj, override) {
         if (fromObj) {
             for (var prop in fromObj) {
                 if (fromObj.hasOwnProperty(prop)) {
-                    if (fromObj[prop] !== undefined &amp;&amp; fromObj[prop] !== null) {
+                    if (exists(fromObj[prop])) {
                         var propName = prop.toLowerCase();
                         if (propName === &quot;flashvars&quot; || propName === &quot;attributes&quot; || propName === &quot;params&quot;) {
                             toObj[prop] = toObj[prop] || {};
-                            copyProperties(toObj[prop], fromObj[prop]);
+                            copyProperties(toObj[prop], fromObj[prop], override);
                         } else {
                             // make sure width and height are defined and not zero
                             if ((prop === &quot;width&quot; || prop === &quot;height&quot;) &amp;&amp; !fromObj[prop]) {
+                                continue;
+                            }
+                            // don't override if the prop exists
+                            if (!override &amp;&amp; exists(toObj[prop])) {
                                 continue;
                             }
                             toObj[prop] = fromObj[prop];
@@ -88,6 +99,7 @@
         return toObj;
     };
     config.buildConfig = function(el, config) {
+        config = copyProperties(config, window.MTVNPlayer.defaultConfig);
         var getDataAttr = function(attr) {
             return el.getAttribute(&quot;data-&quot; + attr);
         },
@@ -135,8 +147,8 @@
             flashVars: copyCustomPropertiesToFlashVars(getObjectFromNameValue(&quot;flashVars&quot;)),
             attributes: getObjectFromNameValue(&quot;attributes&quot;)
         };
-        return copyProperties(config, configFromEl);
+        return copyProperties(config, configFromEl, true);
     };
-})(window.MTVNPlayer.module(&quot;config&quot;));</pre>
+})(window.MTVNPlayer);</pre>
 </body>
 </html>
