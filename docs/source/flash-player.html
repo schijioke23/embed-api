@@ -207,15 +207,29 @@
                         target: player,
                         type: stateEvent
                     });
+                    core.processEvent(events[stateEvent+&quot;:&quot;+state], {
+                        data: state,
+                        target: player,
+                        type: stateEvent+&quot;:&quot;+state
+                    });
                 };
                 element.addEventListener('STATE_CHANGE', mapString + stateEvent);
                 map[id + playheadUpdate] = function(playhead) {
+                    var lastPlayhead = Math.floor(player.playhead);
                     player.playhead = playhead;
                     core.processEvent(events[playheadUpdate], {
                         data: playhead,
                         target: player,
                         type: playheadUpdate
                     });
+                    // support for cue points.
+                    if(lastPlayhead != Math.floor(playhead)){
+                        core.processEvent(events[playheadUpdate + &quot;:&quot; + Math.floor(playhead)], {
+                            data: playhead,
+                            target: player,
+                            type: playheadUpdate + &quot;:&quot;  + Math.floor(playhead)
+                        });
+                    }
                 };
                 element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
                 map[id + playlistCompleteEvent] = function() {

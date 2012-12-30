@@ -64,7 +64,8 @@
     // Export module configs so they can be adjusted for testing.
     ModuleLoader.EndSlateModule = EndSlateModule;
 <span id='global-property-'>    /**
-</span>     * When any player is created, listen for an end slate event
+</span>     * @ignore
+     * When any player is created, listen for an end slate event
      */
     MTVNPlayer.onPlayer(function(player) {
         player.bind(EndSlateModule.eventName, EndSlateModule.onModuleRequested);
