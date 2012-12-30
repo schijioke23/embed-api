@@ -47,6 +47,7 @@
     // Export module configs so they can be adjusted for testing.
     ModuleLoader.EndSlateModule = EndSlateModule;
     /**
+     * @ignore
      * When any player is created, listen for an end slate event
      */
     MTVNPlayer.onPlayer(function(player) {

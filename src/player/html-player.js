@@ -125,6 +125,11 @@
                                 target: player,
                                 type: eventTypes.STATE_CHANGE
                             });
+                            core.processEvent(events[eventTypes.STATE_CHANGE + ":" + player.state], {
+                                data: player.state,
+                                target: player,
+                                type: eventTypes.STATE_CHANGE + ":" + player.state
+                            });
                         } else if (data.indexOf("playlistComplete") === 0) {
                             processEvent(events.onPlaylistComplete, {
                                 data: null,
@@ -146,6 +151,7 @@
                                 type: eventTypes.MEDIA_END
                             });
                         } else if (data.indexOf("playheadUpdate") === 0) {
+                            var lastPlayhead = Math.floor(player.playhead);
                             playhead = parseInt(getMessageData(data), 10);
                             player.playhead = playhead;
                             processEvent(events.onPlayheadUpdate, {
@@ -153,6 +159,14 @@
                                 target: player,
                                 type: eventTypes.PLAYHEAD_UPDATE
                             });
+                            // support for cue points.
+                            if (lastPlayhead != Math.floor(playhead)) {
+                                core.processEvent(events[eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead)], {
+                                    data: playhead,
+                                    target: player,
+                                    type: eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead)
+                                });
+                            }
                         } else if (data.indexOf("playlistMetadata:") === 0) {
                             player.playlistMetadata = jsonParse(getMessageData(data));
                         } else if (data === "onReady") {

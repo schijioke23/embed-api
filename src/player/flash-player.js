@@ -190,15 +190,29 @@
                         target: player,
                         type: stateEvent
                     });
+                    core.processEvent(events[stateEvent+":"+state], {
+                        data: state,
+                        target: player,
+                        type: stateEvent+":"+state
+                    });
                 };
                 element.addEventListener('STATE_CHANGE', mapString + stateEvent);
                 map[id + playheadUpdate] = function(playhead) {
+                    var lastPlayhead = Math.floor(player.playhead);
                     player.playhead = playhead;
                     core.processEvent(events[playheadUpdate], {
                         data: playhead,
                         target: player,
                         type: playheadUpdate
                     });
+                    // support for cue points.
+                    if(lastPlayhead != Math.floor(playhead)){
+                        core.processEvent(events[playheadUpdate + ":" + Math.floor(playhead)], {
+                            data: playhead,
+                            target: player,
+                            type: playheadUpdate + ":"  + Math.floor(playhead)
+                        });
+                    }
                 };
                 element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
                 map[id + playlistCompleteEvent] = function() {

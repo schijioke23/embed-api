@@ -142,7 +142,10 @@
             return;
         }
         if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
-            for (var i = event.length; i--;) {
+            // clone array
+            event = event.slice();
+            // fire in order
+            for (var i = 0, len = event.length; i < len; i++) {
                 event[i](data);
             }
         } else {

@@ -1,0 +1,58 @@
+/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+(function() {
+    "use strict";
+    // we're calling play
+    var $fixture = $("#qunit-fixture");
+    test("MTVNPlayer.getPlayer MTVNPlayer.gc", function() {
+        $fixture.html($("#test2").html());
+        var player = new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+        equal(player, MTVNPlayer.getPlayer(player.config.uri), "getPlayer found matching uri");
+        equal(MTVNPlayer.getPlayers().length, 1, "getPlayers has 1 player");
+        equal(player.config.uri, MTVNPlayer.getPlayers()[0].config.uri, "getPlayers' only player matches the uri");
+        $fixture.empty();
+        MTVNPlayer.gc();
+        ok(!MTVNPlayer.getPlayer(player.config.uri), "gc works");
+    });
+    asyncTest("MTVNPlayer.onPlayer MTVNPlayer.removeOnPlayer", 2, function() {
+        $fixture.html($("#test2").html());
+        var callback2 = function(player) {
+            ok(player, "second on player");
+            MTVNPlayer.removeOnPlayer(callback2);
+            start();
+        },
+        callback1 = function(player) {
+            MTVNPlayer.removeOnPlayer(callback1);
+            ok(player, "on player callback");
+            $fixture.html($("#test2").html());
+            MTVNPlayer.onPlayer(callback2);
+            new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+        };
+        MTVNPlayer.onPlayer(callback1);
+        new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+    });
+    asyncTest("MTVNPlayer.createPlayers MTVNPlayer.defaultEvents", 6, function() {
+        MTVNPlayer.defaultConfig = {width:101,height:101};
+        MTVNPlayer.defaultEvents = {onReady:function() {
+          ok(true,"default event worked");
+        }};
+        var callback = function(player) {
+            ok(true, "second on player");
+            equal(100, player.config.width, "config worked");
+            equal(101, player.config.height, "defaultConfig worked");
+            player.one("onReady",function() {
+               ok(true,"second onReady"); 
+               start();
+            });
+            MTVNPlayer.removeOnPlayer(callback);
+        };
+        $fixture.html($("#test2").html());
+        MTVNPlayer.onPlayer(callback);
+        MTVNPlayer.createPlayers(".MTVNPlayer", {
+            width: 100
+        }, {
+            onReady: function() {
+                ok(true, "ready event");
+            }
+        });
+    });
+})();

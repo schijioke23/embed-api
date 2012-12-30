@@ -16,6 +16,7 @@
           // but in the meantime...
         teardown: function() {
             window.MTVNPlayer.defaultConfig = undefined;
+            window.MTVNPlayer.gc();
         },
       });
   </script>
@@ -25,7 +26,7 @@
         <img 
         src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:661024?height=288&width=512"
         height="512"
-        width="288">1
+        width="288">
       </a>
   </script>
   <script type="text/template" id="test2">
@@ -47,5 +48,8 @@
   <script type="text/javascript" src="placeholder.js"></script>
   <script type="text/javascript" src="user-agent.js"></script>
   <script type="text/javascript" src="config-test.js"></script>
+  <script type="text/javascript" src="methods-test.js"></script>
+  <script type="text/javascript" src="events-test.js"></script>
+  <script type="text/javascript" src="mtvnplayer-methods-test.js"></script>
 </body>
 </html>

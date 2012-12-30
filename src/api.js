@@ -53,6 +53,13 @@
             /**
              * @event onStateChange
              * Fired when the play state changes. event.data is the state.
+             * 
+             * You can also listen for a specific state only (v2.5.0).
+             * ```
+             * player.bind("onStateChange:paused",function(event){
+             *  // callback fires when state equals paused.
+             * });
+             * ```
              */
             STATE_CHANGE: "onStateChange",
             /**
@@ -68,6 +75,15 @@
             /**
              * @event onPlayheadUpdate
              * Fired as the playhead moves. event.data is the playhead time.
+             * 
+             * Support for cue points (v2.5.0).
+             * The below snippet fires once when the playhead crosses the 15 second mark.
+             * The playhead time itself may be 15 plus a fraction.
+             * ```
+             * player.once("onPlayheadUpdate:15",function(event){
+             *  // callback
+             * });
+             * ```
              */
             PLAYHEAD_UPDATE: "onPlayheadUpdate",
             /**
@@ -196,14 +212,17 @@
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
+                    if (eventName.indexOf(":") !== -1) {
+                        eventName = eventName.split(":")[0];
+                    }
                     var check = function(events) {
-                            for (var event in events) {
-                                if (events.hasOwnProperty(event) && events[event] === eventName) {
-                                    return true; // has event
-                                }
+                        for (var event in events) {
+                            if (events.hasOwnProperty(event) && events[event] === eventName) {
+                                return true; // has event
                             }
-                            return false;
-                        };
+                        }
+                        return false;
+                    };
                     if (check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
                         return;
                     }
@@ -345,6 +364,44 @@
             };
             /**
              * @member MTVNPlayer
+             * Returns a player that matches a specific uri
+             * @returns MTVNPlayer.Player
+             */
+            MTVNPlayer.getPlayer = function(uri) {
+                var instances = core.instances,
+                    i = instances.length;
+                for (i; i--;) {
+                    if (instances[i].player.config.uri === uri) {
+                        return instances[i].player;
+                    }
+                }
+                return null;
+            };
+            /**
+             * @member MTVNPlayer
+             * Garbage collection, looks for all {@link MTVNPlayer.Player} that are no longer in the document, 
+             * and removes them from the hash map.
+             */
+            MTVNPlayer.gc = function() {
+                var elementInDocument = function(element) {
+                    while (element.parentNode) {
+                        element = element.parentNode;
+                        if (element == document) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                var instances = core.instances,
+                    i = instances.length;
+                for (i; i--;) {
+                    if (!elementInDocument(instances[i].player.element)) {
+                        instances.splice(i, 1);
+                    }
+                }
+            };
+            /**
+             * @member MTVNPlayer
              * Create players from elements in the page.
              * This should be used if you need to create multiple players that are the same.
              * @param {String} selector default is "div.MTVNPlayer"
@@ -473,7 +530,7 @@
                  *
                  */
                 this.config = config || {};
-                 /**
+                /**
                  * @property {HTMLElement} isFullScreen
                  * HTML5 only. See {@link MTVNPlayer.Events#onFullScreenChange}
                  */
@@ -503,8 +560,8 @@
                 playerModule = MTVNPlayer.module(this.isFlash ? "flash" : "html5");
                 playerModule.initialize();
                 // do more initializing that's across player modules.
-                core.playerInit(this,playerModule);
-                
+                core.playerInit(this, playerModule);
+
                 // check for element before creating
                 if (!el) {
                     if (document.readyState === "complete") {
@@ -615,7 +672,7 @@
                 exitFullScreen: function() {
                     this.message("exitFullScreen");
                 },
-                 /**
+                /**
                  * Show user clip screen.
                  * For flash only (api v2.4.0)
                  */
@@ -624,6 +681,7 @@
                 },
                 /**
                  * Adds an event listener for an event.
+                 * @deprecated use {@link MTVNPlayer.Player#on} instead.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
                  * @param {Function} callback The function to invoke when the event is fired.
                  */
@@ -641,6 +699,7 @@
                 },
                 /**
                  * Removes an event listener
+                 * @deprecated use {@link MTVNPlayer.Player#off} instead.
                  * @param {String} eventName an MTVNPlayer.Event.
                  * @param {Function} callback The function to that was bound to the event.
                  */
@@ -662,6 +721,7 @@
                 },
                 /**
                  * Adds an event listener for an event that will only fire once and then be removed.
+                 * @deprecated use {@link MTVNPlayer.Player#one} instead.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
                  * @param {Function} callback The function to invoke when the event is fired.
                  */
@@ -674,6 +734,24 @@
                     this.bind(eventName, newCB);
                 }
             };
+            /**
+             * (v2.5.0) Adds an event listener for an event.
+             * @param {String} eventName an {@link MTVNPlayer.Events}.
+             * @param {Function} callback The function to invoke when the event is fired.
+             */
+            Player.prototype.on = Player.prototype.bind;
+            /**
+             * (v2.5.0) Removes an event listener
+             * @param {String} eventName an MTVNPlayer.Event.
+             * @param {Function} callback The function to that was bound to the event.
+             */
+            Player.prototype.off = Player.prototype.unbind;
+            /**
+             * (v2.5.0) Adds an event listener for an event that will only fire once and then be removed.
+             * @param {String} eventName an {@link MTVNPlayer.Events}.
+             * @param {Function} callback The function to invoke when the event is fired.
+             */
+            Player.prototype.one = Player.prototype.once;
             return Player;
         }(window));
         /**

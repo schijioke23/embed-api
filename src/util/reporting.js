@@ -1,5 +1,6 @@
 /**
  * @private
+ * @ignore
  * Trying something new here. A way to keep the API clean for utility methods specific to things like reporting.
  * These modules are on a player, as opposed to the modules on MTVNPlayer.
  */
