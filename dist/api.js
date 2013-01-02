@@ -173,7 +173,10 @@ var MTVNPlayer = window.MTVNPlayer || {};
             return;
         }
         if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
-            for (var i = event.length; i--;) {
+            // clone array
+            event = event.slice();
+            // fire in order
+            for (var i = 0, len = event.length; i < len; i++) {
                 event[i](data);
             }
         } else {
@@ -1408,15 +1411,29 @@ var MTVNPlayer = window.MTVNPlayer || {};
                         target: player,
                         type: stateEvent
                     });
+                    core.processEvent(events[stateEvent+":"+state], {
+                        data: state,
+                        target: player,
+                        type: stateEvent+":"+state
+                    });
                 };
                 element.addEventListener('STATE_CHANGE', mapString + stateEvent);
                 map[id + playheadUpdate] = function(playhead) {
+                    var lastPlayhead = Math.floor(player.playhead);
                     player.playhead = playhead;
                     core.processEvent(events[playheadUpdate], {
                         data: playhead,
                         target: player,
                         type: playheadUpdate
                     });
+                    // support for cue points.
+                    if(lastPlayhead != Math.floor(playhead)){
+                        core.processEvent(events[playheadUpdate + ":" + Math.floor(playhead)], {
+                            data: playhead,
+                            target: player,
+                            type: playheadUpdate + ":"  + Math.floor(playhead)
+                        });
+                    }
                 };
                 element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
                 map[id + playlistCompleteEvent] = function() {
@@ -1658,6 +1675,11 @@ var MTVNPlayer = window.MTVNPlayer || {};
                                 target: player,
                                 type: eventTypes.STATE_CHANGE
                             });
+                            core.processEvent(events[eventTypes.STATE_CHANGE + ":" + player.state], {
+                                data: player.state,
+                                target: player,
+                                type: eventTypes.STATE_CHANGE + ":" + player.state
+                            });
                         } else if (data.indexOf("playlistComplete") === 0) {
                             processEvent(events.onPlaylistComplete, {
                                 data: null,
@@ -1679,6 +1701,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                                 type: eventTypes.MEDIA_END
                             });
                         } else if (data.indexOf("playheadUpdate") === 0) {
+                            var lastPlayhead = Math.floor(player.playhead);
                             playhead = parseInt(getMessageData(data), 10);
                             player.playhead = playhead;
                             processEvent(events.onPlayheadUpdate, {
@@ -1686,6 +1709,14 @@ var MTVNPlayer = window.MTVNPlayer || {};
                                 target: player,
                                 type: eventTypes.PLAYHEAD_UPDATE
                             });
+                            // support for cue points.
+                            if (lastPlayhead != Math.floor(playhead)) {
+                                core.processEvent(events[eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead)], {
+                                    data: playhead,
+                                    target: player,
+                                    type: eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead)
+                                });
+                            }
                         } else if (data.indexOf("playlistMetadata:") === 0) {
                             player.playlistMetadata = jsonParse(getMessageData(data));
                         } else if (data === "onReady") {
@@ -1863,6 +1894,13 @@ var MTVNPlayer = window.MTVNPlayer || {};
             /**
              * @event onStateChange
              * Fired when the play state changes. event.data is the state.
+             * 
+             * You can also listen for a specific state only (v2.5.0).
+             * ```
+             * player.bind("onStateChange:paused",function(event){
+             *  // callback fires when state equals paused.
+             * });
+             * ```
              */
             STATE_CHANGE: "onStateChange",
             /**
@@ -1878,6 +1916,15 @@ var MTVNPlayer = window.MTVNPlayer || {};
             /**
              * @event onPlayheadUpdate
              * Fired as the playhead moves. event.data is the playhead time.
+             * 
+             * Support for cue points (v2.5.0).
+             * The below snippet fires once when the playhead crosses the 15 second mark.
+             * The playhead time itself may be 15 plus a fraction.
+             * ```
+             * player.once("onPlayheadUpdate:15",function(event){
+             *  // callback
+             * });
+             * ```
              */
             PLAYHEAD_UPDATE: "onPlayheadUpdate",
             /**
@@ -2006,14 +2053,17 @@ var MTVNPlayer = window.MTVNPlayer || {};
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
+                    if (eventName.indexOf(":") !== -1) {
+                        eventName = eventName.split(":")[0];
+                    }
                     var check = function(events) {
-                            for (var event in events) {
-                                if (events.hasOwnProperty(event) && events[event] === eventName) {
-                                    return true; // has event
-                                }
+                        for (var event in events) {
+                            if (events.hasOwnProperty(event) && events[event] === eventName) {
+                                return true; // has event
                             }
-                            return false;
-                        };
+                        }
+                        return false;
+                    };
                     if (check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
                         return;
                     }
@@ -2155,6 +2205,44 @@ var MTVNPlayer = window.MTVNPlayer || {};
             };
             /**
              * @member MTVNPlayer
+             * Returns a player that matches a specific uri
+             * @returns MTVNPlayer.Player
+             */
+            MTVNPlayer.getPlayer = function(uri) {
+                var instances = core.instances,
+                    i = instances.length;
+                for (i; i--;) {
+                    if (instances[i].player.config.uri === uri) {
+                        return instances[i].player;
+                    }
+                }
+                return null;
+            };
+            /**
+             * @member MTVNPlayer
+             * Garbage collection, looks for all {@link MTVNPlayer.Player} that are no longer in the document, 
+             * and removes them from the hash map.
+             */
+            MTVNPlayer.gc = function() {
+                var elementInDocument = function(element) {
+                    while (element.parentNode) {
+                        element = element.parentNode;
+                        if (element == document) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                var instances = core.instances,
+                    i = instances.length;
+                for (i; i--;) {
+                    if (!elementInDocument(instances[i].player.element)) {
+                        instances.splice(i, 1);
+                    }
+                }
+            };
+            /**
+             * @member MTVNPlayer
              * Create players from elements in the page.
              * This should be used if you need to create multiple players that are the same.
              * @param {String} selector default is "div.MTVNPlayer"
@@ -2283,7 +2371,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                  *
                  */
                 this.config = config || {};
-                 /**
+                /**
                  * @property {HTMLElement} isFullScreen
                  * HTML5 only. See {@link MTVNPlayer.Events#onFullScreenChange}
                  */
@@ -2313,8 +2401,8 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 playerModule = MTVNPlayer.module(this.isFlash ? "flash" : "html5");
                 playerModule.initialize();
                 // do more initializing that's across player modules.
-                core.playerInit(this,playerModule);
-                
+                core.playerInit(this, playerModule);
+
                 // check for element before creating
                 if (!el) {
                     if (document.readyState === "complete") {
@@ -2425,7 +2513,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 exitFullScreen: function() {
                     this.message("exitFullScreen");
                 },
-                 /**
+                /**
                  * Show user clip screen.
                  * For flash only (api v2.4.0)
                  */
@@ -2434,6 +2522,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 },
                 /**
                  * Adds an event listener for an event.
+                 * @deprecated use {@link MTVNPlayer.Player#on} instead.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
                  * @param {Function} callback The function to invoke when the event is fired.
                  */
@@ -2451,6 +2540,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 },
                 /**
                  * Removes an event listener
+                 * @deprecated use {@link MTVNPlayer.Player#off} instead.
                  * @param {String} eventName an MTVNPlayer.Event.
                  * @param {Function} callback The function to that was bound to the event.
                  */
@@ -2472,6 +2562,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 },
                 /**
                  * Adds an event listener for an event that will only fire once and then be removed.
+                 * @deprecated use {@link MTVNPlayer.Player#one} instead.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
                  * @param {Function} callback The function to invoke when the event is fired.
                  */
@@ -2484,6 +2575,24 @@ var MTVNPlayer = window.MTVNPlayer || {};
                     this.bind(eventName, newCB);
                 }
             };
+            /**
+             * (v2.5.0) Adds an event listener for an event.
+             * @param {String} eventName an {@link MTVNPlayer.Events}.
+             * @param {Function} callback The function to invoke when the event is fired.
+             */
+            Player.prototype.on = Player.prototype.bind;
+            /**
+             * (v2.5.0) Removes an event listener
+             * @param {String} eventName an MTVNPlayer.Event.
+             * @param {Function} callback The function to that was bound to the event.
+             */
+            Player.prototype.off = Player.prototype.unbind;
+            /**
+             * (v2.5.0) Adds an event listener for an event that will only fire once and then be removed.
+             * @param {String} eventName an {@link MTVNPlayer.Events}.
+             * @param {Function} callback The function to invoke when the event is fired.
+             */
+            Player.prototype.one = Player.prototype.once;
             return Player;
         }(window));
         /**
@@ -3059,6 +3168,7 @@ var docElement            = doc.documentElement,
 
 /**
  * @private
+ * @ignore
  * Trying something new here. A way to keep the API clean for utility methods specific to things like reporting.
  * These modules are on a player, as opposed to the modules on MTVNPlayer.
  */
@@ -3206,6 +3316,7 @@ var docElement            = doc.documentElement,
     // Export module configs so they can be adjusted for testing.
     ModuleLoader.EndSlateModule = EndSlateModule;
     /**
+     * @ignore
      * When any player is created, listen for an end slate event
      */
     MTVNPlayer.onPlayer(function(player) {
@@ -3223,4 +3334,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="12/27/2012 08:12:32";
+MTVNPlayer.version="2.6.0";MTVNPlayer.build="01/02/2013 01:01:09";

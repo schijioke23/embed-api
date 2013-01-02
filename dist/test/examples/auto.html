@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <title>MTVN Video Player</title>
+      <script type="text/javascript" charset="utf-8">
+            // This block is optional, if you want event handlers,
+            // you can define defaults for all players here.
+            var MTVNPlayer = MTVNPlayer || {};
+            MTVNPlayer.defaultEvents = {
+                onReady:function(event){
+                    // do something in the onReady event for every player
+                }
+            };
+        </script>
+        <script type="text/javascript" src="/player/api/auto/" defer></script>    
+    </head>
+    <body>
+        <!-- DEFINE PLAYERS -->
+        <div class="MTVNPlayer" data-contenturi="mgid:cms:video:nick.com:920786"></div>
+    </body>
+</html>
