@@ -9,12 +9,15 @@
   <!-- this must be after the qunit.js -->
   <script src="/testem.js"></script>
   <script type="text/javascript" language="javascript">
-    var tag = document.createElement('script'),
-        isInDist = location.href.indexOf("dist/test") !== -1;
-    tag.src = isInDist ? "../../api.js" : "../../dist/api.js";
-    tag.language = "javascript";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      (function() {
+        var tag = document.createElement('script'),
+            isInDist = location.href.indexOf("dist/test") !== -1,
+            deployed = location.href.indexOf("media.mtvnservices") !== -1;
+        tag.src = isInDist || deployed ? "../../api.js" : "../../dist/api.js";
+        tag.language = "javascript";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);  
+      })();
   </script>
   <!-- QUnit Module -->
   <script type="text/javascript">

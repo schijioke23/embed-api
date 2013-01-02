@@ -90,7 +90,7 @@ module.exports = function(grunt) {
     });
     grunt.registerTask("prepare_deploy", "take the build output and prepare it for deployment", function(build) {
         var dest = "deploy/" + grunt.config("pkg").version + (build ? "-" + build : ""),
-            files = grunt.file.expandFiles("dist/*");
+            files = grunt.file.expandFiles("dist/**");
         if (files.length === 0) {
             grunt.log.error("run grunt release first");
         }
