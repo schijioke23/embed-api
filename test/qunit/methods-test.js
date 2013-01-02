@@ -18,7 +18,7 @@
                     equal(Math.floor(player.playhead), 2, "cue point worked");
                     player.seek(20);
                     player.one("onPlayheadUpdate", function(event) {
-                        ok(event.data > 20, "seek(20) worked");
+                        ok(event.data >= 20, "seek(20) worked");
                         start();
                     });
                 });
@@ -43,8 +43,7 @@
                     equal(Math.floor(playerEvent.target.playhead), 2, "cue point worked");
                     $(".MTVNPlayer").trigger("MTVNPlayer:seek", 20);
                     $(".MTVNPlayer").one("MTVNPlayer:onPlayheadUpdate", function(event, playerEvent) {
-                        console.log("onPlayhead", playerEvent.data);
-                        ok(playerEvent.data > 20, "seek(20) worked");
+                        ok(playerEvent.data >= 20, "seek(20) worked");
                         start();
                     });
                 });

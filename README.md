@@ -98,6 +98,23 @@ Each function has one argument with two properties:
 - target: The player that dispatched the event
 - data: An optional property that contains data about the event.
 
+Events can be added to a player object as well with `on`, and removed with `off` (`bind` and `unbind` are also supported).
+```javascript
+player.on("onStateChange",function(event){
+    // event.data is the state
+});
+player.on("onStateChange:playing",function(event){
+    // some events support filtering. (v2.5.0)
+});
+player.on("onPlayheadUpdate:20",function(event){
+    // this works like a cue point, firing at 20 seconds. (v2.5.0)
+});
+player.one("onPlayheadUpdate:20",function(event){
+    // the one method only fires once. (v2.5.0)
+});
+```
+See the [docs][events] for more.
+
 <a name="b3"/>
 #### Placeholders
 A placeholder is markup defined by you that will take the place of the player until the placeholder is clicked. This allows you to create a lighter version of the poster screen, and delay a video player download to improve the load time of the page.

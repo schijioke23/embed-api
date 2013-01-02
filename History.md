@@ -1,3 +1,18 @@
+2.5.0 / 2013-1-3 
+==================
+
+  * [BRBPL-3345](http://jira.mtvi.com/browse/BRBPL-3345) Support for placeholders and jQuery style event binding and method invokation.
+  * `on`, `off`, and `one` deprecate `bind`, `unbind`, and `once`, respectively. 
+  * Support for filtered events such as `onPlayStateChange:playing`. 
+  * Support for cue points `onPlayheadUpdate:20`, fires at 20 seconds.
+  * Fixed a bug where events fired in the reverse order they were added. They now fire in order.
+  * `MTVNPlayer.getPlayer(uri)`, gets a player that was created with a specific uri.
+  * `MTVNPlayer.gc()`, remove any players that aren't in the document from the MTVNPlayer's internal hash map.
+  * Fixed issue with `MTVNPlayer.defaultConfig` overriding configs passed to players.
+  * Now using `MTVNPlayer.defaultConfig` when invoking new `MTVNPlayer.Player`. It was only used with `MTVNPlayer.createPlayers()` previously.
+  * Converted buster unit tests to QUnit tests. Increased coverage.
+
+
 2.4.4 / 2012-12-14 
 ==================
 
