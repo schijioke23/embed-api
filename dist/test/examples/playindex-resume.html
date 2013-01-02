@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+		<title>Player Resume Demo</title>
+    </head>
+    <body>
+		<div id="player"></div>
+
+		<script type="text/javascript" src="/player/api"></script>
+		<script type="text/javascript">
+			// Create the player
+			var resumePlayer = new MTVNPlayer.Player("player",{
+				uri: "mgid:cms:episode:thedailyshow.com:414129",
+				width: 640,
+				height: 320,
+				flashVars: { autoPlay: true }
+			});
+
+			// Store the current seconds of the current clip
+			resumePlayer.bind("onPlayheadUpdate", function(event) {
+				localStorage["sec"] = event.data
+			});
+
+			// Store the current index of the player
+			resumePlayer.bind("onMetadata", function(event) {
+				localStorage["sec"] = 0;
+				localStorage["idx"] = event.data.index;
+			});
+
+			// Check for local storage of the data, resume the player with playIndex
+			resumePlayer.bind("onReady", function() {
+				if (localStorage["sec"]) {
+					resumePlayer.playIndex(localStorage["idx"], localStorage["sec"]);
+				}
+			});
+		</script>
+    </body>
+</html>

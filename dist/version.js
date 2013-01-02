@@ -1,1 +1,1 @@
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="12/27/2012 08:12:32";
+MTVNPlayer.version="2.6.0";MTVNPlayer.build="01/02/2013 01:01:09";

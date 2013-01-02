@@ -9,7 +9,7 @@ The embed API provides a unified way to embed and use different video players. O
     - [config](#b1)
     - [events](#b2)
     - [placeholders](#b3)
-- [Contributing and testing](#a3)
+- [Building and testing](#a3)
 - [Advanced usage](#a4)
     - [Defining defaults](#a4-1)
     - [MTVNPlayer.addCallback](#a4-2)
@@ -149,7 +149,7 @@ If `$(".MTVNPlayer").player();` is invoked, and the placeholder has no children,
 See [jQuery/Zepto support](#a4-4) for more on this.
 
 <a name="a3"/>
-## Contributing and testing.
+## Building and testing.
 After cloning, from the project root run:
 ```bash
 $ npm install
@@ -167,26 +167,7 @@ $ grunt watch
 ```
 (More on [grunt](https://github.com/cowboy/grunt))
 
-To run the Embed API test page:
-```bash
-$ node test
-```
-
-Then visit http://localhost:3131
-
-To run from a different port: 
-```bash
-$ node test 4141
-```
-
-There are also buster unit tests:
-```bash
-$ buster-server
-```
-Go to http://localhost:1111/ to capture browsers
-```bash
-$ buster-test -c test/buster/buster.js
-```
+To run the Embed API test page open `test/index.html` in the browser.
 
 <a name="a4"/>
 ## Advanced Usage

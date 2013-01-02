@@ -57,6 +57,13 @@ module.exports = function(grunt) {
                 dest: syndicatedPath
             }
         },
+        copy: {
+            target: {
+                files: {
+                    "dist/test/": ["test/**"]
+                }
+            }
+        },
         watch: {
             files: ['grunt.js', 'src/**/*.js', 'test/buster/**/*.js'],
             tasks: 'default'
@@ -91,6 +98,6 @@ module.exports = function(grunt) {
             grunt.file.copy(file, dest + file.replace("dist", ""));
         });
     });
-    grunt.registerTask('default', 'clean version lint:devel concat finish');
-    grunt.registerTask('release', 'clean version lint:release concat min finish');
+    grunt.registerTask('default', 'clean version lint:devel concat copy finish');
+    grunt.registerTask('release', 'clean version lint:release concat min copy finish');
 };
