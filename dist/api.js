@@ -210,8 +210,11 @@ var MTVNPlayer = window.MTVNPlayer || {};
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
     core.executeCallbacks = function(player) {
-        for (var i = 0, len = onPlayerCallbacks.length; i < len; i++) {
-            onPlayerCallbacks[i](player);
+        var cbs = onPlayerCallbacks.slice(),
+            i = 0,
+            len = cbs.length;
+        for (i; i < len; i++) {
+            cbs[i](player);
         }
     };
 })(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);
@@ -3334,4 +3337,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.6.0";MTVNPlayer.build="01/02/2013 01:01:09";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="01/02/2013 10:01:41";
