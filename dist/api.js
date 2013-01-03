@@ -221,7 +221,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
 /**
  * @ignore
  * The config module has helper functions for dealing with the config object.
- */
+ **/
 (function(MTVNPlayer) {
     "use strict";
     var config = MTVNPlayer.module("config");
@@ -274,6 +274,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
     /**
      * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
+     * The properties will not be overriden on the toObj, unless override is specified.
      */
     copyProperties = config.copyProperties = function(toObj, fromObj, override) {
         if (fromObj) {
@@ -303,6 +304,12 @@ var MTVNPlayer = window.MTVNPlayer || {};
     };
     config.buildConfig = function(el, config) {
         config = copyProperties(config, window.MTVNPlayer.defaultConfig);
+        // make sure the height and width are defined.
+        // 640x360 is now the default.
+        config = copyProperties(config, {
+            width: 640,
+            height: 360
+        });
         var getDataAttr = function(attr) {
             return el.getAttribute("data-" + attr);
         },
@@ -2277,10 +2284,9 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 if (!selectorQuery) {
                     selectorQuery = "div.MTVNPlayer";
                 }
-                var elements = MTVNPlayer.module("selector").find(selectorQuery),
-                    configModule = MTVNPlayer.module("config");
+                var elements = MTVNPlayer.module("selector").find(selectorQuery);
                 for (var i = 0, len = elements.length; i < len; i++) {
-                    new MTVNPlayer.Player(elements[i], configModule.copyProperties(config || {}, MTVNPlayer.defaultConfig), configModule.copyEvents(events || {}, MTVNPlayer.defaultEvents));
+                    new MTVNPlayer.Player(elements[i], config, events);
                 }
                 return elements.length;
             };
@@ -2396,7 +2402,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
                 el.parentNode.insertBefore(containerElement, el);
                 containerElement.appendChild(el);
 
-                this.events = events || {};
+                this.events = MTVNPlayer.module("config").copyEvents(events || {}, MTVNPlayer.defaultEvents);
                 this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
@@ -3337,4 +3343,4 @@ var docElement            = doc.documentElement,
         MTVNPlayer.onAPIReady();
     }
 })(window.MTVNPlayer);
-MTVNPlayer.version="2.5.0";MTVNPlayer.build="01/02/2013 10:01:41";
+MTVNPlayer.version="2.5.0";MTVNPlayer.build="01/03/2013 03:01:29";

@@ -433,10 +433,9 @@
                 if (!selectorQuery) {
                     selectorQuery = "div.MTVNPlayer";
                 }
-                var elements = MTVNPlayer.module("selector").find(selectorQuery),
-                    configModule = MTVNPlayer.module("config");
+                var elements = MTVNPlayer.module("selector").find(selectorQuery);
                 for (var i = 0, len = elements.length; i < len; i++) {
-                    new MTVNPlayer.Player(elements[i], configModule.copyProperties(config || {}, MTVNPlayer.defaultConfig), configModule.copyEvents(events || {}, MTVNPlayer.defaultEvents));
+                    new MTVNPlayer.Player(elements[i], config, events);
                 }
                 return elements.length;
             };
@@ -552,7 +551,7 @@
                 el.parentNode.insertBefore(containerElement, el);
                 containerElement.appendChild(el);
 
-                this.events = events || {};
+                this.events = MTVNPlayer.module("config").copyEvents(events || {}, MTVNPlayer.defaultEvents);
                 this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
