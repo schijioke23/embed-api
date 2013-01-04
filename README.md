@@ -2,7 +2,8 @@
 
 The embed API provides a unified way to embed and use different video players. On iOS devices, an HTML5 player will be created, in all other scenarios a flash player will be created.
 
-- [API Docs][docs]
+- [Builds](#a0)
+- [Docs][docs]
 - Change Log: See History.md
 - [Loading](#a1)
 - [Usage](#a2)
@@ -15,6 +16,10 @@ The embed API provides a unified way to embed and use different video players. O
     - [MTVNPlayer.addCallback](#a4-2)
     - [MTVNPlayer.onPlayer](#a4-3)
     - [jQuery/Zepto Support](#a4-4)
+
+<a name="a0"/>
+## Builds
+Builds are deployed to http://media.mtvnservices.com/player/api/{version}. For example, the minified version of 2.4.3 is here http://media.mtvnservices.com/player/api/2.4.3/api.min.js. The unminifed would be [api.js](http://media.mtvnservices.com/player/api/2.4.3/api.js). There's no directory browsing on live, so if you want to explore you should check out [here](http://media.mtvnservices-d.mtvi.com/player/api/).
 
 <a name="a1"/>
 ## Loading

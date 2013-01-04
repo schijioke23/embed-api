@@ -24,14 +24,11 @@
         expect(2);
         $fixture.html($("#test1").html());
         $(".MTVNPlayer").player();
-        $(".MTVNPlayer").bind("MTVNPlayer:onStateChange", function(je, e) {
-            var playstate = e.data;
-            if (playstate === "playing") {
-                ok(true, "video played");
-                start();
-            }
+        $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function(je, e) {
+            ok(true, "video played");
+            start();
         });
-        $(".MTVNPlayer").bind("MTVNPlayer:onReady", function(event) {
+        $(".MTVNPlayer").one("MTVNPlayer:onReady", function(event) {
             ok(true, "ready event has fired.");
             $(".MTVNPlayer").trigger("MTVNPlayer:play");
         });
@@ -42,7 +39,7 @@
         expect(1);
         $fixture.html($("#test2").html());
         $(".MTVNPlayer").player();
-        $(".MTVNPlayer").bind("MTVNPlayer:onReady", function(event) {
+        $(".MTVNPlayer").one("MTVNPlayer:onReady", function(event) {
             ok(true, "ready event has fired.");
             start();
         });

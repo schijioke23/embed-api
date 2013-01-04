@@ -27,6 +27,7 @@
           // but in the meantime...
         teardown: function() {
             window.MTVNPlayer.defaultConfig = undefined;
+            window.MTVNPlayer.defaultEvents = undefined;
             window.MTVNPlayer.gc();
         },
       });
@@ -62,5 +63,6 @@
   <script type="text/javascript" src="methods-test.js"></script>
   <script type="text/javascript" src="events-test.js"></script>
   <script type="text/javascript" src="mtvnplayer-methods-test.js"></script>
+  <script type="text/javascript" src="performance-test.js"></script>
 </body>
 </html>

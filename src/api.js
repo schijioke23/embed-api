@@ -136,7 +136,13 @@
              * @private
              * Fired when the airplay button is clicked
              */
-            AIRPLAY: "onAirplay"
+            AIRPLAY: "onAirplay",
+            /**
+             * @event onPerformance
+             * @private
+             * Fired when performance data has been collected.
+             */
+            PERFORMANCE: "onPerformance"
         };
         /**
          * When a {@link MTVNPlayer.Events#onStateChange} event is fired, the event's data property will be equal to one of these play states. 
@@ -546,7 +552,13 @@
                     this.id = elementOrId;
                     el = document.getElementById(this.id);
                 }
-
+                
+                if (this.config.performance) {
+                    this.config.performance = {
+                        // store the time the MTNVPlayer.Player instantiation process began.
+                        startTime: (new Date()).getTime()
+                    };
+                }
                 // wrap the player element in a container div
                 el.parentNode.insertBefore(containerElement, el);
                 containerElement.appendChild(el);
