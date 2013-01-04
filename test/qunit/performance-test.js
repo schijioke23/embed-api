@@ -8,7 +8,7 @@
         var player = new MTVNPlayer.Player($(".MTVNPlayer")[0], {
             performance: true
         });
-        player.on("onPerformance", function(event) {
+        player.on("performance", function(event) {
             var result = event.data;
             ok(result, "performance data");
             ok(!isNaN(result.load), "performance data.load");
@@ -26,8 +26,9 @@
                 autoPlay: true
             }
         });
-        player.on("onPerformance", function(event) {
+        player.on("performance", function(event) {
             var result = event.data;
+            delete MTVNPlayer.testPlayStart;
             ok(result, "performance data");
             ok(!isNaN(result.load), "performance data.load");
             ok(!isNaN(result.metadata), "performance data.metadata");
@@ -44,7 +45,8 @@
                 autoPlay: true
             }
         });
-        player.on("onPerformance", function(event) {
+        player.play();
+        player.on("performance", function(event) {
             var result = event.data;
             ok(result, "performance data");
             ok(!isNaN(result.load), "performance data.load");

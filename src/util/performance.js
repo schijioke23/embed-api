@@ -11,10 +11,20 @@
         var config = player.config;
         if (config.performance) {
             var results = {},
-                startTime = config.performance.startTime,
+            fire = function() {
+                if (results.metadata && results.ready) {
+                    if (!testPlayStart || results.playStart) {
+                        core.processEvent(player.events[performanceEvent], {
+                            target: player,
+                            data: results
+                        });
+                    }
+                }
+            },
+            startTime = config.performance.startTime,
                 testPlayStart = function(flashVars, testPlayStart) {
-                    if(player.isFlash){
-                        if(testPlayStart !== undefined && testPlayStart !== null){
+                    if (player.isFlash) {
+                        if (testPlayStart !== undefined && testPlayStart !== null) {
                             return testPlayStart;
                         }
                         return flashVars ? flashVars.autoPlay : false;
@@ -23,29 +33,18 @@
                 }(config.flashVars, MTVNPlayer.testPlayStart);
             // time from new MTVNPlayer.Player() until player load
             results.load = elapsed(startTime);
-            player.one("onReady", function() {
+            player.one("ready", function() {
                 results.ready = elapsed(startTime);
+                fire();
             });
-            player.one("onMetadata", function() {
+            player.one("metadata", function() {
                 results.metadata = elapsed(startTime);
-                if (!testPlayStart) {
-                    // finished for now, send results
-                    core.processEvent(player.events[performanceEvent], {
-                        target: player,
-                        data: results
-                    });
-                }
+                fire();
             });
-            if (testPlayStart) {
-                player.one("onStateChange:playing", function(event) {
-                    results.playStart = elapsed(startTime);
-                    // send results
-                    core.processEvent(player.events[performanceEvent], {
-                        target: player,
-                        data: results
-                    });
-                });
-            }
+            player.one("stateChange:playing", function(event) {
+                results.playStart = elapsed(startTime);
+                fire();
+            });
         }
     });
 })(window.MTVNPlayer);

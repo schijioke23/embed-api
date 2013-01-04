@@ -7,7 +7,14 @@
     // private vars
     var instances = [],
         baseURL = "http://media.mtvnservices.com/",
-        onPlayerCallbacks = [];
+        onPlayerCallbacks = [],
+        // this is needed for the jQuery plugin only.
+        getLegacyEventName = function(eventName) {
+            if(eventName === "uiStateChange"){
+                return "onUIStateChange";
+            }
+            return "on" + eventName.charAt(0).toUpperCase() + eventName.substr(1);
+        };
     // exports
     /**
      * @property instances
@@ -137,6 +144,8 @@
         // trigger a jQuery event if there's an $el.
         if(data && data.target && data.target.$el){
             data.target.$el.trigger("MTVNPlayer:"+data.type, data);
+            // legacy event names
+            data.target.$el.trigger("MTVNPlayer:"+getLegacyEventName(data.type), data);
         }
         if (!event) {
             return;

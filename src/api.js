@@ -49,7 +49,7 @@
              *          console.log(event.data === player.currentMetadata); // true
              *      });
              */
-            METADATA: "onMetadata",
+            METADATA: "metadata",
             /**
              * @event onStateChange
              * Fired when the play state changes. event.data is the state.
@@ -61,17 +61,17 @@
              * });
              * ```
              */
-            STATE_CHANGE: "onStateChange",
+            STATE_CHANGE: "stateChange",
             /**
              * @event onMediaStart
              * Fired once per playlist item (content + ads/bumpers).
              */
-            MEDIA_START: "onMediaStart",
+            MEDIA_START: "mediaStart",
             /**
              * @event onMediaEnd
              * Fired when a playlist item ends, this includes its prerolls and postrolls
              */
-            MEDIA_END: "onMediaEnd",
+            MEDIA_END: "mediaEnd",
             /**
              * @event onPlayheadUpdate
              * Fired as the playhead moves. event.data is the playhead time.
@@ -85,18 +85,18 @@
              * });
              * ```
              */
-            PLAYHEAD_UPDATE: "onPlayheadUpdate",
+            PLAYHEAD_UPDATE: "playheadUpdate",
             /**
              * @event onPlaylistComplete
              * Fired at the end of a playlist
              */
-            PLAYLIST_COMPLETE: "onPlaylistComplete",
+            PLAYLIST_COMPLETE: "playlistComplete",
             /**
              * @deprecated 1.5.0 Use {@link MTVNPlayer.Events#onUIStateChange} instead
              * @event onOverlayRectChange
              * Fired when the GUI appears, event.data contains an {Object} {x:0,y:0,width:640,height:320}
              */
-            OVERLAY_RECT_CHANGE: "onOverlayRectChange",
+            OVERLAY_RECT_CHANGE: "overlayRectChange",
             /**
              * @event onReady
              * Fired when the player has loaded and the metadata is available. 
@@ -106,7 +106,7 @@
              * won't be ready until the metadata is ready. Other methods will be queued and 
              * then executed when the player is ready to invoke them.
              */
-            READY: "onReady",
+            READY: "ready",
             /**
              * @event onUIStateChange
              * Fired when the UI changes its state, ususally due to user interaction, or lack of.
@@ -116,33 +116,33 @@
              * If false, the user has remained idle with out interaction for a predetermined amount of time.
              * - data.overlayRect <code>Object</code>: the area that is not obscured by the GUI, a rectangle such as <code>{x:0,y:0,width:640,height:320}</code>
              */
-            UI_STATE_CHANGE: "onUIStateChange",
+            UI_STATE_CHANGE: "uiStateChange",
             /**
              * @event onIndexChange
              * Fired when the index of the current playlist item changes, ignoring ads.
              *
              * event.data contains the index
              */
-            INDEX_CHANGE: "onIndexChange",
+            INDEX_CHANGE: "indexChange",
             /**
              * @event onFullScreenChange
              * HTML5 only. Fired when the player.isFullScreen property has been changed. 
              * The player may or may not visually be in full screen, it depends on its context.
              * Check {@link MTVNPlayer.Player#isFullScreen} to see if the player is in full screen or not.
              */
-            FULL_SCREEN_CHANGE: "onFullScreenChange",
+            FULL_SCREEN_CHANGE: "fullScreenChange",
             /**
              * @event onAirplay
              * @private
              * Fired when the airplay button is clicked
              */
-            AIRPLAY: "onAirplay",
+            AIRPLAY: "airplay",
             /**
              * @event onPerformance
              * @private
              * Fired when performance data has been collected.
              */
-            PERFORMANCE: "onPerformance"
+            PERFORMANCE: "performance"
         };
         /**
          * When a {@link MTVNPlayer.Events#onStateChange} event is fired, the event's data property will be equal to one of these play states. 
@@ -211,6 +211,15 @@
                 },
                 document = window.document,
                 Player,
+                fixEventName = function(eventName) {
+                    if (eventName && eventName.indexOf("on") === 0) {
+                        if (eventName === "onUIStateChange") {
+                            return "uiStateChange";
+                        }
+                        return eventName.charAt(2).toLowerCase() + eventName.substr(3);
+                    }
+                    return eventName;
+                },
                 /**
                  * @method checkEventName
                  * @private
@@ -242,6 +251,12 @@
                  */
                 checkEvents = function(events) {
                     for (var event in events) {
+                        if (events.hasOwnProperty(event) && event.indexOf("on") === 0) {
+                            events[fixEventName(event)] = events[event];
+                            delete events[event];
+                        }
+                    }
+                    for (event in events) {
                         if (events.hasOwnProperty(event)) {
                             checkEventName(event);
                         }
@@ -552,7 +567,7 @@
                     this.id = elementOrId;
                     el = document.getElementById(this.id);
                 }
-                
+
                 if (this.config.performance) {
                     this.config.performance = {
                         // store the time the MTNVPlayer.Player instantiation process began.
@@ -697,6 +712,7 @@
                  * @param {Function} callback The function to invoke when the event is fired.
                  */
                 bind: function(eventName, callback) {
+                    eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var currentEvent = this.events[eventName];
                     if (!currentEvent) {
@@ -715,6 +731,7 @@
                  * @param {Function} callback The function to that was bound to the event.
                  */
                 unbind: function(eventName, callback) {
+                    eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var i, currentEvent = this.events[eventName];
                     if (!currentEvent) {
