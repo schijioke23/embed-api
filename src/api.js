@@ -8,20 +8,20 @@
          * Some events have a data property (event.data) which contains data specific to the event.
          *
          * # How to listen to events
-         * Attached to player instance via {@link MTVNPlayer.Player#bind}:
-         *      player.bind("onMetadata",function(event) {
+         * Attached to player instance via {@link MTVNPlayer.Player#on}:
+         *      player.on("metadata",function(event) {
          *             var metadata = event.data;
          *          }
          *      });
          * Passed in as an Object to the constructor {@link MTVNPlayer.Player}:
          *      var player = new MTVNPlayer.Player("video-player",config,{
-         *              onMetadata:function(event) {
+         *              metadata:function(event) {
          *                  var metadata = event.data;
          *              }
          *      });
          * Passed as an Object into {@link MTVNPlayer#createPlayers}
          *      MTVNPlayer.createPlayers("div.MTVNPlayer",config,{
-         *              onMetadata:function(event) {
+         *              metadata:function(event) {
          *                  var metadata = event.data;
          *                  // player that dispatched the event
          *                  var player = event.target;
@@ -30,7 +30,7 @@
          *      });
          * Attached to player from {@link MTVNPlayer#onPlayer}
          *      MTVNPlayer.onPlayer(function(player){
-         *              player.bind("onMetadata",function(event) {
+         *              player.on("metadata",function(event) {
          *                  var metadata = event.data;
          *              }
          *      });
@@ -38,9 +38,9 @@
          */
         MTVNPlayer.Events = {
             /**
-             * @event onMetadata
+             * @event metadata
              * Fired when the metadata changes. event.data is the metadata. Also see {@link MTVNPlayer.Player#currentMetadata}.
-             *      player.bind("onMetadata",function(event) {
+             *      player.on("metadata",function(event) {
              *          // inspect the metadata object to learn more (documentation on metadata is in progress)
              *          console.log("metadata",event.data);
              *
@@ -51,43 +51,43 @@
              */
             METADATA: "metadata",
             /**
-             * @event onStateChange
+             * @event stateChange
              * Fired when the play state changes. event.data is the state.
              * 
              * You can also listen for a specific state only (v2.5.0).
              * ```
-             * player.bind("onStateChange:paused",function(event){
+             * player.on("stateChange:paused",function(event){
              *  // callback fires when state equals paused.
              * });
              * ```
              */
             STATE_CHANGE: "stateChange",
             /**
-             * @event onMediaStart
+             * @event mediaStart
              * Fired once per playlist item (content + ads/bumpers).
              */
             MEDIA_START: "mediaStart",
             /**
-             * @event onMediaEnd
+             * @event mediaEnd
              * Fired when a playlist item ends, this includes its prerolls and postrolls
              */
             MEDIA_END: "mediaEnd",
             /**
-             * @event onPlayheadUpdate
+             * @event playheadUpdate
              * Fired as the playhead moves. event.data is the playhead time.
              * 
              * Support for cue points (v2.5.0).
              * The below snippet fires once when the playhead crosses the 15 second mark.
              * The playhead time itself may be 15 plus a fraction.
              * ```
-             * player.once("onPlayheadUpdate:15",function(event){
+             * player.one("playheadUpdate:15",function(event){
              *  // callback
              * });
              * ```
              */
             PLAYHEAD_UPDATE: "playheadUpdate",
             /**
-             * @event onPlaylistComplete
+             * @event playlistComplete
              * Fired at the end of a playlist
              */
             PLAYLIST_COMPLETE: "playlistComplete",
@@ -98,7 +98,7 @@
              */
             OVERLAY_RECT_CHANGE: "overlayRectChange",
             /**
-             * @event onReady
+             * @event ready
              * Fired when the player has loaded and the metadata is available. 
              * You can bind/unbind to events before this fires.
              * You can also invoke most methods before the event, the only exception is
@@ -108,7 +108,7 @@
              */
             READY: "ready",
             /**
-             * @event onUIStateChange
+             * @event uiStateChange
              * Fired when the UI changes its state, ususally due to user interaction, or lack of.
              *
              * event.data will contain information about the state.
@@ -118,27 +118,27 @@
              */
             UI_STATE_CHANGE: "uiStateChange",
             /**
-             * @event onIndexChange
+             * @event indexChange
              * Fired when the index of the current playlist item changes, ignoring ads.
              *
              * event.data contains the index
              */
             INDEX_CHANGE: "indexChange",
             /**
-             * @event onFullScreenChange
+             * @event fullScreenChange
              * HTML5 only. Fired when the player.isFullScreen property has been changed. 
              * The player may or may not visually be in full screen, it depends on its context.
              * Check {@link MTVNPlayer.Player#isFullScreen} to see if the player is in full screen or not.
              */
             FULL_SCREEN_CHANGE: "fullScreenChange",
             /**
-             * @event onAirplay
+             * @event airplay
              * @private
              * Fired when the airplay button is clicked
              */
             AIRPLAY: "airplay",
             /**
-             * @event onPerformance
+             * @event performance
              * @private
              * Fired when performance data has been collected.
              */
@@ -176,8 +176,6 @@
              */
             BUFFERING: "buffering"
         };
-        // swfobject callback
-        MTVNPlayer.onSWFObjectLoaded = null;
         /**
          * @member MTVNPlayer 
          * When using MTVNPlayer.createPlayers this config (see MTVNPlayer.Player.config) object will be used for every player created.
@@ -194,7 +192,7 @@
          * @class MTVNPlayer.Player
          * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
          *      var player = new MTVNPlayer.Player(element/id,config,events);
-         *      player.bind("onMetadata",function(event){console.log("onMetadata",event.data);});
+         *      player.on("metadata",function(event){console.log("metadata",event.data);});
          *      player.pause();
          * @constructor
          * Create a new MTVNPlayer.Player
@@ -241,7 +239,7 @@
                     if (check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
                         return;
                     }
-                    throw new Error("MTVNPlayer.Player event:" + eventName + " doesn't exist.");
+                    throwError("event:" + eventName + " doesn't exist.");
                 },
                 /**
                  * @method checkEvents
@@ -340,8 +338,8 @@
              *     MTVNPlayer.onPlayer(function(player){
              *          // player is the player that was just created.
              *          // we can now hook into events.
-             *          player.bind("onPlayheadUpdate",function(event) {
-             *              // do something when "onPlayheadUpdate" fires.
+             *          player.on("playheadUpdate",function(event) {
+             *              // do something when "playheadUpdate" fires.
              *          }
              *
              *          // or look for information about the player.
@@ -570,10 +568,10 @@
 
                 if (this.config.performance) {
                     this.config.performance = {
-                        // store the time the MTNVPlayer.Player instantiation process began.
                         startTime: (new Date()).getTime()
                     };
                 }
+
                 // wrap the player element in a container div
                 el.parentNode.insertBefore(containerElement, el);
                 containerElement.appendChild(el);
@@ -759,7 +757,7 @@
                             ref.unbind(eventName, newCB);
                             callback(event);
                         };
-                    this.bind(eventName, newCB);
+                    this.on(eventName, newCB);
                 }
             };
             /**
