@@ -15,7 +15,7 @@
             baseUrl: baseUrl,
             path: "/end-slate",
             version: "0.0.3",
-            eventName: "onEndSlate",
+            eventName: "endSlate",
             onModuleRequested: function(event) {
                 EndSlateModule.callbacks.push(function() {
                     new(window.MTVNPlayer.EndSlate)(event.data, event.target);
@@ -47,6 +47,7 @@
     // Export module configs so they can be adjusted for testing.
     ModuleLoader.EndSlateModule = EndSlateModule;
     /**
+     * @ignore
      * When any player is created, listen for an end slate event
      */
     MTVNPlayer.onPlayer(function(player) {

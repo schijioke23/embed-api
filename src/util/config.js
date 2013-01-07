@@ -1,9 +1,10 @@
 /**
  * @ignore
  * The config module has helper functions for dealing with the config object.
- */
-(function(config) {
+ **/
+(function(MTVNPlayer) {
     "use strict";
+    var config = MTVNPlayer.module("config");
     if (config.initialized) {
         return;
     }
@@ -46,59 +47,96 @@
     };
     /**
      * @ignore
-     * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
      */
-    var copyProperties = config.copyProperties = function(toObj, fromObj) {
-            if (fromObj) {
-                for (var prop in fromObj) {
-                    if (fromObj.hasOwnProperty(prop)) {
-                        if (fromObj[prop] !== undefined && fromObj[prop] !== null) {
-                            var propName = prop.toLowerCase();
-                            if (propName === "flashvars" || propName === "attributes" || propName === "params") {
-                                toObj[prop] = toObj[prop] || {};
-                                copyProperties(toObj[prop], fromObj[prop]);
-                            } else {
-                                // make sure width and height are defined and not zero
-                                if ((prop === "width" || prop === "height") && !fromObj[prop]) {
-                                    continue;
-                                }
-                                toObj[prop] = fromObj[prop];
+    var exists = function(value) {
+        return value !== undefined && value !== null;
+    },
+    /**
+     * @ignore
+     * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
+     * The properties will not be overriden on the toObj, unless override is specified.
+     */
+    copyProperties = config.copyProperties = function(toObj, fromObj, override) {
+        if (fromObj) {
+            for (var prop in fromObj) {
+                if (fromObj.hasOwnProperty(prop)) {
+                    if (exists(fromObj[prop])) {
+                        var propName = prop.toLowerCase();
+                        if (propName === "flashvars" || propName === "attributes" || propName === "params") {
+                            toObj[prop] = toObj[prop] || {};
+                            copyProperties(toObj[prop], fromObj[prop], override);
+                        } else {
+                            // make sure width and height are defined and not zero
+                            if ((prop === "width" || prop === "height") && !fromObj[prop]) {
+                                continue;
                             }
+                            // don't override if the prop exists
+                            if (!override && exists(toObj[prop])) {
+                                continue;
+                            }
+                            toObj[prop] = fromObj[prop];
                         }
                     }
                 }
             }
-            return toObj;
-        };
-    config.buildConfig = function(el, config) {
-        var getDataAttr = function(attr) {
-                return el.getAttribute("data-" + attr);
-            },
-            getStyleAttr = function(attr) {
-                return parseInt(el.style[attr], 10);
-            },
-            getObjectFromNameValue = function(attr) {
-                attr = getDataAttr(attr);
-                if (attr) {
-                    var i, result = {},
-                        pairs = attr.split("&"),
-                        pair;
-                    for (i = pairs.length; i--;) {
-                        pair = pairs[i].split("=");
-                        if (pair && pair.length == 2) {
-                            result[pair[0]] = pair[1];
-                        }
-                    }
-                    return result;
-                }
-            },
-            configFromEl = {
-                uri: getDataAttr("contenturi"),
-                width: getStyleAttr("width") || null,
-                height: getStyleAttr("height") || null,
-                flashVars: getObjectFromNameValue("flashVars"),
-                attributes: getObjectFromNameValue("attributes")
-            };
-        return copyProperties(config, configFromEl);
+        }
+        return toObj;
     };
-})(window.MTVNPlayer.module("config"));
+    config.buildConfig = function(el, config) {
+        config = copyProperties(config, window.MTVNPlayer.defaultConfig);
+        // make sure the height and width are defined.
+        // 640x360 is now the default.
+        config = copyProperties(config, {
+            width: 640,
+            height: 360
+        });
+        var getDataAttr = function(attr) {
+            return el.getAttribute("data-" + attr);
+        },
+        getStyleAttr = function(attr) {
+            return parseInt(el.style[attr], 10);
+        },
+        getObjectFromNameValue = function(attr) {
+            attr = getDataAttr(attr);
+            if (attr) {
+                var i, result = {},
+                pairs = attr.split("&"),
+                    pair;
+                for (i = pairs.length; i--;) {
+                    pair = pairs[i].split("=");
+                    if (pair && pair.length == 2) {
+                        result[pair[0]] = pair[1];
+                    }
+                }
+                return result;
+            }
+        },
+        /**
+         * Allow the element to define some custom flashvars instead of
+         * using querystring format on the data-flashVars object.
+         */
+        copyCustomPropertiesToFlashVars = function(obj) {
+            var customProperties = ["autoPlay", "sid", "ssid"],
+                i, propValue, propName;
+            for (i = customProperties.length; i--;) {
+                propName = customProperties[i];
+                propValue = getDataAttr(propName);
+                if (propValue) {
+                    if (!obj) {
+                        obj = {};
+                    }
+                    obj[propName] = propValue;
+                }
+            }
+            return obj;
+        },
+        configFromEl = {
+            uri: getDataAttr("contenturi"),
+            width: getStyleAttr("width") || null,
+            height: getStyleAttr("height") || null,
+            flashVars: copyCustomPropertiesToFlashVars(getObjectFromNameValue("flashVars")),
+            attributes: getObjectFromNameValue("attributes")
+        };
+        return copyProperties(config, configFromEl, true);
+    };
+})(window.MTVNPlayer);

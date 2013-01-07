@@ -7,3 +7,5 @@ example.sh
 .gradle/
 build/
 node_modules/
+npm-debug.log
+dist/

@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 
-    'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
+    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/performance.js', 'src/util/finish.js', 'dist/version.js'],
         targetPath = 'dist/',
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
@@ -25,7 +24,7 @@ module.exports = function(grunt) {
                 src: autoPath,
                 dest: autoPath
             },
-            syndicated:{
+            syndicated: {
                 src: syndicatedPath,
                 dest: syndicatedPath
             }
@@ -58,6 +57,13 @@ module.exports = function(grunt) {
                 dest: syndicatedPath
             }
         },
+        copy: {
+            target: {
+                files: {
+                    "dist/test/": ["test/**"]
+                }
+            }
+        },
         watch: {
             files: ['grunt.js', 'src/**/*.js', 'test/buster/**/*.js'],
             tasks: 'default'
@@ -67,7 +73,7 @@ module.exports = function(grunt) {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
         grunt.log.writeln("building version:" + version);
-        grunt.file.write(targetPath  +  "version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
+        grunt.file.write(targetPath + "version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);
@@ -84,7 +90,7 @@ module.exports = function(grunt) {
     });
     grunt.registerTask("prepare_deploy", "take the build output and prepare it for deployment", function(build) {
         var dest = "deploy/" + grunt.config("pkg").version + (build ? "-" + build : ""),
-            files = grunt.file.expandFiles("dist/*");
+            files = grunt.file.expandFiles("dist/**");
         if (files.length === 0) {
             grunt.log.error("run grunt release first");
         }
@@ -92,6 +98,6 @@ module.exports = function(grunt) {
             grunt.file.copy(file, dest + file.replace("dist", ""));
         });
     });
-    grunt.registerTask('default', 'clean version lint:devel concat finish');
-    grunt.registerTask('release', 'clean version lint:release concat min finish');
+    grunt.registerTask('default', 'clean version lint:devel concat copy finish');
+    grunt.registerTask('release', 'clean version lint:release concat min copy finish');
 };

@@ -7,7 +7,14 @@
     // private vars
     var instances = [],
         baseURL = "http://media.mtvnservices.com/",
-        onPlayerCallbacks = [];
+        onPlayerCallbacks = [],
+        // this is needed for the jQuery plugin only.
+        getLegacyEventName = function(eventName) {
+            if(eventName === "uiStateChange"){
+                return "onUIStateChange";
+            }
+            return "on" + eventName.charAt(0).toUpperCase() + eventName.substr(1);
+        };
     // exports
     /**
      * @property instances
@@ -71,10 +78,10 @@
     core.isHTML5Player = function(userAgent) {
         var n = userAgent ? userAgent.toLowerCase() : "",
             checkSilk = function(n) {
-                if(n.indexOf("silk") !== -1){
+                if (n.indexOf("silk") !== -1) {
                     var reg = /silk\/(\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) && result >= 2;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) && result >= 2;
                 }
                 return false;
             },
@@ -99,6 +106,21 @@
     };
 
     /**
+     * Utility function. Append css to the head.
+     * @ignore
+     */
+    core.appendStyle = function(cssText) {
+        var styles = document.createElement("style");
+        styles.setAttribute("type", "text/css");
+        document.getElementsByTagName("head")[0].appendChild(styles);
+        if (styles.styleSheet) {
+            styles.styleSheet.cssText = cssText;
+        } else {
+            styles.appendChild(document.createTextNode(cssText));
+        }
+    };
+
+    /**
      * @method getPath
      * @ignore
      * @param {Object} config
@@ -119,11 +141,20 @@
      * Check if event is an Array, if so loop through, else just execute.
      */
     core.processEvent = function(event, data) {
+        // trigger a jQuery event if there's an $el.
+        if(data && data.target && data.target.$el){
+            data.target.$el.trigger("MTVNPlayer:"+data.type, data);
+            // legacy event names
+            data.target.$el.trigger("MTVNPlayer:"+getLegacyEventName(data.type), data);
+        }
         if (!event) {
             return;
         }
         if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
-            for (var i = event.length; i--;) {
+            // clone array
+            event = event.slice();
+            // fire in order
+            for (var i = 0, len = event.length; i < len; i++) {
                 event[i](data);
             }
         } else {
@@ -157,8 +188,11 @@
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
     core.executeCallbacks = function(player) {
-        for (var i = 0, len = onPlayerCallbacks.length; i < len; i++) {
-            onPlayerCallbacks[i](player);
+        var cbs = onPlayerCallbacks.slice(),
+            i = 0,
+            len = cbs.length;
+        for (i; i < len; i++) {
+            cbs[i](player);
         }
     };
 })(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);
