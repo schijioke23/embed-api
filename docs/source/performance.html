@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(MTVNPlayer) {
+    &quot;use strict&quot;;
+    var core = MTVNPlayer.module(&quot;core&quot;),
+        performanceEvent = MTVNPlayer.Events.PERFORMANCE,
+        elapsed = function(startTime) {
+            return (new Date()).getTime() - startTime;
+        };
+    MTVNPlayer.onPlayer(
+    // when a player is created, this is called.
+    function(player) {
+        var config = player.config;
+        if (config.performance) {
+            var results = {},
+            fire = function() {
+                if (results.metadata &amp;&amp; results.ready) {
+                    if (!testPlayStart || results.playStart) {
+                        core.processEvent(player.events[performanceEvent], {
+                            target: player,
+                            data: results
+                        });
+                    }
+                }
+            },
+            startTime = config.performance.startTime,
+                testPlayStart = function(flashVars, testPlayStart) {
+                    if (player.isFlash) {
+                        if (testPlayStart !== undefined &amp;&amp; testPlayStart !== null) {
+                            return testPlayStart;
+                        }
+                        return flashVars ? flashVars.autoPlay : false;
+                    }
+                    return false;
+                }(config.flashVars, MTVNPlayer.testPlayStart);
+            // time from new MTVNPlayer.Player() until player load
+            results.load = elapsed(startTime);
+            player.one(&quot;ready&quot;, function() {
+                results.ready = elapsed(startTime);
+                fire();
+            });
+            player.one(&quot;metadata&quot;, function() {
+                results.metadata = elapsed(startTime);
+                fire();
+            });
+            player.one(&quot;stateChange:playing&quot;, function(event) {
+                results.playStart = elapsed(startTime);
+                fire();
+            });
+        }
+    });
+})(window.MTVNPlayer);</pre>
+</body>
+</html>

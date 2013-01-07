@@ -32,7 +32,7 @@
             baseUrl: baseUrl,
             path: &quot;/end-slate&quot;,
             version: &quot;0.0.3&quot;,
-            eventName: &quot;onEndSlate&quot;,
+            eventName: &quot;endSlate&quot;,
             onModuleRequested: function(event) {
                 EndSlateModule.callbacks.push(function() {
                     new(window.MTVNPlayer.EndSlate)(event.data, event.target);

@@ -18,7 +18,7 @@
   <pre class="prettyprint lang-js"><span id='global-property-'>/**
 </span> * @ignore
  * The config module has helper functions for dealing with the config object.
- */
+ **/
 (function(MTVNPlayer) {
     &quot;use strict&quot;;
     var config = MTVNPlayer.module(&quot;config&quot;);
@@ -71,6 +71,7 @@
 <span id='global-property-copyProperties'>    /**
 </span>     * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
+     * The properties will not be overriden on the toObj, unless override is specified.
      */
     copyProperties = config.copyProperties = function(toObj, fromObj, override) {
         if (fromObj) {
@@ -100,6 +101,12 @@
     };
     config.buildConfig = function(el, config) {
         config = copyProperties(config, window.MTVNPlayer.defaultConfig);
+        // make sure the height and width are defined.
+        // 640x360 is now the default.
+        config = copyProperties(config, {
+            width: 640,
+            height: 360
+        });
         var getDataAttr = function(attr) {
             return el.getAttribute(&quot;data-&quot; + attr);
         },
@@ -122,7 +129,8 @@
             }
         },
 <span id='global-method-copyCustomPropertiesToFlashVars'>        /**
-</span>         * Allow the element to define some custom flashvars instead of
+</span>         * @ignore
+         * Allow the element to define some custom flashvars instead of
          * using querystring format on the data-flashVars object.
          */
         copyCustomPropertiesToFlashVars = function(obj) {
