@@ -92,7 +92,7 @@
              */
             PLAYLIST_COMPLETE: "playlistComplete",
             /**
-             * @deprecated 1.5.0 Use {@link MTVNPlayer.Events#onUIStateChange} instead
+             * @deprecated 1.5.0 Use {@link MTVNPlayer.Events#uiStateChange} instead
              * @event onOverlayRectChange
              * Fired when the GUI appears, event.data contains an {Object} {x:0,y:0,width:640,height:320}
              */
@@ -145,7 +145,7 @@
             PERFORMANCE: "performance"
         };
         /**
-         * When a {@link MTVNPlayer.Events#onStateChange} event is fired, the event's data property will be equal to one of these play states. 
+         * When a {@link MTVNPlayer.Events#stateChange} event is fired, the event's data property will be equal to one of these play states. 
          * At the moment, there may be incongruities between html5 and flash state sequences. 
          * Flash also has "initializing" and "connecting" states, which aren't available in the html5 player.
          */
@@ -550,7 +550,7 @@
                 this.config = config || {};
                 /**
                  * @property {HTMLElement} isFullScreen
-                 * HTML5 only. See {@link MTVNPlayer.Events#onFullScreenChange}
+                 * HTML5 only. See {@link MTVNPlayer.Events#fullScreenChange}
                  */
                 this.isFullScreen = false;
                 // private vars

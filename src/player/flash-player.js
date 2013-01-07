@@ -252,7 +252,7 @@
                 element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
             },
             /**
-             * @private
+             * @ignore
              * Set the flash object's dimensions to 100%,
              * and the container's dimensions to the config settings.
              */ 

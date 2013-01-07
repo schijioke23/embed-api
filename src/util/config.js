@@ -112,6 +112,7 @@
             }
         },
         /**
+         * @ignore
          * Allow the element to define some custom flashvars instead of
          * using querystring format on the data-flashVars object.
          */
