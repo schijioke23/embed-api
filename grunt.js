@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
+    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/performance.js', 'src/util/finish.js', 'dist/version.js'],
         targetPath = 'dist/',
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',

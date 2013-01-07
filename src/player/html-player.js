@@ -20,13 +20,14 @@
             exitFullScreen = function(player) {
                 player.isFullScreen = false;
                 var c = player.config,
-                    i = player.element;
+                    i = player.element,
+                    type = MTVNPlayer.Events.FULL_SCREEN_CHANGE;
                 i.style.cssText = "postion:static;z-index:auto;";
                 i.width = c.width;
                 i.height = c.height;
-                processEvent(player.events.onFullScreenChange, {
+                processEvent(player.events[type], {
                     target: player,
-                    type: MTVNPlayer.Events.FULL_SCREEN_CHANGE
+                    type: type
                 });
             },
             /**
@@ -37,15 +38,16 @@
             goFullScreen = function(player) {
                 var iframeElement = player.element,
                     highestZIndex = player.config.highestZIndex,
-                    cssText = player.config.fullScreenCssText;
+                    cssText = player.config.fullScreenCssText,
+                    type = MTVNPlayer.Events.FULL_SCREEN_CHANGE;
                 player.isFullScreen = true;
                 iframeElement.style.cssText = cssText ? cssText : "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
                 iframeElement.width = window.innerWidth;
                 iframeElement.height = window.innerHeight;
                 window.scrollTo(0, 0);
-                processEvent(player.events.onFullScreenChange, {
+                processEvent(player.events[type], {
                     target: player,
-                    type: MTVNPlayer.Events.FULL_SCREEN_CHANGE
+                    type: type
                 });
             },
             jsonParse = function(str) {
@@ -94,14 +96,14 @@
                     player.playlistMetadata.items[obj.index] = obj;
                     player.playlistMetadata.index = obj.index;
                     if (newIndex !== oldIndex) {
-                        processEvent(player.events.onIndexChange, {
+                        processEvent(player.events[MTVNPlayer.Events.INDEX_CHANGE], {
                             data: newIndex,
                             target: player,
                             type: MTVNPlayer.Events.INDEX_CHANGE
                         });
                     }
                 }
-                processEvent(player.events.onMetadata, {
+                processEvent(player.events[MTVNPlayer.Events.METADATA], {
                     data: obj,
                     target: player,
                     type: MTVNPlayer.Events.METADATA
@@ -120,7 +122,7 @@
                         events = player.events;
                         if (data.indexOf("playState:") === 0) {
                             player.state = getMessageData(data);
-                            processEvent(events.onStateChange, {
+                            processEvent(events[eventTypes.STATE_CHANGE], {
                                 data: player.state,
                                 target: player,
                                 type: eventTypes.STATE_CHANGE
@@ -131,7 +133,7 @@
                                 type: eventTypes.STATE_CHANGE + ":" + player.state
                             });
                         } else if (data.indexOf("playlistComplete") === 0) {
-                            processEvent(events.onPlaylistComplete, {
+                            processEvent(events[eventTypes.PLAYLIST_COMPLETE], {
                                 data: null,
                                 target: player,
                                 type: eventTypes.PLAYLIST_COMPLETE
@@ -139,13 +141,13 @@
                         } else if (data.indexOf("metadata:") === 0) {
                             onMetadata(data, player);
                         } else if (data.indexOf("mediaStart") === 0) {
-                            processEvent(events.onMediaStart, {
+                            processEvent(events[eventTypes.MEDIA_START], {
                                 data: null,
                                 target: player,
                                 type: eventTypes.MEDIA_START
                             });
                         } else if (data.indexOf("mediaEnd") === 0) {
-                            processEvent(events.onMediaEnd, {
+                            processEvent(events[eventTypes.MEDIA_END], {
                                 data: null,
                                 target: player,
                                 type: eventTypes.MEDIA_END
@@ -154,7 +156,7 @@
                             var lastPlayhead = Math.floor(player.playhead);
                             playhead = parseInt(getMessageData(data), 10);
                             player.playhead = playhead;
-                            processEvent(events.onPlayheadUpdate, {
+                            processEvent(events[eventTypes.PLAYHEAD_UPDATE], {
                                 data: playhead,
                                 target: player,
                                 type: eventTypes.PLAYHEAD_UPDATE
@@ -176,10 +178,10 @@
                                 player.message.call(player, "setSSID:" + fv.sid);
                             }
                             core.executeCallbacks(player);
-                            processEvent(events.onReady, {
+                            processEvent(events[eventTypes.READY], {
                                 data: null,
                                 target: player,
-                                type: MTVNPlayer.Events.READY
+                                type: eventTypes.READY
                             });
                         } else if (data === "fullscreen") {
                             if (player.isFullScreen) {
@@ -188,25 +190,26 @@
                                 goFullScreen(player);
                             }
                         } else if (data.indexOf("overlayRectChange:") === 0) {
-                            processEvent(events.onOverlayRectChange, {
+                            processEvent(events[eventTypes.OVERLAY_RECT_CHANGE], {
                                 data: jsonParse(getMessageData(data)),
                                 target: player,
                                 type: eventTypes.OVERLAY_RECT_CHANGE
                             });
                         } else if (data.indexOf("onUIStateChange:") === 0) {
-                            processEvent(events.onUIStateChange, {
+                            processEvent(events[eventTypes.UI_STATE_CHANGE], {
                                 data: jsonParse(getMessageData(data)),
                                 target: player,
                                 type: eventTypes.UI_STATE_CHANGE
                             });
                         } else if (data.indexOf("airplay") === 0) {
-                            processEvent(events.onAirplay, {
+                            processEvent(events[eventTypes.AIRPLAY], {
                                 data: null,
                                 target: player,
                                 type: eventTypes.AIRPLAY
                             });
                         } else if (data.indexOf("onEndSlate:") === 0) {
-                            processEvent(events.onEndSlate, {
+                            var endSlateEvent = MTVNPlayer.module("ModuleLoader").Events.END_SLATE;
+                            processEvent(events[endSlateEvent], {
                                 data: jsonParse(getMessageData(data)),
                                 target: player,
                                 type: "onEndSlate"

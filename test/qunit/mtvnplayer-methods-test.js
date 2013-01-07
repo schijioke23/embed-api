@@ -9,7 +9,7 @@
         equal(player.config.uri, MTVNPlayer.getPlayer(player.config.uri).config.uri, "getPlayer found matching uri");
         equal(player.config.uri, MTVNPlayer.getPlayers()[0].config.uri, "getPlayers' only player matches the uri");
         $fixture.empty();
-//         There's a delay before the element won't be in the document.
+        //         There's a delay before the element won't be in the document.
         setTimeout(function() {
             MTVNPlayer.gc();
             equal(MTVNPlayer.getPlayers().length, 0, "getPlayers has 0 players");
@@ -27,9 +27,11 @@
         callback1 = function(player) {
             MTVNPlayer.removeOnPlayer(callback1);
             ok(player, "on player callback");
-            $fixture.html($("#test2").html());
-            MTVNPlayer.onPlayer(callback2);
-            new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+            setTimeout(function() {
+                $fixture.html($("#test2").html());
+                MTVNPlayer.onPlayer(callback2);
+                new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+            }, 100);
         };
         MTVNPlayer.onPlayer(callback1);
         new MTVNPlayer.Player($(".MTVNPlayer")[0]);

@@ -2,7 +2,8 @@
 
 The embed API provides a unified way to embed and use different video players. On iOS devices, an HTML5 player will be created, in all other scenarios a flash player will be created.
 
-- [API Docs][docs]
+- [Builds](#a0)
+- [Docs][docs]
 - Change Log: See History.md
 - [Loading](#a1)
 - [Usage](#a2)
@@ -15,6 +16,10 @@ The embed API provides a unified way to embed and use different video players. O
     - [MTVNPlayer.addCallback](#a4-2)
     - [MTVNPlayer.onPlayer](#a4-3)
     - [jQuery/Zepto Support](#a4-4)
+
+<a name="a0"/>
+## Builds
+Builds are deployed to http://media.mtvnservices.com/player/api/{version}. For example, the minified version of 2.4.3 is here http://media.mtvnservices.com/player/api/2.4.3/api.min.js. The unminifed would be [api.js](http://media.mtvnservices.com/player/api/2.4.3/api.js). There's no directory browsing on live, so if you want to explore you should check out [here](http://media.mtvnservices-d.mtvi.com/player/api/).
 
 <a name="a1"/>
 ## Loading
@@ -82,14 +87,15 @@ The only exception to this is width and height. They are defined like so:
 The most common properties that you'll use are width, height and uri. See [here][config] for more.
 
 <a name="b2"/>
-#### Events object
+#### Events
 The events object is an object with method names that map to callback functions. See [here][events] for more.
+_In 2.5.x, the on prefix for events is no longer needd. e.g. `onStateChange` is now `stateChange`._
 ```javascript
 var events = {
-    onMediaStart:function(event){
+    mediaStart:function(event){
       // event.target equals the player that dispatched the event.
     },
-    onMetadata:function(event){
+    metadata:function(event){
         // event.data is the metadata or other data depending on the event.
     }
 };
@@ -99,17 +105,18 @@ Each function has one argument with two properties:
 - data: An optional property that contains data about the event.
 
 Events can be added to a player object as well with `on`, and removed with `off` (`bind` and `unbind` are also supported).
+
 ```javascript
-player.on("onStateChange",function(event){
+player.on("stateChange",function(event){
     // event.data is the state
 });
-player.on("onStateChange:playing",function(event){
+player.on("stateChange:playing",function(event){
     // some events support filtering. (v2.5.0)
 });
-player.on("onPlayheadUpdate:20",function(event){
+player.on("playheadUpdate:20",function(event){
     // this works like a cue point, firing at 20 seconds. (v2.5.0)
 });
-player.one("onPlayheadUpdate:20",function(event){
+player.one("playheadUpdate:20",function(event){
     // the one method only fires once. (v2.5.0)
 });
 ```
@@ -243,7 +250,7 @@ _Requires jQuery 1.4.4_
 Events work similar to hooking into a `MTVNPlayer.Player` instance. Except you bind like so:
 ```javascript
 // you bind off the jQuery-wrapped placeholder element.
-$().bind("MTVNPlayer:onReady", callback);
+$().bind("MTVNPlayer:ready", callback);
 ```
 Also, your callback will be different. It will be a jQuery callback: the first arguement will be the jQuery event, and the second will be the `MTVNPlayer.Player` [events object](#b2).
 

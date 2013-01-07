@@ -12,7 +12,7 @@
         });
         player.one("onStateChange:playing", function(event) {
             ok(true, "play() worked");
-            player.one("onStateChange:paused", function() {
+            player.one("stateChange:paused", function() {
                 ok(true, "pause() worked");
                 player.one("onPlayheadUpdate:2", function(event) {
                     equal(Math.floor(player.playhead), 2, "cue point worked");
@@ -37,9 +37,9 @@
         });
         $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function(event) {
             ok(true, "play() worked");
-            $(".MTVNPlayer").one("MTVNPlayer:onStateChange:paused", function() {
+            $(".MTVNPlayer").one("MTVNPlayer:stateChange:paused", function() {
                 ok(true, "pause() worked");
-                $(".MTVNPlayer").one("MTVNPlayer:onPlayheadUpdate:2", function(event, playerEvent) {
+                $(".MTVNPlayer").one("MTVNPlayer:playheadUpdate:2", function(event, playerEvent) {
                     equal(Math.floor(playerEvent.target.playhead), 2, "cue point worked");
                     $(".MTVNPlayer").trigger("MTVNPlayer:seek", 20);
                     $(".MTVNPlayer").one("MTVNPlayer:onPlayheadUpdate", function(event, playerEvent) {

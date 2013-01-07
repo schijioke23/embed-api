@@ -1,7 +1,7 @@
 /**
  * @ignore
  * The config module has helper functions for dealing with the config object.
- */
+ **/
 (function(MTVNPlayer) {
     "use strict";
     var config = MTVNPlayer.module("config");
@@ -54,6 +54,7 @@
     /**
      * @ignore
      * Copy one config object to another, this includes a deep copy for flashvars, attributes, and params.
+     * The properties will not be overriden on the toObj, unless override is specified.
      */
     copyProperties = config.copyProperties = function(toObj, fromObj, override) {
         if (fromObj) {
@@ -83,6 +84,12 @@
     };
     config.buildConfig = function(el, config) {
         config = copyProperties(config, window.MTVNPlayer.defaultConfig);
+        // make sure the height and width are defined.
+        // 640x360 is now the default.
+        config = copyProperties(config, {
+            width: 640,
+            height: 360
+        });
         var getDataAttr = function(attr) {
             return el.getAttribute("data-" + attr);
         },

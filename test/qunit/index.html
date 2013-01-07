@@ -7,17 +7,18 @@
   <script src="../libs/jQuery.js"></script>
   <script src="qunit-1.10.0.js"></script>
   <!-- this must be after the qunit.js -->
-  <script src="/testem.js"></script>
+  <script>
+    if (location.hash === '#testem'){
+        document.write('<script src="/testem.js"></'+'script>');
+    }
+  </script>
   <script type="text/javascript" language="javascript">
       (function() {
-        var tag = document.createElement('script'),
-            isInDist = location.href.indexOf("dist/test") !== -1,
-            deployed = location.href.indexOf("media.mtvnservices") !== -1;
-        tag.src = isInDist || deployed ? "../../api.js" : "../../dist/api.js";
-        tag.language = "javascript";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);  
-      })();
+        var isInDist = location.href.indexOf("dist/test") !== -1,
+            deployed = location.href.indexOf("media.mtvnservices") !== -1,
+            src = isInDist || deployed ? "../../api.js" : "../../dist/api.js";
+            document.write('<script src="' + src + '"></'+'script>');
+       })();
   </script>
   <!-- QUnit Module -->
   <script type="text/javascript">
@@ -26,6 +27,7 @@
           // but in the meantime...
         teardown: function() {
             window.MTVNPlayer.defaultConfig = undefined;
+            window.MTVNPlayer.defaultEvents = undefined;
             window.MTVNPlayer.gc();
         },
       });
@@ -55,11 +57,12 @@
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
-  <script type="text/javascript" src="placeholder.js"></script>
-  <script type="text/javascript" src="user-agent.js"></script>
+  <script type="text/javascript" src="placeholder-test.js"></script>
+  <script type="text/javascript" src="user-agent-test.js"></script>
   <script type="text/javascript" src="config-test.js"></script>
   <script type="text/javascript" src="methods-test.js"></script>
   <script type="text/javascript" src="events-test.js"></script>
   <script type="text/javascript" src="mtvnplayer-methods-test.js"></script>
+  <script type="text/javascript" src="performance-test.js"></script>
 </body>
 </html>
