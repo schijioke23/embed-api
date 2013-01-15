@@ -69,17 +69,17 @@
     test("test defaultConfig properties", function() {
         $fixture.html($("#config-test3").html());
         MTVNPlayer.defaultConfig = {
-            width:101,
-            height:102,
+            width: 101,
+            height: 102,
             flashVars: {
                 autoPlay: "defaultAutoPlay",
                 sid: "defaultSID"
             },
-            params:{
-                wmode:"window"
+            params: {
+                wmode: "window"
             },
-            attributes:{
-                attrValue:"attrValue"
+            attributes: {
+                attrValue: "attrValue"
             }
         };
         var player = new MTVNPlayer.Player($(".MTVNPlayer")[0]);
@@ -93,17 +93,17 @@
         // test config overrides
         $fixture.html($("#config-test2").html());
         player = new MTVNPlayer.Player($(".MTVNPlayer")[0], {
-            width:103,
-            height:104,
+            width: 103,
+            height: 104,
             flashVars: {
                 autoPlay: "true",
                 sid: "12345"
             },
-            params:{
-                wmode:"window1"
+            params: {
+                wmode: "window1"
             },
-            attributes:{
-                attrValue:"attrValue1"
+            attributes: {
+                attrValue: "attrValue1"
             }
         });
         equal(player.config.flashVars.autoPlay, "true", "config value has precedence for autoPlay");
@@ -112,5 +112,44 @@
         equal(player.config.height, 104, "config overrides default height");
         equal(player.config.params.wmode, "window1", "config overrides default param");
         equal(player.config.attributes.attrValue, "attrValue1", "config overrides default attribute");
+    });
+    test("test version comparison", function() {
+        var config = MTVNPlayer.module("config");
+        ok(config.versionIsMinimum("0", "1"), "1 is greater than 0");
+        ok(config.versionIsMinimum("1", "1"), "1 is equal to 1");
+        ok(config.versionIsMinimum("0.1", "0.1"), "0.1 is equal to 0.1");
+        ok(config.versionIsMinimum("0.1", "0.2"), "0.2 is greater than 0.1");
+        ok(config.versionIsMinimum("0.1", "0.1.1"), "0.1.1 is greater than 0.1");
+
+        ok(config.versionIsMinimum("0.1.0", "0.2.0"), "0.1.0 is greater than 0.2.0");
+        ok(config.versionIsMinimum("0.1.0", "0.1.1"), "0.1.0 is greater than 0.2.0");
+        ok(config.versionIsMinimum("1.0.0", "1.0.0"), "1.0.0 is equal to 1.0.0");
+        ok(config.versionIsMinimum("1.0.0", "2.0.0"), "2.0.0 is greater than 1.0.0");
+        ok(config.versionIsMinimum("1.0.0", "1.1.0"), "1.1.0 is greater than 1.0.0");
+        ok(config.versionIsMinimum("1.0.0", "1.1.0"), "1.0.1 is greater than 1.0.0");
+
+        ok(config.versionIsMinimum("10.1.0", "10.2.0"), "10.1.0 is greater than 10.2.0");
+        ok(config.versionIsMinimum("10.1.0", "10.1.1"), "10.1.0 is greater than 10.2.0");
+        ok(config.versionIsMinimum("11.0.0", "11.0.0"), "11.0.0 is equal to 11.0.0");
+        ok(config.versionIsMinimum("11.0.0", "12.0.0"), "12.0.0 is greater than 11.0.0");
+        ok(config.versionIsMinimum("11.0.0", "11.1.0"), "11.1.0 is greater than 11.0.0");
+        ok(config.versionIsMinimum("11.0.0", "11.1.0"), "11.0.1 is greater than 11.0.0");
+        ok(config.versionIsMinimum("11.0.0", "11.1.0-237"), "11.1.0-237 is greater than 11.0.0");
+
+        ok(!config.versionIsMinimum("1", "0"), "1 is not greater than 0");
+        ok(!config.versionIsMinimum("0.2", "0.1"), "0.2 is not greater than 0.1");
+        ok(!config.versionIsMinimum("0.1.1", "0.1"), "0.1.1 is not greater than 0.1");
+
+        ok(!config.versionIsMinimum("0.2.0", "0.1.0"), "0.1.0 is not greater than 0.2.0");
+        ok(!config.versionIsMinimum("0.1.1", "0.1.0"), "0.1.0 is not greater than 0.2.0");
+        ok(!config.versionIsMinimum("2.0.0", "1.0.0"), "2.0.0 is not greater than 1.0.0");
+        ok(!config.versionIsMinimum("1.1.0", "1.0.0"), "1.1.0 is not greater than 1.0.0");
+        ok(!config.versionIsMinimum("1.1.0", "1.0.0"), "1.0.1 is not greater than 1.0.0");
+
+        ok(!config.versionIsMinimum("10.2.0", "10.1.0"), "10.1.0 is not greater than 10.2.0");
+        ok(!config.versionIsMinimum("10.1.1", "10.1.0"), "10.1.0 is not greater than 10.2.0");
+        ok(!config.versionIsMinimum("12.0.0", "11.0.0"), "12.0.0 is not greater than 11.0.0");
+        ok(!config.versionIsMinimum("11.1.0", "11.0.0"), "11.1.0 is not greater than 11.0.0");
+        ok(!config.versionIsMinimum("11.0.1", "11.0.0"), "11.0.1 is not greater than 11.0.0");
     });
 })();

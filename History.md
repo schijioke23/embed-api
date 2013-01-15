@@ -1,3 +1,9 @@
+2.5.1 / 2013-1-14 
+==================
+
+  * [BRBPL-3426](http://jira.mtvi.com/browse/BRBPL-3426) handle performance event from the flash and html5 player. handle config event from html5 player. 
+
+
 2.5.0 / 2013-1-3 
 ==================
 

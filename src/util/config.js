@@ -72,7 +72,7 @@
                             }
                             // don't override if the prop exists
                             if (!override && exists(toObj[prop])) {
-                                continue;
+                                continue;   
                             }
                             toObj[prop] = fromObj[prop];
                         }
@@ -81,6 +81,47 @@
             }
         }
         return toObj;
+    };
+    config.versionIsMinimum = function(required, version) {
+        function getArr(v) {
+            var s = v.split("."),
+                result = [],
+                n;
+            for (n in s) {
+                result.push(parseInt(n, 10));
+            }
+            return result;
+        }
+        function chopBuild(version){
+            if(version.indexOf("-") !== -1){
+                return version.slice(0,required.indexOf("-"));
+            }
+            return version;
+        }
+        if (required && version) {
+            required = chopBuild(required);
+            version = chopBuild(version);
+            if (required === version) {
+                return true;
+            }
+            // convert to arrays
+            required = required.split(".");
+            version = version.split(".");
+            for (var i = 0, l = version.length; i < l; i++) {
+                
+                var u = parseInt(required[i], 10),
+                    r = parseInt(version[i], 10);
+                u = isNaN(u) ? 0 : u;
+                r = isNaN(r) ? 0 : r;
+                // continue to the next digit
+                if (u == r) {
+                    continue;
+                }
+
+                // else return result   
+                return u < r;
+            }
+        }
     };
     config.buildConfig = function(el, config) {
         config = copyProperties(config, window.MTVNPlayer.defaultConfig);
