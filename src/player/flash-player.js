@@ -134,6 +134,7 @@
                     readyEvent = MTVNPlayer.Events.READY,
                     mediaEnd = MTVNPlayer.Events.MEDIA_END,
                     mediaStart = MTVNPlayer.Events.MEDIA_START,
+                    performanceEvent = MTVNPlayer.Events.PERFORMANCE,
                     onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
                     onEndSlate = "onEndSlate",
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
@@ -223,6 +224,14 @@
                     });
                 };
                 element.addEventListener('PLAYLIST_COMPLETE', mapString + playlistCompleteEvent);
+                map[id + performanceEvent] = function(performanceData) {
+                    core.processEvent(events[performanceEvent], {
+                        data: performanceData,
+                        target: player,
+                        type: performanceEvent
+                    });
+                };
+                element.addEventListener("PERFORMANCE", mapString + performanceEvent);
                 map[id + mediaStart] = function() {
                     core.processEvent(events[mediaStart], {
                         data: null,

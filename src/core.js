@@ -1,3 +1,4 @@
+/*globals MTVNPlayer */
 (function(core, $) {
     "use strict";
     if (core.initialized) {
@@ -10,7 +11,7 @@
         onPlayerCallbacks = [],
         // this is needed for the jQuery plugin only.
         getLegacyEventName = function(eventName) {
-            if(eventName === "uiStateChange"){
+            if (eventName === "uiStateChange") {
                 return "onUIStateChange";
             }
             return "on" + eventName.charAt(0).toUpperCase() + eventName.substr(1);
@@ -61,7 +62,7 @@
                 return playerModule.message.apply(this, arguments);
             }
         };
-        player.once("onReady", function(event) {
+        player.one("ready", function(event) {
             var player = event.target,
                 message = player.message;
             for (var i = 0, len = eventQueue.length; i < len; i++) {
@@ -86,10 +87,10 @@
                 return false;
             },
             checkAndroid = function(n) {
-                if(n.indexOf("android") !== -1){
+                if (n.indexOf("android") !== -1) {
                     var reg = /android (\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) && result >= 4;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) && result >= 4;
                 }
                 return false;
             };
@@ -134,6 +135,25 @@
         return baseURL + config.uri;
     };
     /**
+     * @method processPerformance
+     * @ignore
+     * @param {MTVNPlayer.Player} player
+     * @param {Object} performance data
+     */
+    core.processPerformance = function(player, data) {
+        var startTime = player.config.performance.startTime,
+            eventType = MTVNPlayer.Events.PERFORMANCE;
+        for (var prop in data) {
+            // adjust to the start time recorded by the embed api.
+            data[prop] = data[prop] - startTime;
+        }
+        core.processEvent(player.events[eventType], {
+            data: data,
+            target: player,
+            type: eventType
+        });
+    };
+    /**
      * @method processEvent
      * @ignore
      * @param {Object} {Array} event
@@ -142,10 +162,10 @@
      */
     core.processEvent = function(event, data) {
         // trigger a jQuery event if there's an $el.
-        if(data && data.target && data.target.$el){
-            data.target.$el.trigger("MTVNPlayer:"+data.type, data);
+        if (data && data.target && data.target.$el) {
+            data.target.$el.trigger("MTVNPlayer:" + data.type, data);
             // legacy event names
-            data.target.$el.trigger("MTVNPlayer:"+getLegacyEventName(data.type), data);
+            data.target.$el.trigger("MTVNPlayer:" + getLegacyEventName(data.type), data);
         }
         if (!event) {
             return;
