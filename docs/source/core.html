@@ -15,7 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">(function(core, $) {
+  <pre class="prettyprint lang-js">/*globals MTVNPlayer */
+(function(core, $) {
     &quot;use strict&quot;;
     if (core.initialized) {
         return;
@@ -27,7 +28,7 @@
         onPlayerCallbacks = [],
         // this is needed for the jQuery plugin only.
         getLegacyEventName = function(eventName) {
-            if(eventName === &quot;uiStateChange&quot;){
+            if (eventName === &quot;uiStateChange&quot;) {
                 return &quot;onUIStateChange&quot;;
             }
             return &quot;on&quot; + eventName.charAt(0).toUpperCase() + eventName.substr(1);
@@ -78,7 +79,7 @@
                 return playerModule.message.apply(this, arguments);
             }
         };
-        player.once(&quot;onReady&quot;, function(event) {
+        player.one(&quot;ready&quot;, function(event) {
             var player = event.target,
                 message = player.message;
             for (var i = 0, len = eventQueue.length; i &lt; len; i++) {
@@ -103,10 +104,10 @@
                 return false;
             },
             checkAndroid = function(n) {
-                if(n.indexOf(&quot;android&quot;) !== -1){
+                if (n.indexOf(&quot;android&quot;) !== -1) {
                     var reg = /android (\d)/ig,
-                        result = parseInt(reg.exec(n)[1],10);
-                        return !isNaN(result) &amp;&amp; result &gt;= 4;
+                        result = parseInt(reg.exec(n)[1], 10);
+                    return !isNaN(result) &amp;&amp; result &gt;= 4;
                 }
                 return false;
             };
@@ -150,6 +151,25 @@
         }
         return baseURL + config.uri;
     };
+<span id='global-method-processPerformance'>    /**
+</span>     * @method processPerformance
+     * @ignore
+     * @param {MTVNPlayer.Player} player
+     * @param {Object} performance data
+     */
+    core.processPerformance = function(player, data) {
+        var startTime = player.config.performance.startTime,
+            eventType = MTVNPlayer.Events.PERFORMANCE;
+        for (var prop in data) {
+            // adjust to the start time recorded by the embed api.
+            data[prop] = data[prop] - startTime;
+        }
+        core.processEvent(player.events[eventType], {
+            data: data,
+            target: player,
+            type: eventType
+        });
+    };
 <span id='global-method-processEvent'>    /**
 </span>     * @method processEvent
      * @ignore
@@ -159,10 +179,10 @@
      */
     core.processEvent = function(event, data) {
         // trigger a jQuery event if there's an $el.
-        if(data &amp;&amp; data.target &amp;&amp; data.target.$el){
-            data.target.$el.trigger(&quot;MTVNPlayer:&quot;+data.type, data);
+        if (data &amp;&amp; data.target &amp;&amp; data.target.$el) {
+            data.target.$el.trigger(&quot;MTVNPlayer:&quot; + data.type, data);
             // legacy event names
-            data.target.$el.trigger(&quot;MTVNPlayer:&quot;+getLegacyEventName(data.type), data);
+            data.target.$el.trigger(&quot;MTVNPlayer:&quot; + getLegacyEventName(data.type), data);
         }
         if (!event) {
             return;

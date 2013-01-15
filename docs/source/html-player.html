@@ -149,6 +149,12 @@
                                 target: player,
                                 type: eventTypes.STATE_CHANGE + &quot;:&quot; + player.state
                             });
+                        } else if (data.indexOf(&quot;config:&quot;) === 0) {
+                            MTVNPlayer.module(&quot;config&quot;).copyProperties(player.config,jsonParse(getMessageData(data)));
+                        } else if (data.indexOf(&quot;performance:&quot;) === 0) {
+                            if(player.config.performance){
+                                core.processPerformance(player,jsonParse(getMessageData(data)));
+                            }
                         } else if (data.indexOf(&quot;playlistComplete&quot;) === 0) {
                             processEvent(events[eventTypes.PLAYLIST_COMPLETE], {
                                 data: null,
