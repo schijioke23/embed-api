@@ -325,6 +325,7 @@
             // end private vars
             /**
              * @member MTVNPlayer
+             * @property {Boolean}
              * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
              * otherwise they'll be flash players. This is determined by checking the user agent.
              */
