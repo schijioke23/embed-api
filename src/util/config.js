@@ -72,7 +72,7 @@
                             }
                             // don't override if the prop exists
                             if (!override && exists(toObj[prop])) {
-                                continue;   
+                                continue;
                             }
                             toObj[prop] = fromObj[prop];
                         }
@@ -83,15 +83,6 @@
         return toObj;
     };
     config.versionIsMinimum = function(required, version) {
-        function getArr(v) {
-            var s = v.split("."),
-                result = [],
-                n;
-            for (n in s) {
-                result.push(parseInt(n, 10));
-            }
-            return result;
-        }
         function chopBuild(version){
             if(version.indexOf("-") !== -1){
                 return version.slice(0,required.indexOf("-"));
@@ -118,7 +109,7 @@
                     continue;
                 }
 
-                // else return result   
+                // else return result
                 return u < r;
             }
         }

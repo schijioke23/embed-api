@@ -98,15 +98,6 @@
     };
 
     /**
-     * Utility function. Check if the argument is a element.
-     * @ignore
-     */
-    core.isElement = function(o) {
-        return typeof window.HTMLElement === "object" ? o instanceof window.HTMLElement : //DOM2
-        typeof o === "object" && o.nodeType === 1 && typeof o.nodeName === "string";
-    };
-
-    /**
      * Utility function. Append css to the head.
      * @ignore
      */

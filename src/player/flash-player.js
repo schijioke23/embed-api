@@ -2,7 +2,7 @@
     "use strict";
     var flash = MTVNPlayer.module("flash"),
         core = MTVNPlayer.module("core");
-    if (flash.initialized) {
+    if(flash.initialized) {
         return;
     }
     flash.initialized = true;
@@ -19,13 +19,13 @@
             play: "unpause",
             seek: "setPlayheadTime"
         },
-        swfobject = flash.getSWFObject(),
+            swfobject = flash.getSWFObject(),
             makeWSwfObject = function(targetID, config) {
                 var attributes = config.attributes || {},
-                params = config.params || {
-                    allowFullScreen: true
-                },
-                flashVars = config.flashVars || {};
+                    params = config.params || {
+                        allowFullScreen: true
+                    },
+                    flashVars = config.flashVars || {};
                 attributes.data = core.getPath(config);
                 attributes.width = config.width;
                 attributes.height = config.height;
@@ -34,34 +34,34 @@
                 flashVars.objectID = targetID; // TODO objectID is used by the player.
                 params.flashVars = (function(fv) {
                     var s = "";
-                    for (var p in fv) {
+                    for(var p in fv) {
                         s += p + "=" + fv[p] + "&";
                     }
-                    return s ? s.slice(0, - 1) : "";
+                    return s ? s.slice(0, -1) : "";
                 })(flashVars);
                 core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
             },
             exitFullScreen = function() {
                 try {
                     this.element.exitFullScreen();
-                } catch (e) {
+                } catch(e) {
                     // fail silently. exit full screen introduced in Prime 1.12
                 }
             },
             processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
                 var m = {},
-                rss;
+                    rss;
                 m.duration = metadata.duration;
                 // TODO no live.
                 m.live = false;
                 m.isAd = metadata.isAd;
                 m.isBumper = metadata.isBumper;
-                if (index !== undefined && index !== null) {
+                if(index !== undefined && index !== null) {
                     m.index = index;
-                } else if (playlistMetadataItems) {
+                } else if(playlistMetadataItems) {
                     m.index = function(guid) {
-                        for (var i = playlistMetadataItems.length; i--;) {
-                            if (playlistMetadataItems[i].rss.guid === guid) {
+                        for(var i = playlistMetadataItems.length; i--;) {
+                            if(playlistMetadataItems[i].rss.guid === guid) {
                                 return i;
                             }
                         }
@@ -69,8 +69,8 @@
                     }(metadata.guid);
                 } else {
                     m.index = function(guid) {
-                        for (var i = playlistItems.length; i--;) {
-                            if (playlistItems[i].metaData.guid === guid) {
+                        for(var i = playlistItems.length; i--;) {
+                            if(playlistItems[i].metaData.guid === guid) {
                                 return i;
                             }
                         }
@@ -97,14 +97,14 @@
             },
             processPlaylistMetadata = function(metadata) {
                 var m = {},
-                items = metadata.items,
+                    items = metadata.items,
                     numberOfItems = items.length,
                     i;
                 m.description = metadata.description;
                 m.title = metadata.title;
                 m.link = metadata.link;
                 m.items = [];
-                for (i = numberOfItems; i--;) {
+                for(i = numberOfItems; i--;) {
                     m.items[i] = processMetadata(items[i], null, i);
                 }
                 return m;
@@ -113,16 +113,15 @@
                 var m = {
                     items: []
                 },
-                numberOfItems = playlistItems.length,
+                    numberOfItems = playlistItems.length,
                     i;
-                for (i = numberOfItems; i--;) {
+                for(i = numberOfItems; i--;) {
                     m.items[i] = processMetadata(playlistItems[i].metaData, null, i);
                 }
                 return m;
             },
             addFlashEvents = function(player) {
-                var events = player.events,
-                    map = MTVNPlayer.Player.flashEventMap,
+                var map = MTVNPlayer.Player.flashEventMap,
                     id = "player" + Math.round(Math.random() * 1000000),
                     element = player.element,
                     mapString = "MTVNPlayer.Player.flashEventMap." + id,
@@ -137,6 +136,7 @@
                     performanceEvent = MTVNPlayer.Events.PERFORMANCE,
                     onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
                     onEndSlate = "onEndSlate",
+                    onConfig = "onConfig",
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
@@ -147,124 +147,82 @@
                         newIndex = processedMetadata.index,
                         lastIndex = playlistMetadata ? playlistMetadata.index : -1;
                     player.currentMetadata = processedMetadata;
-                    if (!playlistMetadata) {
+                    if(!playlistMetadata) {
                         // this is our first metadata event
                         fireReadyEvent = true;
                         try {
                             playlistMetadata = processPlaylistMetadata(element.getPlaylistMetadata());
-                        } catch (e) {
+                        } catch(e) {
                             playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                         }
                     }
-                    if (newIndex !== -1) { // index is -1 for ads.
+                    if(newIndex !== -1) { // index is -1 for ads.
                         playlistMetadata.items[newIndex] = processedMetadata;
                         playlistMetadata.index = newIndex;
-                        if (lastIndex !== newIndex) {
-                            core.processEvent(events[onIndexChange], {
-                                data: newIndex,
-                                target: player,
-                                type: onIndexChange
-                            });
+                        if(lastIndex !== newIndex) {
+                            player.trigger(onIndexChange, newIndex);
                         }
                     }
                     player.playlistMetadata = playlistMetadata;
-                    if (fireReadyEvent) {
+                    if(fireReadyEvent) {
                         player.ready = true;
-                        core.processEvent(events[readyEvent], {
-                            data: processedMetadata,
-                            target: player,
-                            type: readyEvent
-                        });
+                        player.trigger(readyEvent, processedMetadata);
                     }
-                    core.processEvent(events[metadataEvent], {
-                        data: processedMetadata,
-                        target: player,
-                        type: metadataEvent
-                    });
+                    player.trigger(metadataEvent, processedMetadata);
                 };
                 element.addEventListener('METADATA', mapString + metadataEvent);
                 map[id + stateEvent] = function(state) {
-                    state = state.replace("playstates.","");
+                    state = state.replace("playstates.", "");
                     player.state = state;
-                    core.processEvent(events[stateEvent], {
-                        data: state,
-                        target: player,
-                        type: stateEvent
-                    });
-                    core.processEvent(events[stateEvent+":"+state], {
-                        data: state,
-                        target: player,
-                        type: stateEvent+":"+state
-                    });
+                    player.trigger(stateEvent, state);
+                    player.trigger(stateEvent + ":" + state, state);
                 };
                 element.addEventListener('STATE_CHANGE', mapString + stateEvent);
                 map[id + playheadUpdate] = function(playhead) {
                     var lastPlayhead = Math.floor(player.playhead);
                     player.playhead = playhead;
-                    core.processEvent(events[playheadUpdate], {
-                        data: playhead,
-                        target: player,
-                        type: playheadUpdate
-                    });
+                    player.trigger(playheadUpdate, playhead);
                     // support for cue points.
-                    if(lastPlayhead != Math.floor(playhead)){
-                        core.processEvent(events[playheadUpdate + ":" + Math.floor(playhead)], {
-                            data: playhead,
-                            target: player,
-                            type: playheadUpdate + ":"  + Math.floor(playhead)
-                        });
+                    if(lastPlayhead != Math.floor(playhead)) {
+                        player.trigger(playheadUpdate + ":" + Math.floor(playhead), playhead);
                     }
                 };
                 element.addEventListener('PLAYHEAD_UPDATE', mapString + playheadUpdate);
                 map[id + playlistCompleteEvent] = function() {
-                    core.processEvent(events[playlistCompleteEvent], {
-                        data: null,
-                        target: player,
-                        type: playlistCompleteEvent
-                    });
+                    player.trigger(playlistCompleteEvent);
                 };
                 element.addEventListener('PLAYLIST_COMPLETE', mapString + playlistCompleteEvent);
                 map[id + performanceEvent] = function(performanceData) {
-                    core.processEvent(events[performanceEvent], {
-                        data: performanceData,
-                        target: player,
-                        type: performanceEvent
-                    });
+                    player.trigger(performanceEvent, performanceData);
                 };
                 element.addEventListener("PERFORMANCE", mapString + performanceEvent);
                 map[id + mediaStart] = function() {
-                    core.processEvent(events[mediaStart], {
-                        data: null,
-                        target: player,
-                        type: mediaStart
-                    });
+                    player.trigger(mediaStart);
                 };
                 // TODO does this fire for ads?
                 element.addEventListener("READY", mapString + mediaStart);
                 map[id + mediaEnd] = function() {
-                    core.processEvent(events[mediaEnd], {
-                        data: null,
-                        target: player,
-                        type: mediaEnd
-                    });
+                    player.trigger(mediaEnd);
                 };
                 // yes, flash event is media ended unfort.
                 element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
                 // fired when the end slate is shown, if the player's configuration is set to do so.
                 map[id + onEndSlate] = function(data) {
-                    core.processEvent(events[onEndSlate], {
-                        data: data,
-                        target: player,
-                        type: onEndSlate
-                    });
+                    player.trigger(onEndSlate, data);
                 };
                 element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
+                // fired when the config is ready
+                map[id + onConfig] = function(data) {
+                    MTVNPlayer.module("config").copyProperties(player.config, data);
+                    // player.trigger(onConfig,data);
+                };
+                element.addEventListener("ON_CONFIG", mapString + onConfig);
             },
             /**
              * @ignore
              * Set the flash object's dimensions to 100%,
              * and the container's dimensions to the config settings.
-             */ 
+             */
             adjustElementDimensions = function(element, config) {
                 function getDim(dim) {
                     return isNaN(dim) ? dim : dim + "px";
@@ -287,7 +245,7 @@
                 source: targetID,
                 player: player
             });
-            if (!exists) {
+            if(!exists) {
                 makeWSwfObject(targetID, config);
                 adjustElementDimensions(player.element, config);
             }
@@ -299,12 +257,12 @@
          * @ignore
          */
         this.message = function(message) {
-            if (!this.ready) {
+            if(!this.ready) {
                 throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
             }
             // translate api method to flash player method
             message = messageNameMap[message] || message;
-            switch (message) {
+            switch(message) {
             case "exitFullScreen":
                 // needs to be screened
                 exitFullScreen.call(this);
@@ -316,9 +274,9 @@
                 break;
             }
             // pass up to two arguments
-            if (arguments[1] !== undefined && arguments[2] !== undefined) {
+            if(arguments[1] !== undefined && arguments[2] !== undefined) {
                 return this.element[message](arguments[1], arguments[2]);
-            } else if (arguments[1] !== undefined) {
+            } else if(arguments[1] !== undefined) {
                 return this.element[message](arguments[1]);
             } else {
                 return this.element[message]();
@@ -326,7 +284,7 @@
         };
         window.mtvnPlayerLoaded = function(e) {
             return function(id) {
-                if (e) {
+                if(e) {
                     e(id);
                 }
                 var player = core.getPlayerInstance(id);
