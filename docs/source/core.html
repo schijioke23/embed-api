@@ -114,15 +114,6 @@
         return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n) || checkAndroid(n);
     };
 
-<span id='global-method-isElement'>    /**
-</span>     * Utility function. Check if the argument is a element.
-     * @ignore
-     */
-    core.isElement = function(o) {
-        return typeof window.HTMLElement === &quot;object&quot; ? o instanceof window.HTMLElement : //DOM2
-        typeof o === &quot;object&quot; &amp;&amp; o.nodeType === 1 &amp;&amp; typeof o.nodeName === &quot;string&quot;;
-    };
-
 <span id='global-method-appendStyle'>    /**
 </span>     * Utility function. Append css to the head.
      * @ignore

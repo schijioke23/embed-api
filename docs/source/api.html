@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">(function(MTVNPlayer, $) {
     &quot;use strict&quot;;
-    if (!MTVNPlayer.Player) {
+    if(!MTVNPlayer.Player) {
 <span id='MTVNPlayer-Events'>        /**
 </span>         * Events dispatched by {@link MTVNPlayer.Player}.
          *
@@ -70,7 +70,7 @@
 <span id='MTVNPlayer-Events-event-stateChange'>            /**
 </span>             * @event stateChange
              * Fired when the play state changes. event.data is the state.
-             * 
+             *
              * You can also listen for a specific state only (v2.5.0).
              * ```
              * player.on(&quot;stateChange:paused&quot;,function(event){
@@ -92,7 +92,7 @@
 <span id='MTVNPlayer-Events-event-playheadUpdate'>            /**
 </span>             * @event playheadUpdate
              * Fired as the playhead moves. event.data is the playhead time.
-             * 
+             *
              * Support for cue points (v2.5.0).
              * The below snippet fires once when the playhead crosses the 15 second mark.
              * The playhead time itself may be 15 plus a fraction.
@@ -116,11 +116,11 @@
             OVERLAY_RECT_CHANGE: &quot;overlayRectChange&quot;,
 <span id='MTVNPlayer-Events-event-ready'>            /**
 </span>             * @event ready
-             * Fired when the player has loaded and the metadata is available. 
+             * Fired when the player has loaded and the metadata is available.
              * You can bind/unbind to events before this fires.
              * You can also invoke most methods before the event, the only exception is
              * {@link MTVNPlayer.Player#getEmbedCode}, since it returns a value which
-             * won't be ready until the metadata is ready. Other methods will be queued and 
+             * won't be ready until the metadata is ready. Other methods will be queued and
              * then executed when the player is ready to invoke them.
              */
             READY: &quot;ready&quot;,
@@ -143,7 +143,7 @@
             INDEX_CHANGE: &quot;indexChange&quot;,
 <span id='MTVNPlayer-Events-event-fullScreenChange'>            /**
 </span>             * @event fullScreenChange
-             * HTML5 only. Fired when the player.isFullScreen property has been changed. 
+             * HTML5 only. Fired when the player.isFullScreen property has been changed.
              * The player may or may not visually be in full screen, it depends on its context.
              * Check {@link MTVNPlayer.Player#isFullScreen} to see if the player is in full screen or not.
              */
@@ -162,8 +162,8 @@
             PERFORMANCE: &quot;performance&quot;
         };
 <span id='MTVNPlayer-PlayState'>        /**
-</span>         * When a {@link MTVNPlayer.Events#stateChange} event is fired, the event's data property will be equal to one of these play states. 
-         * At the moment, there may be incongruities between html5 and flash state sequences. 
+</span>         * When a {@link MTVNPlayer.Events#stateChange} event is fired, the event's data property will be equal to one of these play states.
+         * At the moment, there may be incongruities between html5 and flash state sequences.
          * Flash also has &quot;initializing&quot; and &quot;connecting&quot; states, which aren't available in the html5 player.
          */
         MTVNPlayer.PlayState = {
@@ -194,7 +194,7 @@
             BUFFERING: &quot;buffering&quot;
         };
 <span id='MTVNPlayer-property-defaultConfig'>        /**
-</span>         * @member MTVNPlayer 
+</span>         * @member MTVNPlayer
          * When using MTVNPlayer.createPlayers this config (see MTVNPlayer.Player.config) object will be used for every player created.
          * If MTVNPlayer.createPlayers is passed a config object, it will override anything defined in MTVNPlayer.defaultConfig.
          */
@@ -221,14 +221,14 @@
         MTVNPlayer.Player = (function(window) {
             // static methods variables
             var core = MTVNPlayer.module(&quot;core&quot;),
+                _ = MTVNPlayer.require(&quot;_&quot;),
                 throwError = function(message) {
                     throw new Error(&quot;Embed API:&quot; + message);
                 },
                 document = window.document,
-                Player,
-                fixEventName = function(eventName) {
-                    if (eventName &amp;&amp; eventName.indexOf(&quot;on&quot;) === 0) {
-                        if (eventName === &quot;onUIStateChange&quot;) {
+                Player, fixEventName = function(eventName) {
+                    if(eventName &amp;&amp; eventName.indexOf(&quot;on&quot;) === 0) {
+                        if(eventName === &quot;onUIStateChange&quot;) {
                             return &quot;uiStateChange&quot;;
                         }
                         return eventName.charAt(2).toLowerCase() + eventName.substr(3);
@@ -242,18 +242,18 @@
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
-                    if (eventName.indexOf(&quot;:&quot;) !== -1) {
+                    if(eventName.indexOf(&quot;:&quot;) !== -1) {
                         eventName = eventName.split(&quot;:&quot;)[0];
                     }
                     var check = function(events) {
-                        for (var event in events) {
-                            if (events.hasOwnProperty(event) &amp;&amp; events[event] === eventName) {
-                                return true; // has event
+                            for(var event in events) {
+                                if(events.hasOwnProperty(event) &amp;&amp; events[event] === eventName) {
+                                    return true; // has event
+                                }
                             }
-                        }
-                        return false;
-                    };
-                    if (check(MTVNPlayer.Events) || check(MTVNPlayer.module(&quot;ModuleLoader&quot;).Events)) {
+                            return false;
+                        };
+                    if(check(MTVNPlayer.Events) || check(MTVNPlayer.module(&quot;ModuleLoader&quot;).Events)) {
                         return;
                     }
                     throwError(&quot;event:&quot; + eventName + &quot; doesn't exist.&quot;);
@@ -265,14 +265,14 @@
                  * Loop through the events, and check the event names
                  */
                 checkEvents = function(events) {
-                    for (var event in events) {
-                        if (events.hasOwnProperty(event) &amp;&amp; event.indexOf(&quot;on&quot;) === 0) {
+                    for(var event in events) {
+                        if(events.hasOwnProperty(event) &amp;&amp; event.indexOf(&quot;on&quot;) === 0) {
                             events[fixEventName(event)] = events[event];
                             delete events[event];
                         }
                     }
-                    for (event in events) {
-                        if (events.hasOwnProperty(event)) {
+                    for(event in events) {
+                        if(events.hasOwnProperty(event)) {
                             checkEventName(event);
                         }
                     }
@@ -299,7 +299,7 @@
                         metadata = this.currentMetadata,
                         displayDataPrefix = &quot;&lt;p style=\&quot;text-align:left;background-color:#FFFFFF;padding:4px;margin-top:4px;margin-bottom:0px;font-family:Arial, Helvetica, sans-serif;font-size:12px;\&quot;&gt;&quot;,
                         displayMetadata = (function() {
-                            if (!metadata) {
+                            if(!metadata) {
                                 return &quot;&quot;;
                             }
                             var copy = &quot;&quot;,
@@ -307,20 +307,20 @@
                                 source = categories.source,
                                 sourceLink = categories.sourceLink,
                                 seoHTMLText = categories.seoHTMLText;
-                            if (source) {
-                                if (sourceLink) {
+                            if(source) {
+                                if(sourceLink) {
                                     copy += &quot;&lt;b&gt;&lt;a href=\&quot;&quot; + sourceLink + &quot;\&quot;&gt;&quot; + source + &quot;&lt;/a&gt;&lt;/b&gt;&quot;;
                                 } else {
                                     copy += &quot;&lt;b&gt;&quot; + source + &quot;&lt;/b&gt; &quot;;
                                 }
                             }
-                            if (seoHTMLText) {
-                                if (copy) {
+                            if(seoHTMLText) {
+                                if(copy) {
                                     copy += &quot;&lt;br/&gt;&quot;;
                                 }
                                 copy += &quot;Get More: &quot; + seoHTMLText;
                             }
-                            if (copy) {
+                            if(copy) {
                                 copy = displayDataPrefix + copy + &quot;&lt;/p&gt;&quot;;
                             }
                             return copy;
@@ -374,7 +374,7 @@
              */
             MTVNPlayer.removeOnPlayer = function(callback) {
                 var index = core.onPlayerCallbacks.indexOf(callback);
-                if (index !== -1) {
+                if(index !== -1) {
                     core.onPlayerCallbacks.splice(index, 1);
                 }
             };
@@ -394,7 +394,7 @@
                 var result = [],
                     instances = core.instances,
                     i = instances.length;
-                for (i; i--;) {
+                for(i; i--;) {
                     result.push(instances[i].player);
                 }
                 return result;
@@ -407,8 +407,8 @@
             MTVNPlayer.getPlayer = function(uri) {
                 var instances = core.instances,
                     i = instances.length;
-                for (i; i--;) {
-                    if (instances[i].player.config.uri === uri) {
+                for(i; i--;) {
+                    if(instances[i].player.config.uri === uri) {
                         return instances[i].player;
                     }
                 }
@@ -416,23 +416,23 @@
             };
 <span id='MTVNPlayer-method-gc'>            /**
 </span>             * @member MTVNPlayer
-             * Garbage collection, looks for all {@link MTVNPlayer.Player} that are no longer in the document, 
+             * Garbage collection, looks for all {@link MTVNPlayer.Player} that are no longer in the document,
              * and removes them from the hash map.
              */
             MTVNPlayer.gc = function() {
                 var elementInDocument = function(element) {
-                    while (element.parentNode) {
-                        element = element.parentNode;
-                        if (element == document) {
-                            return true;
+                        while(element.parentNode) {
+                            element = element.parentNode;
+                            if(element == document) {
+                                return true;
+                            }
                         }
-                    }
-                    return false;
-                };
+                        return false;
+                    };
                 var instances = core.instances,
                     i = instances.length;
-                for (i; i--;) {
-                    if (!elementInDocument(instances[i].player.element)) {
+                for(i; i--;) {
+                    if(!elementInDocument(instances[i].player.element)) {
                         instances.splice(i, 1);
                     }
                 }
@@ -467,11 +467,11 @@
              *      &lt;/script&gt;
              */
             MTVNPlayer.createPlayers = function(selectorQuery, config, events) {
-                if (!selectorQuery) {
+                if(!selectorQuery) {
                     selectorQuery = &quot;div.MTVNPlayer&quot;;
                 }
                 var elements = MTVNPlayer.module(&quot;selector&quot;).find(selectorQuery);
-                for (var i = 0, len = elements.length; i &lt; len; i++) {
+                for(var i = 0, len = elements.length; i &lt; len; i++) {
                     new MTVNPlayer.Player(elements[i], config, events);
                 }
                 return elements.length;
@@ -479,7 +479,7 @@
 
             Player = function(elementOrId, config, events) {
                 // in case constructor is called without new.
-                if (!(this instanceof Player)) {
+                if(!(this instanceof Player)) {
                     return new Player(elementOrId, config, events);
                 }
 <span id='MTVNPlayer-Player-property-ready'>                /** 
@@ -575,7 +575,7 @@
                 var playerModule = null,
                     el = null,
                     containerElement = document.createElement(&quot;div&quot;);
-                if (core.isElement(elementOrId)) {
+                if(_.isElement(elementOrId)) {
                     el = elementOrId;
                     this.id = createId(el);
                     this.config = MTVNPlayer.module(&quot;config&quot;).buildConfig(el, this.config);
@@ -584,7 +584,7 @@
                     el = document.getElementById(this.id);
                 }
 
-                if (this.config.performance) {
+                if(this.config.performance) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
@@ -605,15 +605,15 @@
                 core.playerInit(this, playerModule);
 
                 // check for element before creating
-                if (!el) {
-                    if (document.readyState === &quot;complete&quot;) {
+                if(!el) {
+                    if(document.readyState === &quot;complete&quot;) {
                         throwError(&quot;target div &quot; + this.id + &quot; not found&quot;);
                     } else {
-                        if ($) {
+                        if($) {
                             // wait for document ready, then try again.
                             (function(ref) {
                                 $(document).ready(function() {
-                                    if (document.getElementById(ref.id)) {
+                                    if(document.getElementById(ref.id)) {
                                         playerModule.create(ref);
                                     } else {
                                         throwError(&quot;target div &quot; + ref.id + &quot; not found&quot;);
@@ -633,7 +633,7 @@
             Player.prototype = {
 <span id='MTVNPlayer-Player-method-getPlayerElement'>                /**
 </span>                 * 2.1.0 Use {@link MTVNPlayer.Player#element}
-                 * @deprecated 
+                 * @deprecated
                  * @returns HTMLElement the object/embed element for flash or the iframe element for the HTML5 Player.
                  */
                 getPlayerElement: function() {
@@ -687,8 +687,8 @@
                 },
 <span id='MTVNPlayer-Player-method-seek'>                /**
 </span>                 * Seeks to the time specified in seconds relative to the first clip.
-                 * @param {Number} value between 0 and the duration of the playlist. 
-                 * The value is relative to the first clip. It's recommended that when 
+                 * @param {Number} value between 0 and the duration of the playlist.
+                 * The value is relative to the first clip. It's recommended that when
                  * seeking to another clip besides the first, use {@link MTVNPlayer.Player#playIndex}.
                  */
                 seek: function(time) {
@@ -731,9 +731,9 @@
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var currentEvent = this.events[eventName];
-                    if (!currentEvent) {
+                    if(!currentEvent) {
                         currentEvent = callback;
-                    } else if (currentEvent instanceof Array) {
+                    } else if(currentEvent instanceof Array) {
                         currentEvent.push(callback);
                     } else {
                         currentEvent = [callback, currentEvent];
@@ -750,11 +750,11 @@
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var i, currentEvent = this.events[eventName];
-                    if (!currentEvent) {
+                    if(!currentEvent) {
                         return;
-                    } else if (currentEvent instanceof Array) {
-                        for (i = currentEvent.length; i--;) {
-                            if (currentEvent[i] === callback) {
+                    } else if(currentEvent instanceof Array) {
+                        for(i = currentEvent.length; i--;) {
+                            if(currentEvent[i] === callback) {
                                 currentEvent.splice(i, 1);
                                 break;
                             }
@@ -776,6 +776,18 @@
                             callback(event);
                         };
                     this.on(eventName, newCB);
+                },
+<span id='MTVNPlayer-Player-method-trigger'>                /**
+</span>                 * Triggers an event off the player instance.
+                 * @param {String} eventName an {@link MTVNPlayer.Events}.
+                 * @param {Object} data Data will be available as event.data on the event object.
+                 */
+                trigger: function(type, data) {
+                    core.processEvent(this.events[type], {
+                        target: this,
+                        data: data,
+                        type: type
+                    });
                 }
             };
 <span id='MTVNPlayer-Player-method-on'>            /**
