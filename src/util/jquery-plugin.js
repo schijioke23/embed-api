@@ -31,7 +31,7 @@
                      el.bind(eventPrefix + prop, invoke);
                  }
              },
-             // creates a player and hooks up 
+             // creates a player and hooks up
              createPlayer = function($el) {
                  $el.append("<div class=\"playerTarget\"/>");
                  var config = MTVNPlayer.module("config").buildConfig($el[0], defaultConfig),
@@ -52,7 +52,7 @@
                  // prepare placeholders.
                  self.each(function() {
                      var $el = $(this);
-                     if ($el.children().length > 0) { // if element has children, assume placeholders.
+                     if (!MTVNPlayer.isHTML5Player && $el.children().length > 0) { // if element has children, assume placeholders.
                          // inject placeholder styles.
                          setStyles();
                          // wrap the placeholder and add the button.
@@ -79,7 +79,7 @@
                      }
                  });
              } else {
-                 // nothing happened. 
+                 // nothing happened.
                  callback();
              }
          };

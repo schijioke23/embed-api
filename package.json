@@ -1,6 +1,6 @@
 {
-    "name": "mtvn-embed-api",
-    "version": "2.5.1",
+    "name": "embed-api",
+    "version": "2.6.0",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
     "description": "The embed api provides a unified interface for different player implementations.",
@@ -12,10 +12,10 @@
         "test": "testem ci"
     },
     "devDependencies": {
-        "express": "2.5.8",
         "testem": "*",
-        "grunt": "*",
-        "grunt-contrib":"*"
+        "grunt": "0.3.17",
+        "grunt-contrib":"*",
+        "grunt-remove-logging" : "*"
     },
     "license": "MIT",
     "engine": {

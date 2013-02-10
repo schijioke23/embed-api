@@ -1,19 +1,20 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
+    var sourceFiles = ['src/util/start.js', 'src/third-party/underscore.js', 'src/util/provide.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
         targetPath = 'dist/',
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
         syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
     grunt.loadNpmTasks('grunt-contrib');
+    grunt.loadNpmTasks('grunt-remove-logging');
     grunt.initConfig({
         pkg: '<json:package.json>',
         clean: {
             folder: ["build/*"]
         },
         lint: {
-            devel: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js'],
-            release: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js', 'test/buster/**/*.js']
+            devel: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js'],
+            release: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js']
         },
         min: {
             dist: {
@@ -32,6 +33,7 @@ module.exports = function(grunt) {
         jshint: {
             devel: {
                 options: {
+                    asi:false,
                     browser: true,
                     devel: true,
                     debug: true

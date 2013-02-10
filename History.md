@@ -1,3 +1,12 @@
+
+2.6.0 / 2013-02-10 
+==================
+
+  * [BRBPL-3223](http://jira.mtvi.com/browse/BRBPL-3223) Support for loading endslate module.
+  * [BRBPL-3461](http://jira.mtvi.com/browse/BRBPL-3461) jQuery Plugin only used for flash players. 
+  * Package management with `MTVNPlayer.provide` and `MTVNPlayer.require`
+
+ 
 2.5.1 / 2013-1-14 
 ==================
 
