@@ -24,12 +24,9 @@
 		equal(list.length, 2, "C is not in list because it's provided.");
 	});
 	asyncTest("EndSlateModule", 5, function() {
-		ok(!MTVNPlayer.has("$"),"jQuery not loaded yet");
-		ok(!MTVNPlayer.has("mtvn-util"),"mtvn-util not loaded yet");
-
-		var isIE = MTVNPlayer.module("ModuleLoader").isIE,
-			expecting = isIE ? "jQuery" : "Zepto",
-			player = {
+		ok(!MTVNPlayer.has("$"), "jQuery not loaded yet");
+		ok(!MTVNPlayer.has("mtvn-util"), "mtvn-util not loaded yet");
+		var player = {
 			config: {
 				module: {
 					"endslate": {
@@ -51,18 +48,14 @@
 				target: player
 			},
 			EndSlateModule = MTVNPlayer.module("ModuleLoader").EndSlateModule;
-		
+
 		EndSlateModule.onModuleRequested(event);
 		EndSlateModule.callbacks.push(function() {
-			ok(MTVNPlayer.has("$"),expecting + " loaded");
-			if(isIE){
-				equal(MTVNPlayer.require("$").fn.jquery,"1.9.1","jQuery loaded for IE");
-			}else{
-				equal(MTVNPlayer.require("$").fn.jquery,undefined,"Zepto loaded for non-IE");
-			}
-			ok(MTVNPlayer.has("mtvn-util"),"mtvn-util loaded");
-			//MTVNPlayer.provide("$",null);
-			MTVNPlayer.provide("mtvn-util",null);
+			ok(MTVNPlayer.has("$"), "jQuery loaded");
+			equal(MTVNPlayer.require("$").fn.jquery, "1.9.1", "jQuery");
+			ok(MTVNPlayer.has("mtvn-util"), "mtvn-util loaded");
+			// MTVNPlayer.provide("$",null);
+			MTVNPlayer.provide("mtvn-util", null);
 			start();
 		});
 	});
