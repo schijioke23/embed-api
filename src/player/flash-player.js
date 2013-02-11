@@ -210,13 +210,13 @@
                 map[id + onEndSlate] = function(data) {
                     player.trigger(onEndSlate, data);
                 };
-                element.addEventListener("ON_ENDSLATE", mapString + onEndSlate);
+                element.addEventListener("ENDSLATE", mapString + onEndSlate);
                 // fired when the config is ready
                 map[id + onConfig] = function(data) {
                     MTVNPlayer.module("config").copyProperties(player.config, data);
                     // player.trigger(onConfig,data);
                 };
-                element.addEventListener("ON_CONFIG", mapString + onConfig);
+                element.addEventListener("CONFIG", mapString + onConfig);
             },
             /**
              * @ignore
