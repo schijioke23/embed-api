@@ -1,4 +1,10 @@
 
+2.6.1 / 2013-02-11 
+==================
+
+  * Discarded Zepto on non-IE browsers for consistency. Could be added back as an optimization.
+  
+
 2.6.0 / 2013-02-10 
 ==================
 
