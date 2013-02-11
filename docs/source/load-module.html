@@ -18,13 +18,6 @@
   <pre class="prettyprint lang-js">(function(MTVNPlayer, yepnope) {
     var _ = MTVNPlayer.require(&quot;_&quot;),
         ModuleLoader = MTVNPlayer.module(&quot;ModuleLoader&quot;),
-        isIE = /ms(ie)\s((\d+)?[\w\.]+)/i.test(navigator.userAgent),
-        jQuery = &quot;http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;,
-        Zepto = &quot;http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js&quot;,
-        // this is used right now to see if we need can use Zepto instead of jQuery.
-        dependencyMap = {
-            &quot;$&quot;: isIE ? jQuery : Zepto
-        },
         versionIsMinimum = MTVNPlayer.module(&quot;config&quot;).versionIsMinimum,
         provideJQuery = function() {
             // provide $ if it's on the window
@@ -32,11 +25,6 @@
                 var $ = window.jQuery;
                 // TODO we can lower this version if we want to test first.
                 if($ &amp;&amp; versionIsMinimum(&quot;1.9.0&quot;, $.fn.jquery)) {
-                    MTVNPlayer.provide(&quot;$&quot;, $);
-                }
-                $ = window.Zepto;
-                // Zepto doesn't have a version number so we're winging it.
-                if($) {
                     MTVNPlayer.provide(&quot;$&quot;, $);
                 }
             }
@@ -101,13 +89,12 @@
         _(dependencies).each(function(value, id) {
             // check if the dependency is loaded.
             if(!MTVNPlayer.has(id)) {
-                load.push(dependencyMap[id] || value.url);
+                load.push(value.url);
             }
         });
         return load;
     };
     // Exports
-    ModuleLoader.isIE = isIE;
     ModuleLoader.Events = {
         END_SLATE: EndSlateModule.eventName
     };

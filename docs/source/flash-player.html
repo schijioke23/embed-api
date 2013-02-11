@@ -227,13 +227,13 @@
                 map[id + onEndSlate] = function(data) {
                     player.trigger(onEndSlate, data);
                 };
-                element.addEventListener(&quot;ON_ENDSLATE&quot;, mapString + onEndSlate);
+                element.addEventListener(&quot;ENDSLATE&quot;, mapString + onEndSlate);
                 // fired when the config is ready
                 map[id + onConfig] = function(data) {
                     MTVNPlayer.module(&quot;config&quot;).copyProperties(player.config, data);
                     // player.trigger(onConfig,data);
                 };
-                element.addEventListener(&quot;ON_CONFIG&quot;, mapString + onConfig);
+                element.addEventListener(&quot;CONFIG&quot;, mapString + onConfig);
             },
 <span id='global-method-adjustElementDimensions'>            /**
 </span>             * @ignore
