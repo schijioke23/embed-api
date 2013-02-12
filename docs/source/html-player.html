@@ -170,8 +170,8 @@
                         } else if(data.indexOf(&quot;airplay&quot;) === 0) {
                             player.trigger(eventTypes.AIRPLAY);
                         } else if(data.indexOf(&quot;onEndSlate:&quot;) === 0) {
-                            var endSlateEvent = MTVNPlayer.module(&quot;ModuleLoader&quot;).Events.END_SLATE;
-                            player.trigger(endSlateEvent, jsonParse(getMessageData(data)));
+                            var endslateEvent = MTVNPlayer.module(&quot;ModuleLoader&quot;).Events.ENDSLATE;
+                            player.trigger(endslateEvent, jsonParse(getMessageData(data)));
                         }
                     }
                 }
