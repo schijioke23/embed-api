@@ -135,8 +135,6 @@
                     mediaStart = MTVNPlayer.Events.MEDIA_START,
                     performanceEvent = MTVNPlayer.Events.PERFORMANCE,
                     onIndexChange = MTVNPlayer.Events.INDEX_CHANGE,
-                    onEndSlate = "onEndSlate",
-                    onConfig = "onConfig",
                     playheadUpdate = MTVNPlayer.Events.PLAYHEAD_UPDATE;
                 // the first metadata event will trigger the readyEvent
                 map[id + metadataEvent] = function(metadata) {
@@ -166,6 +164,12 @@
                     player.playlistMetadata = playlistMetadata;
                     if(fireReadyEvent) {
                         player.ready = true;
+                        try{
+                            var playerConfig = element.getJSConfig();
+                            MTVNPlayer.module("config").copyProperties(player.config, playerConfig);
+                        }catch(e){
+                            // method getJSConfig not implemented.
+                        }
                         player.trigger(readyEvent, processedMetadata);
                     }
                     player.trigger(metadataEvent, processedMetadata);
@@ -207,16 +211,11 @@
                 // yes, flash event is media ended unfort.
                 element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
                 // fired when the end slate is shown, if the player's configuration is set to do so.
-                map[id + onEndSlate] = function(data) {
-                    player.trigger(onEndSlate, data);
+                map[id + "onEndSlate"] = function(data) {
+                    var endslateEvent = MTVNPlayer.module("ModuleLoader").Events.ENDSLATE;
+                    player.trigger(endslateEvent, data);
                 };
-                element.addEventListener("ENDSLATE", mapString + onEndSlate);
-                // fired when the config is ready
-                map[id + onConfig] = function(data) {
-                    MTVNPlayer.module("config").copyProperties(player.config, data);
-                    // player.trigger(onConfig,data);
-                };
-                element.addEventListener("CONFIG", mapString + onConfig);
+                element.addEventListener("ENDSLATE", mapString + "onEndSlate");
             },
             /**
              * @ignore

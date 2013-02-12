@@ -23,7 +23,7 @@
 		equal(list[1], "B url", "required B");
 		equal(list.length, 2, "C is not in list because it's provided.");
 	});
-	asyncTest("EndSlateModule", 5, function() {
+	asyncTest("EndslateModule", 5, function() {
 		ok(!MTVNPlayer.has("$"), "jQuery not loaded yet");
 		ok(!MTVNPlayer.has("mtvn-util"), "mtvn-util not loaded yet");
 		var player = {
@@ -47,10 +47,10 @@
 			event = {
 				target: player
 			},
-			EndSlateModule = MTVNPlayer.module("ModuleLoader").EndSlateModule;
+			EndslateModule = MTVNPlayer.module("ModuleLoader").EndslateModule;
 
-		EndSlateModule.onModuleRequested(event);
-		EndSlateModule.callbacks.push(function() {
+		EndslateModule.onModuleRequested(event);
+		EndslateModule.callbacks.push(function() {
 			ok(MTVNPlayer.has("$"), "jQuery loaded");
 			equal(MTVNPlayer.require("$").fn.jquery, "1.9.1", "jQuery");
 			ok(MTVNPlayer.has("mtvn-util"), "mtvn-util loaded");
