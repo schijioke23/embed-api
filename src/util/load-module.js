@@ -17,9 +17,9 @@
                 callbacks.shift()();
             }
         },
-        EndSlateModule = {
+        EndslateModule = {
             callbacks: [],
-            eventName: "endSlate",
+            eventName: "endslate",
             loadModule: _.once(function(module) {
                 // store the current $.
                 var $ = window.$;
@@ -41,7 +41,7 @@
                     complete: function() {
                         // reset the window $ to what it was before loading.
                         window.$ = $;
-                        executeCallbacks(EndSlateModule.callbacks);
+                        executeCallbacks(EndslateModule.callbacks);
                     }
                 });
             }),
@@ -62,7 +62,7 @@
             }
         };
     // bind
-    _.bindAll(EndSlateModule);
+    _.bindAll(EndslateModule);
     /**
      * @ignore
      * builds an array of urls for dependencies that aren't loaded.
@@ -79,15 +79,15 @@
     };
     // Exports
     ModuleLoader.Events = {
-        END_SLATE: EndSlateModule.eventName
+        ENDSLATE: EndslateModule.eventName
     };
     // Export module configs so they can be adjusted for testing.
-    ModuleLoader.EndSlateModule = EndSlateModule;
+    ModuleLoader.EndslateModule = EndslateModule;
     /**
      * @ignore
      * When any player is created, listen for an end slate event
      */
     MTVNPlayer.onPlayer(function(player) {
-        player.bind(EndSlateModule.eventName, EndSlateModule.onModuleRequested);
+        player.bind(EndslateModule.eventName, EndslateModule.onModuleRequested);
     });
 })(window.MTVNPlayer, window.yepnope);
