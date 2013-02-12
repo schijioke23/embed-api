@@ -153,8 +153,8 @@
                         } else if(data.indexOf("airplay") === 0) {
                             player.trigger(eventTypes.AIRPLAY);
                         } else if(data.indexOf("onEndSlate:") === 0) {
-                            var endSlateEvent = MTVNPlayer.module("ModuleLoader").Events.END_SLATE;
-                            player.trigger(endSlateEvent, jsonParse(getMessageData(data)));
+                            var endslateEvent = MTVNPlayer.module("ModuleLoader").Events.ENDSLATE;
+                            player.trigger(endslateEvent, jsonParse(getMessageData(data)));
                         }
                     }
                 }
