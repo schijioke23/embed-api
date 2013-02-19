@@ -17,11 +17,11 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"> (function(MTVNPlayer, $) {
      &quot;use strict&quot;;
-     if ($) {
+     if($) {
          var eventPrefix = &quot;MTVNPlayer:&quot;,
              // support for MTVN.config.player
              legacyConfig = function(MTVN) {
-                 if (MTVN &amp;&amp; MTVN.config &amp;&amp; MTVN.config.player) {
+                 if(MTVN &amp;&amp; MTVN.config &amp;&amp; MTVN.config.player) {
                      return MTVN.config.player;
                  }
              }(window.MTVN),
@@ -44,15 +44,15 @@
                          var method = event.type.replace(eventPrefix, &quot;&quot;);
                          player[method].apply(player, [arg1, arg2]);
                      };
-                 for (var prop in MTVNPlayer.Player.prototype) {
+                 for(var prop in MTVNPlayer.Player.prototype) {
                      el.bind(eventPrefix + prop, invoke);
                  }
              },
              // creates a player and hooks up
              createPlayer = function($el) {
-                 $el.append(&quot;&lt;div class=\&quot;playerTarget\&quot;/&gt;&quot;);
                  var config = MTVNPlayer.module(&quot;config&quot;).buildConfig($el[0], defaultConfig),
-                     player = new MTVNPlayer.Player($el.find(&quot;.playerTarget&quot;)[0], config);
+                     player;
+                 player = new MTVNPlayer.Player($el[0], config);
                  $el.data(&quot;player&quot;, player);
                  player.$el = $el;
                  mapMethods($el);
@@ -65,11 +65,11 @@
                  self = this.not(function() {
                      return $(this).data(&quot;contenturi&quot;) ? false : true;
                  });
-             if (self.length &gt; 0) {
+             if(self.length &gt; 0) {
                  // prepare placeholders.
                  self.each(function() {
                      var $el = $(this);
-                     if (!MTVNPlayer.isHTML5Player &amp;&amp; $el.children().length &gt; 0) { // if element has children, assume placeholders.
+                     if(!MTVNPlayer.isHTML5Player &amp;&amp; $el.children().length &gt; 0) { // if element has children, assume placeholders.
                          // inject placeholder styles.
                          setStyles();
                          // wrap the placeholder and add the button.
@@ -91,6 +91,7 @@
                              callback();
                          });
                      } else { // else add the div for the player to grow into.
+                         $el.empty();
                          createPlayer($el);
                          callback();
                      }
