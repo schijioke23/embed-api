@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*global $ test asyncTest expect equal ok start */
 (function() {
     "use strict";
     var $fixture = $("#qunit-fixture");
@@ -24,11 +24,11 @@
         expect(2);
         $fixture.html($("#test1").html());
         $(".MTVNPlayer").player();
-        $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function(je, e) {
+        $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function() {
             ok(true, "video played");
             start();
         });
-        $(".MTVNPlayer").one("MTVNPlayer:onReady", function(event) {
+        $(".MTVNPlayer").one("MTVNPlayer:onReady", function() {
             ok(true, "ready event has fired.");
             $(".MTVNPlayer").trigger("MTVNPlayer:play");
         });
@@ -39,7 +39,7 @@
         expect(1);
         $fixture.html($("#test2").html());
         $(".MTVNPlayer").player();
-        $(".MTVNPlayer").one("MTVNPlayer:ready", function(event) {
+        $(".MTVNPlayer").one("MTVNPlayer:ready", function() {
             ok(true, "ready event has fired.");
             start();
         });

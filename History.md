@@ -1,4 +1,16 @@
 
+2.6.3 / 2013-02-19 
+==================
+
+  * Structural change. Setting the width and height on the container element, and always setting player height and width to 100%. This is so other components can go inside the container element and use the height and width. 
+  * Fix for isHTML5Player and jQuery plugin, remove the placeholder. 
+  * Using underscore's isArray method instead of checking instanceof.
+
+2.6.2 / 2013-02-12 
+==================
+
+  * Refactoring for endslate. 
+
 2.6.1 / 2013-02-11 
 ==================
 
