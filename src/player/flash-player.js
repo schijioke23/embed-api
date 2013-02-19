@@ -27,8 +27,8 @@
                     },
                     flashVars = config.flashVars || {};
                 attributes.data = core.getPath(config);
-                attributes.width = config.width;
-                attributes.height = config.height;
+                // the parent element has the width and height in pixels.
+                attributes.width = attributes.height = "100%";
                 // we always want script access.
                 params.allowScriptAccess = "always";
                 flashVars.objectID = targetID; // TODO objectID is used by the player.
@@ -216,19 +216,6 @@
                     player.trigger(endslateEvent, data);
                 };
                 element.addEventListener("ENDSLATE", mapString + "onEndSlate");
-            },
-            /**
-             * @ignore
-             * Set the flash object's dimensions to 100%,
-             * and the container's dimensions to the config settings.
-             */
-            adjustElementDimensions = function(element, config) {
-                function getDim(dim) {
-                    return isNaN(dim) ? dim : dim + "px";
-                }
-                element.parentElement.style.width = getDim(config.width);
-                element.parentElement.style.height = getDim(config.height);
-                element.width = element.height = "100%";
             };
         MTVNPlayer.Player.flashEventMap = {};
         /**
@@ -246,7 +233,6 @@
             });
             if(!exists) {
                 makeWSwfObject(targetID, config);
-                adjustElementDimensions(player.element, config);
             }
         };
         /**

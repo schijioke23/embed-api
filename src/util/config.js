@@ -4,7 +4,8 @@
  **/
 (function(MTVNPlayer) {
     "use strict";
-    var config = MTVNPlayer.module("config");
+    var config = MTVNPlayer.module("config"),
+        _ = MTVNPlayer.require("_");
     if (config.initialized) {
         return;
     }
@@ -19,12 +20,12 @@
             for (var prop in fromObj) {
                 if (fromObj.hasOwnProperty(prop)) {
                     newEvent = fromObj[prop];
-                    if (newEvent !== undefined) {
+                    if (_.isFunction(newEvent) || _.isArray(newEvent)) {
                         currentEvent = toObj[prop];
                         if (currentEvent) {
                             // the event object already exists, we need to augment it
-                            if (currentEvent instanceof Array) {
-                                if (newEvent instanceof Array) {
+                            if (_.isArray(currentEvent)) {
+                                if (_.isArray(newEvent)) {
                                     // combine the arrays
                                     toObj[prop] = currentEvent.concat(newEvent);
                                 } else {
@@ -33,7 +34,7 @@
                                 }
                             } else {
                                 // make a new array and concat the new array, or just make an array with two items.
-                                toObj[prop] = newEvent instanceof Array ? [currentEvent].concat(newEvent) : [currentEvent, newEvent];
+                                toObj[prop] = _.isArray(newEvent) ? [currentEvent].concat(newEvent) : [currentEvent, newEvent];
                             }
                         } else {
                             // just set it...
