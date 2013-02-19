@@ -317,10 +317,13 @@
                     embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
                     return embedCode;
                 },
-                createId = function(target) {
-                    var newID = "mtvnPlayer" + Math.round(Math.random() * 10000000);
-                    target.setAttribute("id", newID);
-                    return newID;
+                getDim = function(dim) {
+                    return isNaN(dim) ? dim : dim + "px";
+                },
+                createTarget = function() {
+                    var target = document.createElement("div");
+                    target.setAttribute("id", "mtvnPlayer" + Math.round(Math.random() * 10000000));
+                    return target;
                 };
             // end private vars
             /**
@@ -529,9 +532,7 @@
                 this.playhead = 0;
                 /**
                  * @property {HTMLElement} element
-                 * The swf embed or the iframe element. This may be null after invoking new MTVNPlayer.Player
-                 * if swfobject needs to be loaded asynchronously. Once swfobject is loaded, the swf embed will be created and this.element will be set.
-                 * If this is a problem, load swfobject before creating players.
+                 * The swf embed or the iframe element.
                  */
                 this.element = null;
                 /**
@@ -549,33 +550,40 @@
                  *
                  */
                 this.config = config || {};
-                /**
-                 * @property {HTMLElement} isFullScreen
-                 * HTML5 only. See {@link MTVNPlayer.Events#fullScreenChange}
-                 */
-                this.isFullScreen = false;
-                // private vars
-                var playerModule = null,
-                    el = null,
-                    containerElement = document.createElement("div");
-                if(_.isElement(elementOrId)) {
-                    el = elementOrId;
-                    this.id = createId(el);
-                    this.config = MTVNPlayer.module("config").buildConfig(el, this.config);
-                } else {
-                    this.id = elementOrId;
-                    el = document.getElementById(this.id);
-                }
 
+                // record the start time for performance analysis.
                 if(this.config.performance) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
                 }
 
-                // wrap the player element in a container div
-                el.parentNode.insertBefore(containerElement, el);
-                containerElement.appendChild(el);
+                /**
+                 * @property {HTMLElement} isFullScreen
+                 * HTML5 only. See {@link MTVNPlayer.Events#fullScreenChange}
+                 */
+                this.isFullScreen = false;
+                // the module will create an iframe or a swf.
+                var playerModule,
+                // the player target will be replaced by an iframe or swf.
+                playerTarget = createTarget();
+
+                // the player target is going to go inside the containerElement.
+                this.containerElement = _.isElement(elementOrId) ? elementOrId : document.getElementById(elementOrId);
+
+                // TODO remove this and just use the playerTarget.id through out.
+                this.id = playerTarget.id;
+
+                // process the element and the config.
+                this.config = MTVNPlayer.module("config").buildConfig(this.containerElement, this.config);
+
+                // set the width and height.
+                // if these were set already on the element, then
+                this.containerElement.style.width = getDim(this.config.width);
+                this.containerElement.style.height = getDim(this.config.height);
+
+                // the player (a swf or an iframe), is a child of the element retrieved.
+                this.containerElement.appendChild(playerTarget);
 
                 this.events = MTVNPlayer.module("config").copyEvents(events || {}, MTVNPlayer.defaultEvents);
                 this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
@@ -588,7 +596,7 @@
                 core.playerInit(this, playerModule);
 
                 // check for element before creating
-                if(!el) {
+                if(!this.containerElement) {
                     if(document.readyState === "complete") {
                         throwError("target div " + this.id + " not found");
                     } else {

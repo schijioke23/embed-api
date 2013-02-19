@@ -10,6 +10,9 @@
         html5.initialize = function() {}; //only call this once;
         // private vars
         var core = MTVNPlayer.module("core"),
+            addCSS = function(e, prop,value) {
+                e.style.cssText+=prop+":"+value;
+            },
             /**
              * return the iframe to it's original width and height.
              * @method exitFullScreen
@@ -19,10 +22,11 @@
             exitFullScreen = function(player) {
                 player.isFullScreen = false;
                 var c = player.config,
-                    i = player.element;
-                i.style.cssText = "postion:static;z-index:auto;";
-                i.width = c.width;
-                i.height = c.height;
+                    e = player.containerElement;
+                addCSS(e,"position","static");
+                addCSS(e,"z-index","auto");
+                addCSS(e,"width",c.width+"px");
+                addCSS(e,"height",c.height+"px");
                 player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
             },
             /**
@@ -31,13 +35,13 @@
              * @param {IFrameElement} iframeElement
              */
             goFullScreen = function(player) {
-                var iframeElement = player.element,
+                var e = player.containerElement,
                     highestZIndex = player.config.highestZIndex,
                     cssText = player.config.fullScreenCssText;
                 player.isFullScreen = true;
-                iframeElement.style.cssText = cssText ? cssText : "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
-                iframeElement.width = window.innerWidth;
-                iframeElement.height = window.innerHeight;
+                e.style.cssText = cssText ? cssText : "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
+                addCSS(e,"width",window.innerWidth+"px");
+                addCSS(e,"height",window.innerHeight+"px");
                 window.scrollTo(0, 0);
                 player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
             },
@@ -90,7 +94,7 @@
                         player.trigger(MTVNPlayer.Events.INDEX_CHANGE, newIndex);
                     }
                 }
-                player.trigger(MTVNPlayer.Events.METADATA,obj);
+                player.trigger(MTVNPlayer.Events.METADATA, obj);
             },
             /**
              * @method handleMessage
@@ -105,8 +109,8 @@
                         events = player.events;
                         if(data.indexOf("playState:") === 0) {
                             player.state = getMessageData(data);
-                            player.trigger(eventTypes.STATE_CHANGE,player.state);
-                            player.trigger(eventTypes.STATE_CHANGE + ":" + player.state,player.state);
+                            player.trigger(eventTypes.STATE_CHANGE, player.state);
+                            player.trigger(eventTypes.STATE_CHANGE + ":" + player.state, player.state);
                         } else if(data.indexOf("config:") === 0) {
                             MTVNPlayer.module("config").copyProperties(player.config, jsonParse(getMessageData(data)));
                         } else if(data.indexOf("performance:") === 0) {
@@ -125,10 +129,10 @@
                             var lastPlayhead = Math.floor(player.playhead);
                             playhead = parseInt(getMessageData(data), 10);
                             player.playhead = playhead;
-                            player.trigger(eventTypes.PLAYHEAD_UPDATE,playhead);
+                            player.trigger(eventTypes.PLAYHEAD_UPDATE, playhead);
                             // support for cue points.
                             if(lastPlayhead != Math.floor(playhead)) {
-                                player.trigger(eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead),playhead);
+                                player.trigger(eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead), playhead);
                             }
                         } else if(data.indexOf("playlistMetadata:") === 0) {
                             player.playlistMetadata = jsonParse(getMessageData(data));
@@ -147,7 +151,7 @@
                                 goFullScreen(player);
                             }
                         } else if(data.indexOf("overlayRectChange:") === 0) {
-                            player.trigger(eventTypes.OVERLAY_RECT_CHANGE,jsonParse(getMessageData(data)));
+                            player.trigger(eventTypes.OVERLAY_RECT_CHANGE, jsonParse(getMessageData(data)));
                         } else if(data.indexOf("onUIStateChange:") === 0) {
                             player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
                         } else if(data.indexOf("airplay") === 0) {
@@ -168,8 +172,7 @@
                 element.setAttribute("frameborder", "0");
                 element.setAttribute("scrolling", "no");
                 element.setAttribute("type", "text/html");
-                element.height = config.height;
-                element.width = config.width;
+                element.width = element.height = "100%";
                 targetDiv.parentNode.replaceChild(element, targetDiv);
                 player.element = element;
             };

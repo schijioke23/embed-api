@@ -1,10 +1,10 @@
  (function(MTVNPlayer, $) {
      "use strict";
-     if ($) {
+     if($) {
          var eventPrefix = "MTVNPlayer:",
              // support for MTVN.config.player
              legacyConfig = function(MTVN) {
-                 if (MTVN && MTVN.config && MTVN.config.player) {
+                 if(MTVN && MTVN.config && MTVN.config.player) {
                      return MTVN.config.player;
                  }
              }(window.MTVN),
@@ -27,15 +27,15 @@
                          var method = event.type.replace(eventPrefix, "");
                          player[method].apply(player, [arg1, arg2]);
                      };
-                 for (var prop in MTVNPlayer.Player.prototype) {
+                 for(var prop in MTVNPlayer.Player.prototype) {
                      el.bind(eventPrefix + prop, invoke);
                  }
              },
              // creates a player and hooks up
              createPlayer = function($el) {
-                 $el.append("<div class=\"playerTarget\"/>");
                  var config = MTVNPlayer.module("config").buildConfig($el[0], defaultConfig),
-                     player = new MTVNPlayer.Player($el.find(".playerTarget")[0], config);
+                     player;
+                 player = new MTVNPlayer.Player($el[0], config);
                  $el.data("player", player);
                  player.$el = $el;
                  mapMethods($el);
@@ -48,11 +48,11 @@
                  self = this.not(function() {
                      return $(this).data("contenturi") ? false : true;
                  });
-             if (self.length > 0) {
+             if(self.length > 0) {
                  // prepare placeholders.
                  self.each(function() {
                      var $el = $(this);
-                     if (!MTVNPlayer.isHTML5Player && $el.children().length > 0) { // if element has children, assume placeholders.
+                     if(!MTVNPlayer.isHTML5Player && $el.children().length > 0) { // if element has children, assume placeholders.
                          // inject placeholder styles.
                          setStyles();
                          // wrap the placeholder and add the button.
@@ -74,6 +74,7 @@
                              callback();
                          });
                      } else { // else add the div for the player to grow into.
+                         $el.empty();
                          createPlayer($el);
                          callback();
                      }
