@@ -15,14 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">/*globals MTVNPlayer */
-(function(core, $) {
+  <pre class="prettyprint lang-js">/*global MTVNPlayer */
+var Core = (function(core, $) {
     &quot;use strict&quot;;
-    if (core.initialized) {
-        return;
-    }
-    core.initialized = true;
-    // private vars
     var instances = [],
         baseURL = &quot;http://media.mtvnservices.com/&quot;,
         onPlayerCallbacks = [],
@@ -43,13 +38,13 @@
 <span id='global-property-baseURL'>    /**
 </span>     * @property baseURL
      * @ignore
-     * The base URL for the player request and for swf object. 
+     * The base URL for the player request and for swf object.
      */
     core.baseURL = baseURL;
 <span id='global-property-onPlayerCallbacks'>    /**
 </span>     * @property onPlayerCallbacks
      * @ignore
-     * These are fired when a player laods. 
+     * These are fired when a player laods.
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
@@ -223,6 +218,7 @@
             cbs[i](player);
         }
     };
+    return core;
 })(window.MTVNPlayer.module(&quot;core&quot;), window.jQuery || window.Zepto);</pre>
 </body>
 </html>

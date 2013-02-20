@@ -18,9 +18,9 @@
   <pre class="prettyprint lang-js">/*	SWFObject v2.2 &lt;http://code.google.com/p/swfobject/&gt; 
 	is released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php&gt; 
 */
-(function(FlashModule) {
+(function(swfObjectMod) {
     // creates the swfobject class.
-    FlashModule.getSWFObject = function() {
+    swfObjectMod.getSWFObject = function() {
         if (!window.MTVNPlayer.swfobject) {
             var swfobject = function() {
                     var D = &quot;undefined&quot;,
@@ -749,12 +749,12 @@
                     }
                 }();
             // override the initialization of swfobject
-            FlashModule.getSWFObject = function() {
+            swfObjectMod.getSWFObject = function() {
                 return swfobject;
             }
             return swfobject;
         };
     };
-}(window.MTVNPlayer.module(&quot;flash&quot;)));</pre>
+}(window.MTVNPlayer.module(&quot;swfobject&quot;)));</pre>
 </body>
 </html>

@@ -15,7 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"> (function(MTVNPlayer, $) {
+  <pre class="prettyprint lang-js">/*global Core Config MTVNPlayer */
+ (function($) {
      &quot;use strict&quot;;
      if($) {
          var eventPrefix = &quot;MTVNPlayer:&quot;,
@@ -27,7 +28,7 @@
              }(window.MTVN),
              // default config creates players at 100% width and height,
              // also copy the properties from MTVN.player.config or MTVNPlayer.defaultConfig.
-             defaultConfig = MTVNPlayer.module(&quot;config&quot;).copyProperties({
+             defaultConfig = Config.copyProperties({
                  &quot;width&quot;: &quot;100%&quot;,
                  &quot;height&quot;: &quot;100%&quot;
              }, legacyConfig || MTVNPlayer.defaultConfig),
@@ -35,7 +36,7 @@
              setStyles = function() {
                  setStyles = function() {};
                  var rules = &quot;\n.MTVNPlayer_placeholder {cursor:pointer; position: relative;}\n&quot; + &quot;.MTVNPlayer_placeholder_button {\n&quot; + &quot;position:absolute;\n&quot; + &quot;height: 100%;\n&quot; + &quot;width: 100%;\n&quot; + &quot;top:0;\n&quot; + &quot;left:0;\n&quot; + &quot;background: no-repeat url(http://media.mtvnservices.com/player/images/Button_playBig_upSkin.png) center;\n&quot; + &quot;}\n&quot; + &quot;\n&quot; + &quot;.MTVNPlayer_placeholder_button:hover {\n&quot; + &quot;background-image: url(http://media.mtvnservices.com/player/images/Button_playBig_overSkin.png)\n&quot; + &quot;}\n&quot;;
-                 MTVNPlayer.module(&quot;core&quot;).appendStyle(rules);
+                 Core.appendStyle(rules);
              },
              // allow $(&quot;MTVNPlayer&quot;).trigger(&quot;MTVNPlayer:playIndex&quot;,[0,20]);.
              mapMethods = function(el) {
@@ -50,7 +51,7 @@
              },
              // creates a player and hooks up
              createPlayer = function($el) {
-                 var config = MTVNPlayer.module(&quot;config&quot;).buildConfig($el[0], defaultConfig),
+                 var config = Config.buildConfig($el[0], defaultConfig),
                      player;
                  player = new MTVNPlayer.Player($el[0], config);
                  $el.data(&quot;player&quot;, player);
@@ -102,6 +103,6 @@
              }
          };
      }
- })(window.MTVNPlayer, window.jQuery || window.Zepto);</pre>
+ })(window.jQuery || window.Zepto);</pre>
 </body>
 </html>
