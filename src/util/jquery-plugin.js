@@ -1,4 +1,5 @@
- (function(MTVNPlayer, $) {
+/*global Core Config MTVNPlayer */
+ (function($) {
      "use strict";
      if($) {
          var eventPrefix = "MTVNPlayer:",
@@ -10,7 +11,7 @@
              }(window.MTVN),
              // default config creates players at 100% width and height,
              // also copy the properties from MTVN.player.config or MTVNPlayer.defaultConfig.
-             defaultConfig = MTVNPlayer.module("config").copyProperties({
+             defaultConfig = Config.copyProperties({
                  "width": "100%",
                  "height": "100%"
              }, legacyConfig || MTVNPlayer.defaultConfig),
@@ -18,7 +19,7 @@
              setStyles = function() {
                  setStyles = function() {};
                  var rules = "\n.MTVNPlayer_placeholder {cursor:pointer; position: relative;}\n" + ".MTVNPlayer_placeholder_button {\n" + "position:absolute;\n" + "height: 100%;\n" + "width: 100%;\n" + "top:0;\n" + "left:0;\n" + "background: no-repeat url(http://media.mtvnservices.com/player/images/Button_playBig_upSkin.png) center;\n" + "}\n" + "\n" + ".MTVNPlayer_placeholder_button:hover {\n" + "background-image: url(http://media.mtvnservices.com/player/images/Button_playBig_overSkin.png)\n" + "}\n";
-                 MTVNPlayer.module("core").appendStyle(rules);
+                 Core.appendStyle(rules);
              },
              // allow $("MTVNPlayer").trigger("MTVNPlayer:playIndex",[0,20]);.
              mapMethods = function(el) {
@@ -33,7 +34,7 @@
              },
              // creates a player and hooks up
              createPlayer = function($el) {
-                 var config = MTVNPlayer.module("config").buildConfig($el[0], defaultConfig),
+                 var config = Config.buildConfig($el[0], defaultConfig),
                      player;
                  player = new MTVNPlayer.Player($el[0], config);
                  $el.data("player", player);
@@ -85,4 +86,4 @@
              }
          };
      }
- })(window.MTVNPlayer, window.jQuery || window.Zepto);
+ })(window.jQuery || window.Zepto);

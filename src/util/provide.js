@@ -1,5 +1,2 @@
 /*global MTVNPlayer _ */
-(function() {
-	"use strict";
-	MTVNPlayer.provide("_", _);
-})();
+MTVNPlayer.provide("_", _);

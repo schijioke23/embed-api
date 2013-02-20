@@ -1,11 +1,6 @@
-/*globals MTVNPlayer */
-(function(core, $) {
+/*global MTVNPlayer */
+var Core = (function(core, $) {
     "use strict";
-    if (core.initialized) {
-        return;
-    }
-    core.initialized = true;
-    // private vars
     var instances = [],
         baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
@@ -26,13 +21,13 @@
     /**
      * @property baseURL
      * @ignore
-     * The base URL for the player request and for swf object. 
+     * The base URL for the player request and for swf object.
      */
     core.baseURL = baseURL;
     /**
      * @property onPlayerCallbacks
      * @ignore
-     * These are fired when a player laods. 
+     * These are fired when a player laods.
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
@@ -206,4 +201,5 @@
             cbs[i](player);
         }
     };
+    return core;
 })(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);

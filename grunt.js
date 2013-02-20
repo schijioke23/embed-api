@@ -1,20 +1,21 @@
 module.exports = function(grunt) {
-    var sourceFiles = ['src/util/start.js', 'src/third-party/underscore.js', 'src/util/provide.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
-        targetPath = 'dist/',
+    var targetPath = 'dist/',
+    sourceFiles = ['dist/api.js'],
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
         syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
+    grunt.loadNpmTasks('grunt-rigger');
     grunt.loadNpmTasks('grunt-contrib');
     grunt.loadNpmTasks('grunt-remove-logging');
     grunt.initConfig({
         pkg: '<json:package.json>',
         clean: {
-            folder: ["build/*"]
+            folder: ["dist/*"]
         },
         lint: {
-            devel: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js'],
-            release: ['grunt.js', 'src/*.js', 'src/player/*.js', 'src/util/*.js']
+            devel: ['src/*.js', 'src/player/*.js', 'src/util/*.js'],
+            release: ['src/*.js', 'src/player/*.js', 'src/util/*.js']
         },
         min: {
             dist: {
@@ -59,6 +60,12 @@ module.exports = function(grunt) {
                 dest: syndicatedPath
             }
         },
+        rig: {
+            devel: {
+                src: ['src/api.js'],
+                dest: 'dist/api.js'
+            }
+        },
         copy: {
             target: {
                 files: {
@@ -71,7 +78,7 @@ module.exports = function(grunt) {
             tasks: 'default'
         }
     });
-    grunt.registerTask('version', 'write some javascript that contains the version.', function(dir) {
+    grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
         grunt.log.writeln("building version:" + version);
@@ -79,9 +86,6 @@ module.exports = function(grunt) {
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);
-    });
-    grunt.registerTask('finish', 'clean up', function() {
-        grunt.log.writeln("Compiled: " + grunt.template.today("mm-dd hh:mm:ss"));
     });
     grunt.registerTask('dirname', 'set a subdirectory name, result will be build/subdirectory(s)', function(dir) {
         if (dir.lastIndexOf("/") !== dir.length - 1) {
@@ -100,6 +104,6 @@ module.exports = function(grunt) {
             grunt.file.copy(file, dest + file.replace("dist", ""));
         });
     });
-    grunt.registerTask('default', 'clean version lint:devel concat copy finish');
-    grunt.registerTask('release', 'clean version lint:release concat min copy finish');
+    grunt.registerTask('default', 'clean version lint:devel rig concat copy');
+    grunt.registerTask('release', 'clean version lint:release rig concat min copy');
 };
