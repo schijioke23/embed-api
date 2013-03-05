@@ -91,8 +91,11 @@ var Core = (function(core, $) {
                     return !isNaN(result) && result >= 4;
                 }
                 return false;
+            },
+            checkWiiu = function(n) {
+                return n.indexOf("wiiu") !== -1;
             };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n);
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
     };
 
     /**
