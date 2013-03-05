@@ -1,7 +1,8 @@
 (function(MTVNPlayer) {
     "use strict";
     // HTML5 Player Module
-    var html5 = MTVNPlayer.module("html5");
+    var html5 = MTVNPlayer.module("html5"),
+        _ = MTVNPlayer.require("_");
     if(html5.initialized) {
         return;
     }
@@ -194,6 +195,10 @@
             } else if(typeof window.attachEvent !== 'undefined') {
                 window.attachEvent('onmessage', handleMessage);
             }
+        };
+        this.destroy = function() {
+            this.element.parentNode.removeChild(this.element);
+            core.instances.splice(_.indexOf(core.instances,this.id),1);
         };
         /**
          * Send messages to the iframe via post message.

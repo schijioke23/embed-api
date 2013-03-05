@@ -1,7 +1,8 @@
 (function(MTVNPlayer) {
     "use strict";
     var flash = MTVNPlayer.module("flash"),
-        core = MTVNPlayer.module("core");
+        core = MTVNPlayer.module("core"),
+        _ = MTVNPlayer.require("_");
     if(flash.initialized) {
         return;
     }
@@ -234,6 +235,10 @@
             if(!exists) {
                 makeWSwfObject(targetID, config);
             }
+        };
+        this.destroy = function() {
+           swfobject.removeSWF(this.element.id);
+           core.instances.splice(_.indexOf(core.instances,this.id),1);
         };
         /**
          * Send messages to the swf via flash external interface

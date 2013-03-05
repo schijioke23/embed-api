@@ -779,6 +779,13 @@
                         data: data,
                         type: type
                     });
+                },
+                /**
+                 * (v2.6.4) Call this before removing a player.
+                 * Required for older versions of IE.
+                 */
+                destroy:function() {
+                    // overriden by modules
                 }
             };
             /**
