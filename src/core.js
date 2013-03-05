@@ -55,6 +55,9 @@
                 return modules[name];
             };
         }();
+        player.destroy = function() {
+            playerModule.destroy.apply(this, arguments);
+        };
         player.message = function() {
             if (!this.ready) {
                 eventQueue.push(arguments);
