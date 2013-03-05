@@ -1,3 +1,4 @@
+/*global module */
 module.exports = function(grunt) {
     var sourceFiles = ['src/util/start.js', 'src/third-party/underscore.js', 'src/util/provide.js', 'src/core.js', 'src/util/config.js', 'src/util/selector.js', 'src/third-party/swfobject.js', 'src/player/flash-player.js', 'src/player/html-player.js', 'src/api.js', 'src/third-party/yepnope.js', 'src/util/reporting.js', 'src/util/jquery-plugin.js', 'src/util/load-module.js', 'src/util/finish.js', 'dist/version.js'],
         targetPath = 'dist/',
@@ -71,7 +72,7 @@ module.exports = function(grunt) {
             tasks: 'default'
         }
     });
-    grunt.registerTask('version', 'write some javascript that contains the version.', function(dir) {
+    grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
         grunt.log.writeln("building version:" + version);
