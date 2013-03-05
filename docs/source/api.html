@@ -817,6 +817,13 @@ if(!MTVNPlayer.Player) {
                         data: data,
                         type: type
                     });
+                },
+<span id='MTVNPlayer-Player-method-destroy'>                /**
+</span>                 * (v2.6.4) Call this before removing a player.
+                 * Required for older versions of IE.
+                 */
+                destroy:function() {
+                    // overriden by modules
                 }
             };
 <span id='MTVNPlayer-Player-method-on'>            /**
@@ -851,6 +858,7 @@ if(!MTVNPlayer.Player) {
         MTVNPlayer.isReady = true;
     })(MTVNPlayer, window.jQuery || window.Zepto);
     //= ../dist/version.js
-}</pre>
+}
+</pre>
 </body>
 </html>
