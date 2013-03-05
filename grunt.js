@@ -1,3 +1,4 @@
+/*global module */
 module.exports = function(grunt) {
     var targetPath = 'dist/',
     sourceFiles = ['dist/api.js'],

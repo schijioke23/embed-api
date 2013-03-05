@@ -1,4 +1,4 @@
-/*global MTVNPlayer Config Core ModuleLoader _ */
+/*global MTVNPlayer, Config, Core, ModuleLoader, _ */
 /**
  * set up handling of flash external interface calls
  * create functions to map metadata to new format,
@@ -12,13 +12,13 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
         play: "unpause",
         seek: "setPlayheadTime"
     },
-        swfobject = MTVNPlayer.module("swfobject").getSWFObject(),
+    swfobject = MTVNPlayer.module("swfobject").getSWFObject(),
         makeWSwfObject = function(targetID, config) {
             var attributes = config.attributes || {},
-                params = config.params || {
-                    allowFullScreen: true
-                },
-                flashVars = config.flashVars || {};
+            params = config.params || {
+                allowFullScreen: true
+            },
+            flashVars = config.flashVars || {};
             attributes.data = Core.getPath(config);
             // the parent element has the width and height in pixels.
             attributes.width = attributes.height = "100%";
@@ -27,7 +27,7 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             flashVars.objectID = targetID; // TODO objectID is used by the player.
             params.flashVars = (function(fv) {
                 var s = "";
-                for(var p in fv) {
+                for (var p in fv) {
                     s += p + "=" + fv[p] + "&";
                 }
                 return s ? s.slice(0, -1) : "";
@@ -37,24 +37,24 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
         exitFullScreen = function() {
             try {
                 this.element.exitFullScreen();
-            } catch(e) {
+            } catch (e) {
                 // fail silently. exit full screen introduced in Prime 1.12
             }
         },
         processMetadata = function(metadata, playlistItems, index, playlistMetadataItems) {
             var m = {},
-                rss;
+            rss;
             m.duration = metadata.duration;
             // TODO no live.
             m.live = false;
             m.isAd = metadata.isAd;
             m.isBumper = metadata.isBumper;
-            if(index !== undefined && index !== null) {
+            if (index !== undefined && index !== null) {
                 m.index = index;
-            } else if(playlistMetadataItems) {
+            } else if (playlistMetadataItems) {
                 m.index = function(guid) {
-                    for(var i = playlistMetadataItems.length; i--;) {
-                        if(playlistMetadataItems[i].rss.guid === guid) {
+                    for (var i = playlistMetadataItems.length; i--;) {
+                        if (playlistMetadataItems[i].rss.guid === guid) {
                             return i;
                         }
                     }
@@ -62,8 +62,8 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
                 }(metadata.guid);
             } else {
                 m.index = function(guid) {
-                    for(var i = playlistItems.length; i--;) {
-                        if(playlistItems[i].metaData.guid === guid) {
+                    for (var i = playlistItems.length; i--;) {
+                        if (playlistItems[i].metaData.guid === guid) {
                             return i;
                         }
                     }
@@ -90,14 +90,14 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
         },
         processPlaylistMetadata = function(metadata) {
             var m = {},
-                items = metadata.items,
+            items = metadata.items,
                 numberOfItems = items.length,
                 i;
             m.description = metadata.description;
             m.title = metadata.title;
             m.link = metadata.link;
             m.items = [];
-            for(i = numberOfItems; i--;) {
+            for (i = numberOfItems; i--;) {
                 m.items[i] = processMetadata(items[i], null, i);
             }
             return m;
@@ -106,9 +106,9 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             var m = {
                 items: []
             },
-                numberOfItems = playlistItems.length,
+            numberOfItems = playlistItems.length,
                 i;
-            for(i = numberOfItems; i--;) {
+            for (i = numberOfItems; i--;) {
                 m.items[i] = processMetadata(playlistItems[i].metaData, null, i);
             }
             return m;
@@ -138,29 +138,29 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
                     newIndex = processedMetadata.index,
                     lastIndex = playlistMetadata ? playlistMetadata.index : -1;
                 player.currentMetadata = processedMetadata;
-                if(!playlistMetadata) {
+                if (!playlistMetadata) {
                     // this is our first metadata event
                     fireReadyEvent = true;
                     try {
                         playlistMetadata = processPlaylistMetadata(element.getPlaylistMetadata());
-                    } catch(e) {
+                    } catch (e) {
                         playlistMetadata = getPlaylistItemsLegacy(playlistItems);
                     }
                 }
-                if(newIndex !== -1) { // index is -1 for ads.
+                if (newIndex !== -1) { // index is -1 for ads.
                     playlistMetadata.items[newIndex] = processedMetadata;
                     playlistMetadata.index = newIndex;
-                    if(lastIndex !== newIndex) {
+                    if (lastIndex !== newIndex) {
                         player.trigger(onIndexChange, newIndex);
                     }
                 }
                 player.playlistMetadata = playlistMetadata;
-                if(fireReadyEvent) {
+                if (fireReadyEvent) {
                     player.ready = true;
                     try {
                         var playerConfig = element.getJSConfig();
                         Config.copyProperties(player.config, playerConfig);
-                    } catch(e) {
+                    } catch (e) {
                         // method getJSConfig not implemented.
                     }
                     player.trigger(readyEvent, processedMetadata);
@@ -180,7 +180,7 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
                 player.playhead = playhead;
                 player.trigger(playheadUpdate, playhead);
                 // support for cue points.
-                if(lastPlayhead != Math.floor(playhead)) {
+                if (lastPlayhead != Math.floor(playhead)) {
                     player.trigger(playheadUpdate + ":" + Math.floor(playhead), playhead);
                 }
             };
@@ -224,9 +224,13 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             source: targetID,
             player: player
         });
-        if(!exists) {
+        if (!exists) {
             makeWSwfObject(targetID, config);
         }
+    };
+    this.destroy = function() {
+        swfobject.removeSWF(this.element.id);
+        Core.instances.splice(_.indexOf(Core.instances, this.id), 1);
     };
     /**
      * Send messages to the swf via flash external interface
@@ -235,26 +239,26 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
      * @ignore
      */
     this.message = function(message) {
-        if(!this.ready) {
+        if (!this.ready) {
             throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
         }
         // translate api method to flash player method
         message = messageNameMap[message] || message;
-        switch(message) {
-        case "exitFullScreen":
-            // needs to be screened
-            exitFullScreen.call(this);
-            return;
-        case "goFullScreen":
-            // do nothing, unsupported in flash
-            return;
-        default:
-            break;
+        switch (message) {
+            case "exitFullScreen":
+                // needs to be screened
+                exitFullScreen.call(this);
+                return;
+            case "goFullScreen":
+                // do nothing, unsupported in flash
+                return;
+            default:
+                break;
         }
         // pass up to two arguments
-        if(arguments[1] !== undefined && arguments[2] !== undefined) {
+        if (arguments[1] !== undefined && arguments[2] !== undefined) {
             return this.element[message](arguments[1], arguments[2]);
-        } else if(arguments[1] !== undefined) {
+        } else if (arguments[1] !== undefined) {
             return this.element[message](arguments[1]);
         } else {
             return this.element[message]();
@@ -262,7 +266,7 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
     };
     window.mtvnPlayerLoaded = function(e) {
         return function(id) {
-            if(e) {
+            if (e) {
                 e(id);
             }
             var player = Core.getPlayerInstance(id);

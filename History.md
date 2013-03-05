@@ -1,4 +1,10 @@
 
+2.6.4 / 2013-03-05 
+==================
+
+  * BRBSUPPORT-1343 Fixes #10. Destroy method - Destroy must be invoked when removing a player on ie8 and lower, to avoid throwing an error (Null is not an object). This has to do solely with the way flash and ie8 interact, and is not an embed-api issue per se. Calling destroy will also remove the player instance from a global hash.
+
+
 2.6.3 / 2013-02-19 
 ==================
 
