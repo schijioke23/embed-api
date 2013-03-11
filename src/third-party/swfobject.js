@@ -1,9 +1,9 @@
 /*	SWFObject v2.2 <http://code.google.com/p/swfobject/> 
 	is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
 */
-(function(FlashModule) {
+(function(swfObjectMod) {
     // creates the swfobject class.
-    FlashModule.getSWFObject = function() {
+    swfObjectMod.getSWFObject = function() {
         if (!window.MTVNPlayer.swfobject) {
             var swfobject = function() {
                     var D = "undefined",
@@ -732,10 +732,10 @@
                     }
                 }();
             // override the initialization of swfobject
-            FlashModule.getSWFObject = function() {
+            swfObjectMod.getSWFObject = function() {
                 return swfobject;
             }
             return swfobject;
         };
     };
-}(window.MTVNPlayer.module("flash")));
+}(window.MTVNPlayer.module("swfobject")));

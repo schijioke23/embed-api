@@ -1,6 +1,29 @@
-(function(MTVNPlayer, $) {
-    "use strict";
-    if(!MTVNPlayer.Player) {
+/**
+ * For creating a player inline you can use the MTVNPlayer.Player constructor.
+ * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
+ * @static
+ */
+var MTVNPlayer = window.MTVNPlayer || {};
+if(!MTVNPlayer.Player) {
+    //= util/start.js
+    (function() {
+        //= third-party/underscore.js
+        //= third-party/yepnope.js
+        //= third-party/swfobject.js
+    }).apply(window);
+    // we can 'use strict' below, no more third-party stuff.
+    (function(MTVNPlayer, $) {
+        "use strict";
+        /*global Core, Config */
+        var _ = window._,
+            yepnope = window.yepnope;
+        MTVNPlayer.provide("_", _);
+        MTVNPlayer.provide("yepnope", yepnope);
+        //= core.js
+        //= util/config.js
+        //= util/selector.js
+        //= player/flash-player.js
+        //= player/html-player.js
         /**
          * Events dispatched by {@link MTVNPlayer.Player}.
          *
@@ -203,9 +226,7 @@
          */
         MTVNPlayer.Player = (function(window) {
             // static methods variables
-            var core = MTVNPlayer.module("core"),
-                _ = MTVNPlayer.require("_"),
-                throwError = function(message) {
+            var throwError = function(message) {
                     throw new Error("Embed API:" + message);
                 },
                 document = window.document,
@@ -332,7 +353,7 @@
              * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
              * otherwise they'll be flash players. This is determined by checking the user agent.
              */
-            MTVNPlayer.isHTML5Player = core.isHTML5Player(window.navigator.userAgent);
+            MTVNPlayer.isHTML5Player = Core.isHTML5Player(window.navigator.userAgent);
             /**
              * @member MTVNPlayer
              * Whenever a player is created, the callback passed will fire with the player as the first
@@ -351,7 +372,7 @@
              *     });
              */
             MTVNPlayer.onPlayer = function(callback) {
-                core.onPlayerCallbacks.push(callback);
+                Core.onPlayerCallbacks.push(callback);
             };
             /**
              * @member MTVNPlayer
@@ -359,9 +380,9 @@
              * @param {Function} callback A callback fired when every player is created.
              */
             MTVNPlayer.removeOnPlayer = function(callback) {
-                var index = core.onPlayerCallbacks.indexOf(callback);
+                var index = Core.onPlayerCallbacks.indexOf(callback);
                 if(index !== -1) {
-                    core.onPlayerCallbacks.splice(index, 1);
+                    Core.onPlayerCallbacks.splice(index, 1);
                 }
             };
             /**
@@ -378,7 +399,7 @@
              */
             MTVNPlayer.getPlayers = function() {
                 var result = [],
-                    instances = core.instances,
+                    instances = Core.instances,
                     i = instances.length;
                 for(i; i--;) {
                     result.push(instances[i].player);
@@ -391,7 +412,7 @@
              * @returns MTVNPlayer.Player
              */
             MTVNPlayer.getPlayer = function(uri) {
-                var instances = core.instances,
+                var instances = Core.instances,
                     i = instances.length;
                 for(i; i--;) {
                     if(instances[i].player.config.uri === uri) {
@@ -415,7 +436,7 @@
                         }
                         return false;
                     };
-                var instances = core.instances,
+                var instances = Core.instances,
                     i = instances.length;
                 for(i; i--;) {
                     if(!elementInDocument(instances[i].player.element)) {
@@ -575,7 +596,7 @@
                 this.id = playerTarget.id;
 
                 // process the element and the config.
-                this.config = MTVNPlayer.module("config").buildConfig(this.containerElement, this.config);
+                this.config = Config.buildConfig(this.containerElement, this.config);
 
                 // set the width and height.
                 // if these were set already on the element, then
@@ -585,7 +606,7 @@
                 // the player (a swf or an iframe), is a child of the element retrieved.
                 this.containerElement.appendChild(playerTarget);
 
-                this.events = MTVNPlayer.module("config").copyEvents(events || {}, MTVNPlayer.defaultEvents);
+                this.events = Config.copyEvents(events || {}, MTVNPlayer.defaultEvents);
                 this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
                 // make sure the events are valid
                 checkEvents(events);
@@ -593,7 +614,7 @@
                 playerModule = MTVNPlayer.module(this.isFlash ? "flash" : "html5");
                 playerModule.initialize();
                 // do more initializing that's across player modules.
-                core.playerInit(this, playerModule);
+                Core.playerInit(this, playerModule);
 
                 // check for element before creating
                 if(!this.containerElement) {
@@ -774,7 +795,7 @@
                  * @param {Object} data Data will be available as event.data on the event object.
                  */
                 trigger: function(type, data) {
-                    core.processEvent(this.events[type], {
+                    Core.processEvent(this.events[type], {
                         target: this,
                         data: data,
                         type: type
@@ -808,11 +829,16 @@
             Player.prototype.one = Player.prototype.once;
             return Player;
         }(window));
+        //= util/reporting.js
+        //= util/jquery-plugin.js
+        //= util/load-module.js
+        //= util/finish.js
         /**
          * @member MTVNPlayer
          * @property {Boolean}
          * Set to true after the API is loaded.
          */
         MTVNPlayer.isReady = true;
-    }
-})(window.MTVNPlayer, window.jQuery || window.Zepto);
+    })(MTVNPlayer, window.jQuery || window.Zepto);
+    //= ../dist/version.js
+}

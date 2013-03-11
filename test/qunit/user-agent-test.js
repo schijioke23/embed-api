@@ -1,4 +1,4 @@
-/*globals QUnit MTVNPlayer*/
+/*global QUnit, MTVNPlayer*/
 
 QUnit.test("isHTML5Player",function() {
     var core = MTVNPlayer.module("core");
@@ -13,4 +13,6 @@ QUnit.test("isHTML5Player",function() {
     QUnit.ok(core.isHTML5Player("Mozilla/5.0 (Linux; U; Android 2.3; en-us) AppleWebKit/999+ (KHTML, like Gecko) Safari/999.9") === false, "Android 2.3");
     QUnit.ok(core.isHTML5Player("") === false, "empty");
     QUnit.ok(core.isHTML5Player(null) === false, "null");
+    // Wii U
+    QUnit.strictEqual(core.isHTML5Player("User agent: Mozilla/5.0 (Nintendo WiiU) AppleWebKit/534.52 (KHTML, like Gecko) NX/{Version No} NintendoBrowser/{Version No}.US"),true, "Wii U");
 });

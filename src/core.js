@@ -1,13 +1,7 @@
-/*globals MTVNPlayer */
-(function(core, $) {
+/*global MTVNPlayer, _ */
+var Core = (function(core, $) {
     "use strict";
-    if (core.initialized) {
-        return;
-    }
-    core.initialized = true;
-    // private vars
-    var instances = [],
-        baseURL = "http://media.mtvnservices.com/",
+    var baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
         // this is needed for the jQuery plugin only.
         getLegacyEventName = function(eventName) {
@@ -22,17 +16,17 @@
      * @ignore
      * An array of all the player instances.
      */
-    core.instances = instances;
+    core.instances = [];
     /**
      * @property baseURL
      * @ignore
-     * The base URL for the player request and for swf object. 
+     * The base URL for the player request and for swf object.
      */
     core.baseURL = baseURL;
     /**
      * @property onPlayerCallbacks
      * @ignore
-     * These are fired when a player laods. 
+     * These are fired when a player laods.
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
@@ -96,8 +90,11 @@
                     return !isNaN(result) && result >= 4;
                 }
                 return false;
+            },
+            checkWiiu = function(n) {
+                return n.indexOf("wiiu") !== -1;
             };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n);
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
     };
 
     /**
@@ -183,10 +180,10 @@
      */
     core.getPlayerInstance = function(source) {
         var i, player = null,
-            numberOfInstances = instances.length,
+            numberOfInstances = core.instances.length,
             currentInstance;
         for (i = numberOfInstances; i--;) {
-            currentInstance = instances[i];
+            currentInstance = core.instances[i];
             if (currentInstance.source === source) {
                 // compare source (contentWindow) to get events object from the right player. (if flash, source is the embed id)
                 player = currentInstance.player;
@@ -209,4 +206,5 @@
             cbs[i](player);
         }
     };
+    return core;
 })(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);
