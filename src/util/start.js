@@ -1,4 +1,4 @@
-/*global MTVNPlayer _ */
+/*global MTVNPlayer, _ */
 /**
  * @ignore
  * Modules are for internal embed api modules.

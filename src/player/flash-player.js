@@ -34,6 +34,11 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             })(flashVars);
             Core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
         },
+        removePlayerInstance = function(id) {
+            Core.instances = _.reject(Core.instances, function(instance) {
+                return instance.source === id;
+            });
+        },
         exitFullScreen = function() {
             try {
                 this.element.exitFullScreen();
@@ -230,7 +235,7 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
     };
     this.destroy = function() {
         swfobject.removeSWF(this.element.id);
-        Core.instances.splice(_.indexOf(Core.instances, this.id), 1);
+        removePlayerInstance(this.id);
     };
     /**
      * Send messages to the swf via flash external interface

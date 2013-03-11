@@ -1,4 +1,4 @@
-/*global MTVNPlayer test equal ok asyncTest start */
+/*global MTVNPlayer, test, equal, ok, asyncTest, start */
 (function() {
 	"use strict";
 	var ModuleLoader = MTVNPlayer.module("ModuleLoader");
@@ -48,7 +48,6 @@
 				target: player
 			},
 			EndslateModule = MTVNPlayer.module("ModuleLoader").EndslateModule;
-
 		EndslateModule.onModuleRequested(event);
 		EndslateModule.callbacks.push(function() {
 			ok(MTVNPlayer.has("$"), "jQuery loaded");
