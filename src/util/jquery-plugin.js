@@ -1,4 +1,4 @@
-/*global Core Config MTVNPlayer */
+/*global Core, Config, MTVNPlayer */
  (function($) {
      "use strict";
      if($) {

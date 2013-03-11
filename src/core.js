@@ -1,8 +1,7 @@
-/*global MTVNPlayer */
+/*global MTVNPlayer, _ */
 var Core = (function(core, $) {
     "use strict";
-    var instances = [],
-        baseURL = "http://media.mtvnservices.com/",
+    var baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
         // this is needed for the jQuery plugin only.
         getLegacyEventName = function(eventName) {
@@ -17,7 +16,7 @@ var Core = (function(core, $) {
      * @ignore
      * An array of all the player instances.
      */
-    core.instances = instances;
+    core.instances = [];
     /**
      * @property baseURL
      * @ignore
@@ -181,10 +180,10 @@ var Core = (function(core, $) {
      */
     core.getPlayerInstance = function(source) {
         var i, player = null,
-            numberOfInstances = instances.length,
+            numberOfInstances = core.instances.length,
             currentInstance;
         for (i = numberOfInstances; i--;) {
-            currentInstance = instances[i];
+            currentInstance = core.instances[i];
             if (currentInstance.source === source) {
                 // compare source (contentWindow) to get events object from the right player. (if flash, source is the embed id)
                 player = currentInstance.player;

@@ -14,9 +14,9 @@ if(!MTVNPlayer.Player) {
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         "use strict";
-        /*global Core Config */
+        /*global Core, Config */
         var _ = window._,
-            yepnope = window._;
+            yepnope = window.yepnope;
         MTVNPlayer.provide("_", _);
         MTVNPlayer.provide("yepnope", yepnope);
         //= core.js

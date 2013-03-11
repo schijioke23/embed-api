@@ -1,4 +1,4 @@
-/*global MTVNPlayer _ */
+/*global MTVNPlayer, _ */
 /**
  * @ignore
  * The config module has helper functions for dealing with the config object.

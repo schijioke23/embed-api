@@ -1,4 +1,11 @@
 
+2.7.0 / 2013-03-11 
+==================
+
+  * 2.7.0 is mostly internal refactoring. 
+  * BRBSUPPORT-1343 removing instance from hash map correctly when invoking destroy.
+  * Create HTML5 Player when on Wii U. Closes #18 BRBPL-3517
+
 2.6.4 / 2013-03-05 
 ==================
 

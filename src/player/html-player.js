@@ -6,6 +6,16 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         e.style.cssText += prop + ":" + value;
     },
     /**
+     * remove an instance from the hash map.
+     * @ignore
+     * @param {contentWindow} source
+     */
+    removePlayerInstance = function(source) {
+        Core.instances = _.reject(Core.instances, function(instance) {
+            return instance.source === source;
+        });
+    },
+    /**
      * return the iframe to it's original width and height.
      * @method exitFullScreen
      * @ignore
@@ -211,8 +221,8 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         }
     };
     this.destroy = function() {
+        removePlayerInstance(this.element.contentWindow);
         this.element.parentNode.removeChild(this.element);
-        Core.instances.splice(_.indexOf(Core.instances, this.id), 1);
     };
     // set up orientationchange handler for iPad
     var n = window.navigator.userAgent.toLowerCase();

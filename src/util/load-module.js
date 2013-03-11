@@ -1,4 +1,4 @@
-/*global MTVNPlayer Config yepnope _ */
+/*global MTVNPlayer, Config, yepnope, _ */
 var ModuleLoader = MTVNPlayer.module("ModuleLoader"),
     versionIsMinimum = Config.versionIsMinimum,
     provideJQuery = function() {
