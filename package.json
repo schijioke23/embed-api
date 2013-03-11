@@ -15,8 +15,8 @@
         "testem": "*",
         "grunt": "0.3.17",
         "grunt-contrib":"0.3.0",
-        "grunt-rigger" : "*",
-        "grunt-remove-logging" : "*"
+        "grunt-rigger" : "0.3.0",
+        "grunt-remove-logging" : "0.0.5"
     },
     "license": "MIT",
     "engine": {
