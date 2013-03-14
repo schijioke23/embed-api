@@ -15,7 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">/*global MTVNPlayer, Config, Core, ModuleLoader, _ */
+  <pre class="prettyprint lang-js">/*global MTVNPlayer, Config, Core, PackageManager, _ */
 <span id='global-method-initializeFlash'>/**
 </span> * set up handling of flash external interface calls
  * create functions to map metadata to new format,
@@ -227,8 +227,7 @@ MTVNPlayer.module(&quot;flash&quot;).initialize = _.once(function() {
             element.addEventListener(&quot;MEDIA_ENDED&quot;, mapString + mediaEnd);
             // fired when the end slate is shown, if the player's configuration is set to do so.
             map[id + &quot;onEndSlate&quot;] = function(data) {
-                var endslateEvent = ModuleLoader.Events.ENDSLATE;
-                player.trigger(endslateEvent, data);
+                player.trigger(PackageManager.Events.ENDSLATE, data);
             };
             element.addEventListener(&quot;ENDSLATE&quot;, mapString + &quot;onEndSlate&quot;);
         };

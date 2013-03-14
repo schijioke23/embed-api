@@ -15,7 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">/*global MTVNPlayer, Core, $, Config, _ */
+  <pre class="prettyprint lang-js">/*global MTVNPlayer, Core, $, Config, _, PackageManager */
 // HTML5 Player Module
 MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
     &quot;use strict&quot;;
@@ -174,9 +174,8 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
                     player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
                 } else if (data.indexOf(&quot;airplay&quot;) === 0) {
                     player.trigger(eventTypes.AIRPLAY);
-                } else if (data.indexOf(&quot;onEndSlate:&quot;) === 0) {
-                    var endslateEvent = MTVNPlayer.module(&quot;ModuleLoader&quot;).Events.ENDSLATE;
-                    player.trigger(endslateEvent, jsonParse(getMessageData(data)));
+                } else if (data.indexOf(&quot;onEndSlate:&quot;) === 0 || data.indexOf(&quot;endslate&quot;) === 0) {
+                    player.trigger(PackageManager.Events.ENDSLATE, jsonParse(getMessageData(data)));
                 }
             }
         }

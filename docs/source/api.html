@@ -15,7 +15,8 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='MTVNPlayer'>/**
+  <pre class="prettyprint lang-js">//= http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.1.0/mtvn-package-manager.js
+<span id='MTVNPlayer'>/**
 </span> * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
  * @static
@@ -25,17 +26,14 @@ if(!MTVNPlayer.Player) {
     //= util/start.js
     (function() {
         //= third-party/underscore.js
-        //= third-party/yepnope.js
         //= third-party/swfobject.js
     }).apply(window);
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         &quot;use strict&quot;;
-        /*global Core, Config */
-        var _ = window._,
-            yepnope = window.yepnope;
+        /*global Core, Config, PackageManager */
+        var _ = window._;
         MTVNPlayer.provide(&quot;_&quot;, _);
-        MTVNPlayer.provide(&quot;yepnope&quot;, yepnope);
         //= core.js
         //= util/config.js
         //= util/selector.js
@@ -274,7 +272,7 @@ if(!MTVNPlayer.Player) {
                             }
                             return false;
                         };
-                    if(check(MTVNPlayer.Events) || check(MTVNPlayer.module(&quot;ModuleLoader&quot;).Events)) {
+                    if(check(MTVNPlayer.Events) || check(PackageManager.Events)) {
                         return;
                     }
                     throwError(&quot;event:&quot; + eventName + &quot; doesn't exist.&quot;);
