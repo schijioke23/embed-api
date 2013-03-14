@@ -13,15 +13,15 @@ var PackageManager = function() {
     var Events = {
         ENDSLATE: "endslate"
     },
-    moduleBase = "http://media.mtvnservices-d.mtvi.com/player/api/module/",
+    moduleBase = "http://media.mtvnservices.com/player/api/module/",
         endslatePackages = {
             "$": {
                 shim: true,
                 url: "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
             },
-            "mtvn-util": moduleBase + "mtvn-util/latest/mtvn-util.js",
+            "mtvn-util": moduleBase + "mtvn-util/latest/mtvn-util.min.js",
             "endslate-css": moduleBase + "endslate/latest/style.css",
-            "endslate": moduleBase + "endslate/latest/endslate.js"
+            "endslate": moduleBase + "endslate/latest/endslate.min.js"
         },
         createEndslate = function(event) {
             provideJQuery();
