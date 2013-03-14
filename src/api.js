@@ -1,3 +1,4 @@
+//= http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.1.0/mtvn-package-manager.js
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
@@ -8,17 +9,14 @@ if(!MTVNPlayer.Player) {
     //= util/start.js
     (function() {
         //= third-party/underscore.js
-        //= third-party/yepnope.js
         //= third-party/swfobject.js
     }).apply(window);
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         "use strict";
-        /*global Core, Config */
-        var _ = window._,
-            yepnope = window.yepnope;
+        /*global Core, Config, PackageManager */
+        var _ = window._;
         MTVNPlayer.provide("_", _);
-        MTVNPlayer.provide("yepnope", yepnope);
         //= core.js
         //= util/config.js
         //= util/selector.js
@@ -257,7 +255,7 @@ if(!MTVNPlayer.Player) {
                             }
                             return false;
                         };
-                    if(check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
+                    if(check(MTVNPlayer.Events) || check(PackageManager.Events)) {
                         return;
                     }
                     throwError("event:" + eventName + " doesn't exist.");
