@@ -1,4 +1,4 @@
-/*global MTVNPlayer, Core, $, Config, _ */
+/*global MTVNPlayer, Core, $, Config, _, PackageManager */
 // HTML5 Player Module
 MTVNPlayer.module("html5").initialize = _.once(function() {
     "use strict";
@@ -157,9 +157,8 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
                     player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
                 } else if (data.indexOf("airplay") === 0) {
                     player.trigger(eventTypes.AIRPLAY);
-                } else if (data.indexOf("onEndSlate:") === 0) {
-                    var endslateEvent = MTVNPlayer.module("ModuleLoader").Events.ENDSLATE;
-                    player.trigger(endslateEvent, jsonParse(getMessageData(data)));
+                } else if (data.indexOf("onEndSlate") === 0 || data.indexOf(PackageManager.Events.ENDSLATE) === 0) {
+                    player.trigger(PackageManager.Events.ENDSLATE, jsonParse(getMessageData(data)));
                 }
             }
         }
@@ -182,13 +181,13 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
      * @method create
      * @ignore
      */
-    this.create = function(player, exists) {
+    this.create = function(exists) {
         if (!exists) {
-            createElement(player);
+            createElement(this);
         }
         Core.instances.push({
-            source: player.element.contentWindow,
-            player: player
+            source: this.element.contentWindow,
+            player: this
         });
         if (typeof window.addEventListener !== 'undefined') {
             window.addEventListener('message', handleMessage, false);

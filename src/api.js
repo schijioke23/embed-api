@@ -3,25 +3,24 @@
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
  * @static
  */
+//= ../components/mtvn-package-manager/dist/mtvn-package-manager.js
 var MTVNPlayer = window.MTVNPlayer || {};
 if(!MTVNPlayer.Player) {
     //= util/start.js
     (function() {
         //= third-party/underscore.js
-        //= third-party/yepnope.js
         //= third-party/swfobject.js
     }).apply(window);
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         "use strict";
-        /*global Core, Config */
-        var _ = window._,
-            yepnope = window.yepnope;
+        /*global Core, Config, PackageManager */
+        var _ = window._;
         MTVNPlayer.provide("_", _);
-        MTVNPlayer.provide("yepnope", yepnope);
         //= core.js
         //= util/config.js
         //= util/selector.js
+        //= player/modular-player.js
         //= player/flash-player.js
         //= player/html-player.js
         /**
@@ -257,7 +256,7 @@ if(!MTVNPlayer.Player) {
                             }
                             return false;
                         };
-                    if(check(MTVNPlayer.Events) || check(MTVNPlayer.module("ModuleLoader").Events)) {
+                    if(check(MTVNPlayer.Events) || check(PackageManager.Events)) {
                         return;
                     }
                     throwError("event:" + eventName + " doesn't exist.");
@@ -594,6 +593,7 @@ if(!MTVNPlayer.Player) {
 
                 // TODO remove this and just use the playerTarget.id through out.
                 this.id = playerTarget.id;
+                this.playerTarget = playerTarget;
 
                 // process the element and the config.
                 this.config = Config.buildConfig(this.containerElement, this.config);
@@ -611,7 +611,7 @@ if(!MTVNPlayer.Player) {
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
-                playerModule = MTVNPlayer.module(this.isFlash ? "flash" : "html5");
+                playerModule = MTVNPlayer.module(this.jsmodules ? "modular" : (this.isFlash ? "flash" : "html5"));
                 playerModule.initialize();
                 // do more initializing that's across player modules.
                 Core.playerInit(this, playerModule);
@@ -626,7 +626,7 @@ if(!MTVNPlayer.Player) {
                             (function(ref) {
                                 $(document).ready(function() {
                                     if(document.getElementById(ref.id)) {
-                                        playerModule.create(ref);
+                                        playerModule.create.apply(ref);
                                     } else {
                                         throwError("target div " + ref.id + " not found");
                                     }
@@ -638,7 +638,7 @@ if(!MTVNPlayer.Player) {
                     }
                     return;
                 } else {
-                    playerModule.create(this);
+                    playerModule.create.apply(this);
                 }
             };
             // public api

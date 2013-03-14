@@ -1,4 +1,4 @@
-/*global MTVNPlayer, Config, Core, ModuleLoader, _ */
+/*global MTVNPlayer, Config, Core, PackageManager, _ */
 /**
  * set up handling of flash external interface calls
  * create functions to map metadata to new format,
@@ -210,8 +210,7 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
             // fired when the end slate is shown, if the player's configuration is set to do so.
             map[id + "onEndSlate"] = function(data) {
-                var endslateEvent = ModuleLoader.Events.ENDSLATE;
-                player.trigger(endslateEvent, data);
+                player.trigger(PackageManager.Events.ENDSLATE, data);
             };
             element.addEventListener("ENDSLATE", mapString + "onEndSlate");
         };
@@ -222,12 +221,12 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
      * @method message
      * @ignore
      */
-    this.create = function(player, exists) {
-        var targetID = player.id,
-            config = player.config;
+    this.create = function(exists) {
+        var targetID = this.id,
+            config = this.config;
         Core.instances.push({
             source: targetID,
-            player: player
+            player: this
         });
         if (!exists) {
             makeWSwfObject(targetID, config);
