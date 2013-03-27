@@ -40,6 +40,7 @@ var PackageManager = function() {
     });
     // Exports
     return {
+        provideJQuery:provideJQuery, // TODO maybe shouldn't be in this class.
         Events: Events
     };
 }();

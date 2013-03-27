@@ -3,7 +3,7 @@
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
  * @static
  */
-//= ../components/mtvn-package-manager/dist/mtvn-package-manager.js
+//= ../components/mtvn-package-manager/src/mtvn-package-manager.js
 var MTVNPlayer = window.MTVNPlayer || {};
 if(!MTVNPlayer.Player) {
     //= util/start.js
@@ -611,7 +611,7 @@ if(!MTVNPlayer.Player) {
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
-                playerModule = MTVNPlayer.module(this.jsmodules ? "modular" : (this.isFlash ? "flash" : "html5"));
+                playerModule = MTVNPlayer.module(this.config.jsmodules ? "modular" : (this.isFlash ? "flash" : "html5"));
                 playerModule.initialize();
                 // do more initializing that's across player modules.
                 Core.playerInit(this, playerModule);
