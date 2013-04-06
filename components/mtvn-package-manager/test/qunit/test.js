@@ -10,21 +10,22 @@ test("provide", function() {
     });
     strictEqual(MTVNPlayer.has("mypackage"), true, "has works.");
     strictEqual(MTVNPlayer.require("mypackage").name, "myp", "require works");
-    strictEqual(MTVNPlayer.list().length, 1, "list works");
-    strictEqual(MTVNPlayer.list()[0], "mypackage", "list works");
+    strictEqual(MTVNPlayer.list().length, 2, "list works");
+    strictEqual(MTVNPlayer.list()[0], "yepnope", "yepnope provided works");
+    strictEqual(MTVNPlayer.list()[1], "mypackage", "list works");
     MTVNPlayer.provide("mypackage", {
         name: "myp",
         version: "1.0"
     });
-    strictEqual(MTVNPlayer.list()[0], "mypackage 1.0", "list works");
+    strictEqual(MTVNPlayer.list()[1], "mypackage 1.0", "list works");
     MTVNPlayer.provide("mypackage", {
         name: "myp",
         version: "1.0",
         build: "12:30:45 1/2/3001"
     });
-    strictEqual(MTVNPlayer.list()[0], "mypackage 1.0 built:12:30:45 1/2/3001", "list works");
+    strictEqual(MTVNPlayer.list()[1], "mypackage 1.0 built:12:30:45 1/2/3001", "list works");
 });
-asyncTest("provide", function() {
+asyncTest("async loading", function() {
     var callbacks = 0;
     function shouldStart(){
         if(callbacks >= 3){
@@ -62,7 +63,7 @@ asyncTest("provide", function() {
         "mtvn-util": {
             url: "http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-util/0.1.0/mtvn-util.js"
         },
-        "some-css": "http://media.mtvnservices-d.mtvi.com/player/api/module/end-slate/0.2.4/style.css",
+        "some-css": "http://media.mtvnservices-d.mtvi.com/player/api/module/endslate/0.2.4/style.css",
         "mtvn-playlist": "http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playlist/latest/mtvn-playlist.js"
     }, callback);
     MTVNPlayer.loadPackages({
@@ -73,6 +74,18 @@ asyncTest("provide", function() {
         "mtvn-playlist": "http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playlist/latest/mtvn-playlist.js"
     }, callback2);
      MTVNPlayer.loadPackages({
-        "endslate": "http://media.mtvnservices-d.mtvi.com/player/api/module/end-slate/0.2.4/endslate.js"
+        "endslate": "http://media.mtvnservices-d.mtvi.com/player/api/module/endslate/0.2.4/endslate.js"
     }, callback3);
+});
+test("optional", function() {
+    QUnit.throws(function() {
+        MTVNPlayer.require("doesnthave");
+    }, "throws error on require.");
+
+    try{
+        MTVNPlayer.require("doesnthave",true);
+        ok(true,"optional works");
+    }catch(e){
+        ok(false,"optional fails");
+    }
 });

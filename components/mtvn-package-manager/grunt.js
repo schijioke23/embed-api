@@ -1,6 +1,7 @@
 /*global module*/
 module.exports = function(grunt) {
-    var targetPath = 'dist/';
+    var deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
+        targetPath = 'dist/';
     grunt.loadNpmTasks('grunt-contrib');
     grunt.loadNpmTasks('grunt-rigger');
     grunt.initConfig({
@@ -39,11 +40,13 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            target: {
-                files: {
-                    "dist/<%= pkg.name %>.js": "src/<%= pkg.name %>.js",
-                    "dist/test/": ["test/**"]
-                }
+            build: {
+                src: "dist/**/*",
+                dest: deployPath
+            },
+            files: {
+                "dist/<%= pkg.name %>.js": "src/<%= pkg.name %>.js",
+                "dist/test/": ["test/**"]
             }
         },
         watch: {
@@ -51,6 +54,9 @@ module.exports = function(grunt) {
             tasks: 'default'
         }
     });
+    grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
+        grunt.config("buildNumber", "-" + buildNumber);
+    });
     grunt.registerTask('default', 'clean lint:devel rig');
-    grunt.registerTask('release', 'clean lint:release rig min');
+    grunt.registerTask('release', 'clean lint:release rig min copy');
 };

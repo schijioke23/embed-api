@@ -6,18 +6,26 @@
 		}).apply(window);
 		var yepnope = window.yepnope,
 			isLoadingPackages = false,
-			packages = {},
+			packages = {
+				"yepnope": yepnope
+			},
 			globals = {},
 			queue = [],
-			shim = function(url, b, key) {
+			shim = function(url, result, key) {
+				if (!context[key]) {
+					throw "mtvn-package-manager: Can't shim \"" + key + "\", not found in global scope.";
+				}
 				MTVNPlayer.provide(key, context[key]);
 				context[key] = globals[key];
 			};
+		yepnope.errorTimeout = 180000; //very long timeout
 		/**
 		 * use a module, throws an error if the module isn't found.
+		 * @param name The Module name.
+		 * @param optional don't throw an error if not found
 		 */
-		MTVNPlayer.require = function(name) {
-			if (!packages[name]) {
+		MTVNPlayer.require = function(name, optional) {
+			if (!packages[name] && !optional) {
 				throw new Error("MTNVPlayer: package " + name + " not found.");
 			}
 			return packages[name];
@@ -71,7 +79,9 @@
 				callback: {},
 				complete: function() {
 					isLoadingPackages = false;
-					callback();
+					if (callback) {
+						callback();
+					}
 					if (queue.length > 0) {
 						queue.shift()();
 					}

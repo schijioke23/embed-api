@@ -176,53 +176,6 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         targetDiv.parentNode.replaceChild(element, targetDiv);
         player.element = element;
     };
-    /**
-     * create the player iframe
-     * @method create
-     * @ignore
-     */
-    this.create = function(exists) {
-        if (!exists) {
-            createElement(this);
-        }
-        Core.instances.push({
-            source: this.element.contentWindow,
-            player: this
-        });
-        if (typeof window.addEventListener !== 'undefined') {
-            window.addEventListener('message', handleMessage, false);
-        } else if (typeof window.attachEvent !== 'undefined') {
-            window.attachEvent('onmessage', handleMessage);
-        }
-    };
-    /**
-     * Send messages to the iframe via post message.
-     * Run in the context of {@link MTVNPlayer.Player}
-     * @method message
-     * @ignore
-     */
-    this.message = function(message) {
-        if (!this.ready) {
-            throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
-        }
-        switch (message) {
-            case "goFullScreen":
-                goFullScreen.apply(this, [this]);
-                break;
-            case "exitFullScreen":
-                exitFullScreen.apply(this, [this]);
-                break;
-            default:
-                if (arguments[1] !== undefined) {
-                    message += ":" + arguments[1] + (arguments[2] !== undefined ? "," + arguments[2] : "");
-                }
-                return this.element.contentWindow.postMessage(message, "*");
-        }
-    };
-    this.destroy = function() {
-        removePlayerInstance(this.element.contentWindow);
-        this.element.parentNode.removeChild(this.element);
-    };
     // set up orientationchange handler for iPad
     var n = window.navigator.userAgent.toLowerCase();
     if (n.indexOf("ipad") !== -1) {
@@ -238,4 +191,54 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
             }
         }, false);
     }
+    // method overrides 
+    return {
+        /**
+         * create the player iframe
+         * @method create
+         * @ignore
+         */
+        create: function(exists) {
+            if (!exists) {
+                createElement(this);
+            }
+            Core.instances.push({
+                source: this.element.contentWindow,
+                player: this
+            });
+            if (typeof window.addEventListener !== 'undefined') {
+                window.addEventListener('message', handleMessage, false);
+            } else if (typeof window.attachEvent !== 'undefined') {
+                window.attachEvent('onmessage', handleMessage);
+            }
+        },
+        /**
+         * Send messages to the iframe via post message.
+         * Run in the context of {@link MTVNPlayer.Player}
+         * @method message
+         * @ignore
+         */
+        message: function(message) {
+            if (!this.ready) {
+                throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
+            }
+            switch (message) {
+                case "goFullScreen":
+                    goFullScreen.apply(this, [this]);
+                    break;
+                case "exitFullScreen":
+                    exitFullScreen.apply(this, [this]);
+                    break;
+                default:
+                    if (arguments[1] !== undefined) {
+                        message += ":" + arguments[1] + (arguments[2] !== undefined ? "," + arguments[2] : "");
+                    }
+                    return this.element.contentWindow.postMessage(message, "*");
+            }
+        },
+        destroy: function() {
+            removePlayerInstance(this.element.contentWindow);
+            this.element.parentNode.removeChild(this.element);
+        }
+    };
 });
