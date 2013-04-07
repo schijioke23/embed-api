@@ -1,0 +1,22 @@
+{
+    "name": "mtvn-util",
+    "version": "0.3.0",
+    "author": "gianni ferullo <giannif@gmail.com>",
+    "private": true,
+    "description": "util class, contains form factor parsing and backbone",
+    "repository": {
+        "type": "git",
+        "url": "https://mtvn-player@github.com/mtvn-player/mtvn-util.git"
+    },
+    "scripts": {
+        "test": "testem ci"
+    },
+    "devDependencies": {
+        "grunt": "0.3.17",
+        "grunt-contrib" : "0.3.0",
+        "grunt-rigger":"0.3.0",
+        "grunt-remove-logging" : "0.0.5",
+        "testem": "*"
+    },
+    "main": "./dist/mtvn-util.js"
+}

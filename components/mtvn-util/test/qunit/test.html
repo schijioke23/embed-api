@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MTVN Util Tests</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+  <script type="text/javascript" src="../../components/mtvn-package-manager/dist/mtvn-package-manager.js"></script>
+  <script type="text/javascript" src="../../components/jquery/jquery.js"></script>
+  <script type="text/javascript" src="../../components/underscore/underscore.js"></script>
+  <script type="text/javascript">
+    MTVNPlayer.provide("$",window.$);
+    MTVNPlayer.provide("_",window._);
+  </script>
+  <script src="qunit-1.11.0.js"></script>
+  <script src="../../dist/mtvn-util.js"></script>
+   <script>
+  if (location.hash === '#testem'){
+        document.write('<script src="/testem.js"></'+'script>')
+    }
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+  <script src="test.js"></script>
+  <script src="form-factor-test.js"></script>
+  <script src="template-test.js"></script>
+  <script src="fullscreen-test.js"></script>
+</body>
+</html>

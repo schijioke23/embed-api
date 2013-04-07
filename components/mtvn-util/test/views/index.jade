@@ -1,0 +1,24 @@
+extends layout
+
+block head
+    script(src="playback.js")
+    script
+        var sources = [
+            "http://a17.akadl.mtvnservices.com/10740/mtvnorigin/gsp.originmusicstor/reencode/mtv.com/onair/hills_the/season_3/232255_1299634920295_384x216_400_m30.mp4?__gda__=1344197833_bf28b3320cb8f12546b98f08be6274df",
+            "http://cp107857-f.akamaihd.net/i/mtvnorigin/gsp.originmusicstor/reencode/mtv.com/onair/hills_the/season_3/232255_1299634920295_,384x216_150_b30,384x216_400_m30,512x288_750_m30,640x360_1200_m30,768x432_1700_m30,.mp4.csmil/master.m3u8?hdnea=expires%3D1343945844%7Eaccess%3D%2Fi%2Fmtvnorigin%2Fgsp.originmusicstor%2Freencode%2Fmtv.com%2Fonair%2Fhills_the%2Fseason_3%2F232255_1299634920295_%2C384x216_150_b30%2C384x216_400_m30%2C512x288_750_m30%2C640x360_1200_m30%2C768x432_1700_m30%2C.mp4.csmil%2Fmaster.m3u8%7Emd5%3D84b08eeec671277c194b3c273328e183&__a__=off&__b__=450",
+            // Progressive
+            "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8",
+            // HLS
+            // Web M
+            "http://video-js.zencoder.com/oceans-clip.webm"];
+
+block content
+    video#test
+    script
+        var player = new (MTVNPlayer.Playback.Player)(document.getElementById("test"));
+        player.setSrc(sources[0]);
+        player.videoElement.width = 640;
+        player.videoElement.height = 420;
+        player.play();
+        player.videoElement.volume = 0;
+        player.bind("playstate",function(e){console.log("event:",e);});

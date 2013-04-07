@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*global $, test, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     var $fixture = $("#qunit-fixture");

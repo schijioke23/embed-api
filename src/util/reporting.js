@@ -5,10 +5,20 @@
  * These modules are on a player, as opposed to the modules on MTVNPlayer.
  */
 (function(MTVNPlayer) {
-    "use strict";
-    MTVNPlayer.onPlayer(function(player) {
-        player.module("reporting").logGUIEvent = function(eventName, eventData) {
-            player.message("logGUIEvent", eventName, eventData);
-        };
-    });
+	"use strict";
+	MTVNPlayer.onPlayer(function(player) {
+		player.module = function() {
+			var modules = {};
+			return function(name) {
+				if (modules[name]) {
+					return modules[name];
+				}
+				modules[name] = {};
+				return modules[name];
+			};
+		}();
+		player.module("reporting").logGUIEvent = function(eventName, eventData) {
+			player.message("logGUIEvent", eventName, eventData);
+		};
+	});
 })(window.MTVNPlayer);

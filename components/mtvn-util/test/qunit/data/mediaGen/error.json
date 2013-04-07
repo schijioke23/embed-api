@@ -1,0 +1,10 @@
+{
+    "package": {
+        "video": {
+            "item": {
+                "code" : "error_code",
+                "_": "error message"
+            }
+        }
+    }
+}

@@ -23,7 +23,7 @@
                     event.target.element.contentWindow = window;
                 });
                 playerModule.create(this, true);
-                MTVNPlayer.module("core").playerInit(this, playerModule);
+                this.create();
             };
         WindowPlayer.prototype = MTVNPlayer.Player.prototype;
         new WindowPlayer();

@@ -1,0 +1,15 @@
+{
+    "name": "mtvn-package-manager",
+    "version": "0.0.1",
+    "author": "gianni ferullo <giannif@gmail.com>",
+    "description": "manages shared packages",
+    "repository": {
+        "type": "git",
+        "url": "https://mtvn-player@github.com/mtvn-player/mtvn-package-manager.git"
+    },
+    "devDependencies": {
+        "grunt": "0.3.17",
+        "grunt-contrib" : "0.3.0"
+    },
+    "main":"./dist/mtvn-package-manager.js"
+}

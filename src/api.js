@@ -4,8 +4,9 @@
  * @static
  */
 //= ../components/mtvn-package-manager/src/mtvn-package-manager.js
+
 var MTVNPlayer = window.MTVNPlayer || {};
-if(!MTVNPlayer.Player) {
+if (!MTVNPlayer.Player) {
     //= util/start.js
     (function() {
         //= third-party/underscore.js
@@ -20,6 +21,8 @@ if(!MTVNPlayer.Player) {
         //= core.js
         //= util/config.js
         //= util/selector.js
+        //= util/url.js
+        //= model/media-gen.js
         //= player/modular-player.js
         //= player/flash-player.js
         //= player/html-player.js
@@ -226,12 +229,12 @@ if(!MTVNPlayer.Player) {
         MTVNPlayer.Player = (function(window) {
             // static methods variables
             var throwError = function(message) {
-                    throw new Error("Embed API:" + message);
-                },
-                document = window.document,
+                throw new Error("Embed API:" + message);
+            },
+            document = window.document,
                 Player, fixEventName = function(eventName) {
-                    if(eventName && eventName.indexOf("on") === 0) {
-                        if(eventName === "onUIStateChange") {
+                    if (eventName && eventName.indexOf("on") === 0) {
+                        if (eventName === "onUIStateChange") {
                             return "uiStateChange";
                         }
                         return eventName.charAt(2).toLowerCase() + eventName.substr(3);
@@ -245,18 +248,18 @@ if(!MTVNPlayer.Player) {
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
-                    if(eventName.indexOf(":") !== -1) {
+                    if (eventName.indexOf(":") !== -1) {
                         eventName = eventName.split(":")[0];
                     }
                     var check = function(events) {
-                            for(var event in events) {
-                                if(events.hasOwnProperty(event) && events[event] === eventName) {
-                                    return true; // has event
-                                }
+                        for (var event in events) {
+                            if (events.hasOwnProperty(event) && events[event] === eventName) {
+                                return true; // has event
                             }
-                            return false;
-                        };
-                    if(check(MTVNPlayer.Events) || check(PackageManager.Events)) {
+                        }
+                        return false;
+                    };
+                    if (check(MTVNPlayer.Events) || check(PackageManager.Events)) {
                         return;
                     }
                     throwError("event:" + eventName + " doesn't exist.");
@@ -268,14 +271,14 @@ if(!MTVNPlayer.Player) {
                  * Loop through the events, and check the event names
                  */
                 checkEvents = function(events) {
-                    for(var event in events) {
-                        if(events.hasOwnProperty(event) && event.indexOf("on") === 0) {
+                    for (var event in events) {
+                        if (events.hasOwnProperty(event) && event.indexOf("on") === 0) {
                             events[fixEventName(event)] = events[event];
                             delete events[event];
                         }
                     }
-                    for(event in events) {
-                        if(events.hasOwnProperty(event)) {
+                    for (event in events) {
+                        if (events.hasOwnProperty(event)) {
                             checkEventName(event);
                         }
                     }
@@ -302,7 +305,7 @@ if(!MTVNPlayer.Player) {
                         metadata = this.currentMetadata,
                         displayDataPrefix = "<p style=\"text-align:left;background-color:#FFFFFF;padding:4px;margin-top:4px;margin-bottom:0px;font-family:Arial, Helvetica, sans-serif;font-size:12px;\">",
                         displayMetadata = (function() {
-                            if(!metadata) {
+                            if (!metadata) {
                                 return "";
                             }
                             var copy = "",
@@ -310,20 +313,20 @@ if(!MTVNPlayer.Player) {
                                 source = categories.source,
                                 sourceLink = categories.sourceLink,
                                 seoHTMLText = categories.seoHTMLText;
-                            if(source) {
-                                if(sourceLink) {
+                            if (source) {
+                                if (sourceLink) {
                                     copy += "<b><a href=\"" + sourceLink + "\">" + source + "</a></b>";
                                 } else {
                                     copy += "<b>" + source + "</b> ";
                                 }
                             }
-                            if(seoHTMLText) {
-                                if(copy) {
+                            if (seoHTMLText) {
+                                if (copy) {
                                     copy += "<br/>";
                                 }
                                 copy += "Get More: " + seoHTMLText;
                             }
-                            if(copy) {
+                            if (copy) {
                                 copy = displayDataPrefix + copy + "</p>";
                             }
                             return copy;
@@ -380,7 +383,7 @@ if(!MTVNPlayer.Player) {
              */
             MTVNPlayer.removeOnPlayer = function(callback) {
                 var index = Core.onPlayerCallbacks.indexOf(callback);
-                if(index !== -1) {
+                if (index !== -1) {
                     Core.onPlayerCallbacks.splice(index, 1);
                 }
             };
@@ -400,7 +403,7 @@ if(!MTVNPlayer.Player) {
                 var result = [],
                     instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
+                for (i; i--;) {
                     result.push(instances[i].player);
                 }
                 return result;
@@ -413,8 +416,8 @@ if(!MTVNPlayer.Player) {
             MTVNPlayer.getPlayer = function(uri) {
                 var instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
-                    if(instances[i].player.config.uri === uri) {
+                for (i; i--;) {
+                    if (instances[i].player.config.uri === uri) {
                         return instances[i].player;
                     }
                 }
@@ -427,18 +430,18 @@ if(!MTVNPlayer.Player) {
              */
             MTVNPlayer.gc = function() {
                 var elementInDocument = function(element) {
-                        while(element.parentNode) {
-                            element = element.parentNode;
-                            if(element == document) {
-                                return true;
-                            }
+                    while (element.parentNode) {
+                        element = element.parentNode;
+                        if (element == document) {
+                            return true;
                         }
-                        return false;
-                    };
+                    }
+                    return false;
+                };
                 var instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
-                    if(!elementInDocument(instances[i].player.element)) {
+                for (i; i--;) {
+                    if (!elementInDocument(instances[i].player.element)) {
                         instances.splice(i, 1);
                     }
                 }
@@ -473,11 +476,11 @@ if(!MTVNPlayer.Player) {
              *      </script>
              */
             MTVNPlayer.createPlayers = function(selectorQuery, config, events) {
-                if(!selectorQuery) {
+                if (!selectorQuery) {
                     selectorQuery = "div.MTVNPlayer";
                 }
                 var elements = MTVNPlayer.module("selector").find(selectorQuery);
-                for(var i = 0, len = elements.length; i < len; i++) {
+                for (var i = 0, len = elements.length; i < len; i++) {
                     new MTVNPlayer.Player(elements[i], config, events);
                 }
                 return elements.length;
@@ -485,7 +488,7 @@ if(!MTVNPlayer.Player) {
 
             Player = function(elementOrId, config, events) {
                 // in case constructor is called without new.
-                if(!(this instanceof Player)) {
+                if (!(this instanceof Player)) {
                     return new Player(elementOrId, config, events);
                 }
                 /** 
@@ -571,8 +574,23 @@ if(!MTVNPlayer.Player) {
                  */
                 this.config = config || {};
 
+                /**
+                 * @ignore
+                 * a way to share code with out augmenting the prototype, not used very much.
+                 */
+                this.modules = (function() {
+                    var modules = {};
+                    return function(name) {
+                        if (modules[name]) {
+                            return modules[name];
+                        }
+                        modules[name] = {};
+                        return modules[name];
+                    };
+                })();
+
                 // record the start time for performance analysis.
-                if(this.config.performance) {
+                if (this.config.performance) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
@@ -583,10 +601,8 @@ if(!MTVNPlayer.Player) {
                  * HTML5 only. See {@link MTVNPlayer.Events#fullScreenChange}
                  */
                 this.isFullScreen = false;
-                // the module will create an iframe or a swf.
-                var playerModule,
                 // the player target will be replaced by an iframe or swf.
-                playerTarget = createTarget();
+                var playerTarget = createTarget();
 
                 // the player target is going to go inside the containerElement.
                 this.containerElement = _.isElement(elementOrId) ? elementOrId : document.getElementById(elementOrId);
@@ -611,22 +627,39 @@ if(!MTVNPlayer.Player) {
                 // make sure the events are valid
                 checkEvents(events);
                 // The module contains platform specific code
-                playerModule = MTVNPlayer.module(this.config.jsmodules ? "modular" : (this.isFlash ? "flash" : "html5"));
-                playerModule.initialize();
-                // do more initializing that's across player modules.
-                Core.playerInit(this, playerModule);
+                var playerModule = MTVNPlayer.module(this.config.jsmodules ? "modular" : (this.isFlash ? "flash" : "html5"));
+                _.extend(this, playerModule.initialize());
+
+                // wait for ready event
+                var eventQueue = [];
+                this.message = _.wrap(this.message, function(func) {
+                    var args = _.rest(_.toArray(arguments));
+                    if (!this.ready) {
+                        eventQueue.push(args);
+                    } else {
+                        return func.apply(this, args);
+                    }
+                });
+                // wait for ready event
+                this.one("ready", function(event) {
+                    var player = event.target,
+                        message = player.message;
+                    for (var i = 0, len = eventQueue.length; i < len; i++) {
+                        message.apply(player, eventQueue[i]);
+                    }
+                });
 
                 // check for element before creating
-                if(!this.containerElement) {
-                    if(document.readyState === "complete") {
+                if (!this.containerElement) {
+                    if (document.readyState === "complete") {
                         throwError("target div " + this.id + " not found");
                     } else {
-                        if($) {
+                        if ($) {
                             // wait for document ready, then try again.
                             (function(ref) {
                                 $(document).ready(function() {
-                                    if(document.getElementById(ref.id)) {
-                                        playerModule.create.apply(ref);
+                                    if (document.getElementById(ref.id)) {
+                                        ref.create();
                                     } else {
                                         throwError("target div " + ref.id + " not found");
                                     }
@@ -638,7 +671,7 @@ if(!MTVNPlayer.Player) {
                     }
                     return;
                 } else {
-                    playerModule.create.apply(this);
+                    this.create();
                 }
             };
             // public api
@@ -716,8 +749,8 @@ if(!MTVNPlayer.Player) {
                 /**
                  * Puts the player in full screen mode, does not work for the flash player do the flash restrictions.
                  */
-                goFullScreen: function() {
-                    this.message("goFullScreen");
+                goFullScreen: function(el) {
+                    this.message("goFullScreen", el);
                 },
                 /**
                  * Exits full screen and returns the player to its initial embed size.
@@ -743,9 +776,9 @@ if(!MTVNPlayer.Player) {
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var currentEvent = this.events[eventName];
-                    if(!currentEvent) {
+                    if (!currentEvent) {
                         currentEvent = callback;
-                    } else if(currentEvent instanceof Array) {
+                    } else if (currentEvent instanceof Array) {
                         currentEvent.push(callback);
                     } else {
                         currentEvent = [callback, currentEvent];
@@ -762,11 +795,11 @@ if(!MTVNPlayer.Player) {
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var i, currentEvent = this.events[eventName];
-                    if(!currentEvent) {
+                    if (!currentEvent) {
                         return;
-                    } else if(currentEvent instanceof Array) {
-                        for(i = currentEvent.length; i--;) {
-                            if(currentEvent[i] === callback) {
+                    } else if (currentEvent instanceof Array) {
+                        for (i = currentEvent.length; i--;) {
+                            if (currentEvent[i] === callback) {
                                 currentEvent.splice(i, 1);
                                 break;
                             }
@@ -805,7 +838,7 @@ if(!MTVNPlayer.Player) {
                  * (v2.6.4) Call this before removing a player.
                  * Required for older versions of IE.
                  */
-                destroy:function() {
+                destroy: function() {
                     // overriden by modules
                 }
             };
@@ -842,3 +875,4 @@ if(!MTVNPlayer.Player) {
     })(MTVNPlayer, window.jQuery || window.Zepto);
     //= ../dist/version.js
 }
+//= http://localhost:7878/dist/mtvn-util.js

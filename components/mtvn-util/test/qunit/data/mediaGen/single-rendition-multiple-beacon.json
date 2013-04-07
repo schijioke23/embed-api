@@ -1,0 +1,41 @@
+{
+    "package": {
+        "version": "1.4",
+        "video": {
+            "item": {
+                "startTime": "0",
+                "rendition": {
+                    "cdn": "level3",
+                    "duration": "252",
+                    "width": "384",
+                    "height": "216",
+                    "type": "video/mp4",
+                    "bitrate": "450",
+                    "src": "rtmpe://viacomccstrmfs.fplive.net/viacomccstrm/gsp.comedystor/com/colbert/mashups/cr_mashup_2011_nov_384x216_450.mp4"
+                },
+                "beacons": {
+                    "beacon": [{
+                        "url": "beacon1",
+                        "startTime": "0",
+                        "elapsed":30
+                    }, {
+                        "url": "beacon2",
+                        "startTime": "end",
+                        "elapsedAfterAd":"true"
+                    },
+                    {
+                        "url": "beacon3",
+                        "startTime": "end-7",
+                        "elapsedAfterAd":"false"
+                    }]
+                },
+                "action": {
+                    "onEvent": "viewed",
+                    "makeRequest": {
+                        "url": "http://t.flux.com/tracking.gif?CMU=4CFAFFFF009922C10002FFFFFA4C&CUR=mgid:cms:test:comedycentral.com:404448&WN=MTVNVideoPlayer&ftg=1"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -30,44 +30,6 @@ var Core = (function(core, $) {
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
     core.$ = $;
-
-    /**
-     * Initialization that is common across player modules (meaning flash/html5).
-     * This is here mostly to keep it out of the constructor.
-     * @ignore
-     */
-    core.playerInit = function(player, playerModule) {
-        // A list of event messages called before the player was ready
-        var eventQueue = [];
-        player.module = function() {
-            var modules = {};
-            return function(name) {
-                if (modules[name]) {
-                    return modules[name];
-                }
-                modules[name] = {};
-                return modules[name];
-            };
-        }();
-        player.destroy = function() {
-            playerModule.destroy.apply(this, arguments);
-        };
-        player.message = function() {
-            if (!this.ready) {
-                eventQueue.push(arguments);
-            } else {
-                return playerModule.message.apply(this, arguments);
-            }
-        };
-        player.one("ready", function(event) {
-            var player = event.target,
-                message = player.message;
-            for (var i = 0, len = eventQueue.length; i < len; i++) {
-                message.apply(player, eventQueue[i]);
-            }
-        });
-    };
-
     /**
      * @property isHTML5Player
      * @ignore

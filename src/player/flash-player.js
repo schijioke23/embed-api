@@ -215,59 +215,6 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             element.addEventListener("ENDSLATE", mapString + "onEndSlate");
         };
     MTVNPlayer.Player.flashEventMap = {};
-    /**
-     * create an embed element
-     * Run in the context of {@link MTVNPlayer.Player}
-     * @method message
-     * @ignore
-     */
-    this.create = function(exists) {
-        var targetID = this.id,
-            config = this.config;
-        Core.instances.push({
-            source: targetID,
-            player: this
-        });
-        if (!exists) {
-            makeWSwfObject(targetID, config);
-        }
-    };
-    this.destroy = function() {
-        swfobject.removeSWF(this.element.id);
-        removePlayerInstance(this.id);
-    };
-    /**
-     * Send messages to the swf via flash external interface
-     * Run in the context of {@link MTVNPlayer.Player}
-     * @method message
-     * @ignore
-     */
-    this.message = function(message) {
-        if (!this.ready) {
-            throw new Error("MTVNPlayer.Player." + message + "() called before player loaded.");
-        }
-        // translate api method to flash player method
-        message = messageNameMap[message] || message;
-        switch (message) {
-            case "exitFullScreen":
-                // needs to be screened
-                exitFullScreen.call(this);
-                return;
-            case "goFullScreen":
-                // do nothing, unsupported in flash
-                return;
-            default:
-                break;
-        }
-        // pass up to two arguments
-        if (arguments[1] !== undefined && arguments[2] !== undefined) {
-            return this.element[message](arguments[1], arguments[2]);
-        } else if (arguments[1] !== undefined) {
-            return this.element[message](arguments[1]);
-        } else {
-            return this.element[message]();
-        }
-    };
     window.mtvnPlayerLoaded = function(e) {
         return function(id) {
             if (e) {
@@ -278,4 +225,56 @@ MTVNPlayer.module("flash").initialize = _.once(function() {
             addFlashEvents(player);
         };
     }(window.mtvnPlayerLoaded);
+    /**
+     * create an embed element
+     * Run in the context of {@link MTVNPlayer.Player}
+     * @method message
+     * @ignore
+     */
+    return {
+        create: function(exists) {
+            var targetID = this.id,
+                config = this.config;
+            Core.instances.push({
+                source: targetID,
+                player: this
+            });
+            if (!exists) {
+                makeWSwfObject(targetID, config);
+            }
+        },
+        destroy: function() {
+            swfobject.removeSWF(this.element.id);
+            removePlayerInstance(this.id);
+        },
+        /**
+         * Send messages to the swf via flash external interface
+         * Run in the context of {@link MTVNPlayer.Player}
+         * @method message
+         * @ignore
+         */
+        message: function(message) {
+            // translate api method to flash player method
+            message = messageNameMap[message] || message;
+            switch (message) {
+                case "exitFullScreen":
+                    // needs to be screened
+                    exitFullScreen.call(this);
+                    return;
+                case "goFullScreen":
+                    // do nothing, unsupported in flash
+                    return;
+                default:
+                    break;
+            }
+            // pass up to two arguments
+            if (arguments[1] !== undefined && arguments[2] !== undefined) {
+                return this.element[message](arguments[1], arguments[2]);
+            } else if (arguments[1] !== undefined) {
+                return this.element[message](arguments[1]);
+            } else {
+                return this.element[message]();
+            }
+        }
+    };
 });
