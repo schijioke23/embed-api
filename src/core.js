@@ -1,6 +1,5 @@
-/*global MTVNPlayer, _ */
-var Core = (function(core, $) {
-    "use strict";
+/*global MTVNPlayer*/
+var Core = (function(core) {
     var baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
         // this is needed for the jQuery plugin only.
@@ -29,7 +28,6 @@ var Core = (function(core, $) {
      * These are fired when a player laods.
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
-    core.$ = $;
     /**
      * @property isHTML5Player
      * @ignore
@@ -169,4 +167,4 @@ var Core = (function(core, $) {
         }
     };
     return core;
-})(window.MTVNPlayer.module("core"), window.jQuery || window.Zepto);
+})({});

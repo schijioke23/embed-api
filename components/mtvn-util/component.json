@@ -1,8 +1,0 @@
-{
-  "name": "mtvn-util",
-  "version": "0.3.0",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:mtvn-player/mtvn-util.git"
-  }
-}

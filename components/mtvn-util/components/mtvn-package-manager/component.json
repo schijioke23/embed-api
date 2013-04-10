@@ -1,9 +1,0 @@
-{
-  "name": "mtvn-package-manager",
-  "version": "0.0.0",
-  "commit": "fc20f59b03027687d58c38ef76b11f3dc5b29e86",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:mtvn-player/mtvn-package-manager.git"
-  }
-}

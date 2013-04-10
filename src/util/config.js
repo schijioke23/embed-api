@@ -3,7 +3,7 @@
  * @ignore
  * The config module has helper functions for dealing with the config object.
  **/
-var Config = MTVNPlayer.module("config");
+var Config = {};
 /**
  * @ignore
  * Copy one event object to another, building an array when necessary.

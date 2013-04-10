@@ -1,9 +1,11 @@
 /*global module */
 module.exports = function(grunt) {
     var targetPath = 'dist/',
+        deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
     sourceFiles = ['dist/api.js'],
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
+        placeholdersPath = targetPath + 'placeholders.min.js',
         syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
     grunt.loadNpmTasks('grunt-rigger');
@@ -26,6 +28,10 @@ module.exports = function(grunt) {
             auto: {
                 src: autoPath,
                 dest: autoPath
+            },
+            placeholders: {
+                src: placeholdersPath,
+                dest: placeholdersPath
             },
             syndicated: {
                 src: syndicatedPath,
@@ -56,6 +62,10 @@ module.exports = function(grunt) {
                 src: sourceFiles.concat(['src/third-party/domready.js', 'src/auto-create-players.js']),
                 dest: autoPath
             },
+            placeholders: {
+                src: sourceFiles.concat(['src/placeholders.js']),
+                dest: placeholdersPath
+            },
             syndicated: {
                 src: sourceFiles.concat(['src/syndicated.js']),
                 dest: syndicatedPath
@@ -68,10 +78,13 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            target: {
-                files: {
-                    "dist/test/": ["test/**"]
-                }
+            build: {
+                src: "dist/**/*",
+                dest: deployPath
+            },
+            test: {
+                src: "test/**/*",
+                dest: deployPath + "/test/"
             }
         },
         watch: {
@@ -94,16 +107,6 @@ module.exports = function(grunt) {
             dir += "/";
         }
         grunt.config("dirname", dir);
-    });
-    grunt.registerTask("prepare_deploy", "take the build output and prepare it for deployment", function(build) {
-        var dest = "deploy/" + grunt.config("pkg").version + (build ? "-" + build : ""),
-            files = grunt.file.expandFiles("dist/**");
-        if (files.length === 0) {
-            grunt.log.error("run grunt release first");
-        }
-        files.forEach(function(file) {
-            grunt.file.copy(file, dest + file.replace("dist", ""));
-        });
     });
     grunt.registerTask('default', 'clean version lint:devel rig concat copy');
     grunt.registerTask('release', 'clean version lint:release rig concat min copy');

@@ -7,6 +7,8 @@ var PackageManager = function() {
             // TODO we can lower this version if we want to test first.
             if ($ && Config.versionIsMinimum("1.9.0", $.fn.jquery)) {
                 MTVNPlayer.provide("$", $);
+            }else if(window.Zepto){
+                MTVNPlayer.provide("$", window.Zepto);
             }
         }
     }
