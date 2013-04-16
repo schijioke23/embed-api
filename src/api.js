@@ -732,6 +732,48 @@ if(!MTVNPlayer.Player) {
                     return this.message("createUserClip");
                 },
                 /**
+                 * Configure the player without playing a video
+                 * @param {String} uri for the desired configuration.
+                 */
+                configure: function(uri) {
+                    this.message("configure", uri);
+                },
+                /**
+                 * Disable Ads
+                 * @param {Boolean} disables ads when true.
+                 */
+                disableAds: function(value) {
+                    this.message("disableAds", value);
+                },
+                /**
+                 * SpoofAdURI
+                 * @param {uri} When ads are requested use the given uri.
+                 */
+                spoofAdURI: function(uri) {
+                    this.message("spoofAdURI", uri);
+                },
+                /**
+                 * Load a video from a uri
+                 * @param {String} uri for video to be loaded.
+                 */
+                loadVideo: function(uri) {
+                    this.message("loadVideo",uri);
+                },
+                /**
+                 * Load a playlist from a uri
+                 * @param {String} uri for playlist to load
+                 * @param {Number} index of desired playlist item.
+                 */
+                loadPlaylist: function(uri, index) {
+                    this.message("loadPlaylist", uri, index);
+                },
+                /**
+                 * Seeks to the time specified in seconds relative to the first clip.
+                 * @param {Number} value between 0 and the duration of the playlist.
+                 * The value is relative to the first clip. It's recommended that when
+                 * seeking to another clip besides the first, use {@link MTVNPlayer.Player#playIndex}.
+                 */
+                /**
                  * Adds an event listener for an event.
                  * @deprecated use {@link MTVNPlayer.Player#on} instead.
                  * @param {String} eventName an {@link MTVNPlayer.Events}.
