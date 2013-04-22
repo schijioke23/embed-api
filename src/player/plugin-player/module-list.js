@@ -3,7 +3,6 @@ var Modules = {
 	API: "api-manager",
 	BENTO: "bento-manager",
 	PLAYLIST: "playlist",
-	PLAYLIST_MANAGER: "playlist-manager",
 	USER: "user-manager",
 	VIDEO: "video",
 	CC:"cc-manager",

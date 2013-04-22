@@ -16,6 +16,7 @@ var PlaybackManager = Module.extend({
 		$(this.player.playerTarget).append(video.el);
 		this.video = video;
 		this.playlist = this.player.module(Modules.PLAYLIST);
+		this.playlist.on(require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
 		if (MTVNPlayer.has("bento")) {
 			this.bentoManager = this.player.module("bentoManager");
 		}
@@ -39,7 +40,7 @@ var PlaybackManager = Module.extend({
 				} else {
 					// play new item
 					if (!this.isPlayingAd && this.currentLoadedIndex !== this.playlist.currentIndex) {
-						this.logger.log("loading new index:" + this.playlist.currentIndex);
+						this.logger.log("loading new index: " + this.playlist.currentIndex);
 						this.setVideoSrc();
 					} else {
 						this.logger.log("playing or seeking on same index:" + this.currentLoadedIndex);
@@ -68,10 +69,19 @@ var PlaybackManager = Module.extend({
 			}
 		}
 	},
+	onItemReady: function(event) {
+		this.logger.log("onItemReady", event.data);
+		this.setVideoSrc();
+		this.play(this.queuedStartTime);
+	},
 	onPlaying: function() {
 		PlaybackManager.SHARED_VIDEO_ELEMENT = this.video.el;
 	},
 	seek: function(time) {
+		if (this.player.currentMetadata.isAd) {
+			this.logger.warn("no seeking on ads");
+			return;
+		}
 		if (this.player.config.useSegmentedScrubber) {
 			// TODO not tested
 			var index = -1,
@@ -104,12 +114,58 @@ var PlaybackManager = Module.extend({
 	playAd: function() {
 		this.logger.log("play ad");
 		this.isPlayingAd = true;
-		// video.setEnabled(false);
-		// player = adPlayer;
-		// adPlayer.setEnabled(true);
+		this.video.activeEvents = PlaybackManager.AD_EVENTS;
+		this.video.undelegateEvents();
+		this.video.delegateEvents();
 		this.currentLoadedIndex = -1;
 		this.player.trigger(Modules.Events.AD_WILL_PLAY);
-		this.adManager.playAd();
+		this.bentoManager.playAd();
+	},
+	onAdComplete: function() {
+		this.player.trigger(Events.PLAYHEAD, 0);
+		// this.player.trigger(Events.BUFFER,0);
+		this.isPlayingAd = false;
+		this.video.resetEvents();
+		this.logger.log("onAdComplete() " + (this.afterAdPlayNextVideo ? "post" : "pre") + "roll");
+		if (this.afterAdPlayNextVideo) {
+			this.afterAdPlayNextVideo = false;
+			this.playNextVideo();
+		} else {
+			this.play(this.queuedStartTime);
+		}
+	},
+	onMediaEnd: function() {
+		if (this.isPlayingAd) {
+			this.logger.log("ignore media ended, ad playing");
+		} else {
+			this.trigger(Events.MEDIA_END);
+			if (this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
+				this.logger.log("onMediaEnd() play post roll.");
+				this.afterAdPlayNextVideo = true;
+				this.playAd();
+			} else {
+				if (!this.continuousPlay) {
+					this.logger.log("onMediaEnd() don't play next. wait for API input");
+					this.waitingForAPIInput = true;
+				} else {
+					this.logger.log("onMediaEnd() playNextVideo()");
+					this.playNextVideo();
+				}
+			}
+		}
+	},
+	playNextVideo: function() {
+		this.logger.log("playNextVideo() playlist.hasNext():" + this.playlist.hasNext() + " currentLoadedIndex:" + this.currentLoadedIndex);
+		if (this.playlist.hasNext()) {
+			this.playlist.goToNext();
+			this.play(0);
+		} else {
+			this.currentPlayingIndex = this.currentLoadedIndex = -1;
+			this.hasPlaylistEnded = true;
+			this.player.setEnabled(false);
+			this.player.exitFullScreen();
+			this.player.trigger(Events.PLAYLIST_COMPLETE);
+		}
 	},
 	setVideoSrc: function() {
 		if (!this.isPlayingAd) {
@@ -153,23 +209,22 @@ var PlaybackManager = Module.extend({
 		return true;
 	},
 	message: function(message) {
-		var args = _.toArray(arguments);
+		var args = _.rest(_.toArray(arguments));
 		this.logger.log("message", message, args);
-		if (!this.video[message]) {
-			throw message + " not implemented.";
-		}
 		switch (message) {
+			// hi-jacked messages
 			case "play":
-				this.play(args);
-				break;
 			case "seek":
-				this.seek(args);
+				this[message].apply(this, args);
 				break;
 			default:
-				break;
+				if (!this.video[message]) {
+					throw message + " not implemented.";
+				}
+				return this.video[message].apply(this.video, args);
 		}
-		return this.video[message].apply(this.video, _.rest(args));
 	}
 }, {
-	SHARED_VIDEO_ELEMENT: null
+	SHARED_VIDEO_ELEMENT: null,
+	AD_EVENTS: ["timeupdate", "playing", "pause", "error"]
 });

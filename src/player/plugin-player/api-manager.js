@@ -22,9 +22,15 @@ var APIManager = Module.extend({
 		video.on(e.PLAYHEAD, this.proxyEvent);
 		video.on(e.DURATION, this.onDuration);
 		video.on(e.DURATION, this.proxyEvent);
+		video.on(e.PLAYHEAD, this.onPlayhead);
+		video.on(e.PLAYHEAD, this.proxyEvent);
 		video.on(e.BUFFERED, this.onBuffered);
 		video.on(e.END, this.proxyEvent);
 		return video;
+	},
+	onPlayhead:function(event) {
+		this.player.playhead = event.data;
+		this.player.trigger(Events.PLAYHEAD + ":" + event.data, event.data);
 	},
 	onDuration: function(event) {
 		var metatdata = this.player.currentMetadata;
@@ -56,13 +62,13 @@ var APIManager = Module.extend({
 	},
 	onItemReady: function(event) {
 		this.player.currentMetadata = event.data; // TODO check this with a multi item playlist
-		this.checkPlayerReady();
 	},
 	onPlaylistReady: function(event) {
 		var player = this.player;
 		player.playlistMetadata = event.data;
 		player.currentMetadata = player.playlistMetadata.items[0];
 		this.player.trigger(Events.METADATA, player.currentMetadata);
+		this.checkPlayerReady();
 	}
 }, {
 	EVENT_MAP: {

@@ -13,6 +13,7 @@ var ConfigManager = function() {
 					"mtvn-playback": moduleBase + "mtvn-playback/latest/mtvn-playback.js"
 				}
 			},
+			mediaGensToLoad:[0],
 			tinyPlayerURL: "http://media.mtvnservices-d.mtvi.com/player/swf/TinyPlayer.swf"
 		};
 	return Module.extend({
@@ -47,7 +48,8 @@ var ConfigManager = function() {
 				var Playlist = require("mtvn-playlist");
 				player.module(Modules.PLAYLIST, new Playlist({
 					url: UrlProcessor.feed(player, config.feed),
-					mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player)
+					mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player),
+					mediaGensToLoad:config.mediaGensToLoad
 				}));
 			}
 			// User 
