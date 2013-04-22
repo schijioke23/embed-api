@@ -7,18 +7,10 @@
 (function(MTVNPlayer) {
 	"use strict";
 	MTVNPlayer.onPlayer(function(player) {
-		player.module = function() {
-			var modules = {};
-			return function(name) {
-				if (modules[name]) {
-					return modules[name];
-				}
-				modules[name] = {};
-				return modules[name];
-			};
-		}();
-		player.module("reporting").logGUIEvent = function(eventName, eventData) {
-			player.message("logGUIEvent", eventName, eventData);
-		};
+		player.module("reporting", {
+			logGUIEvent: function(eventName, eventData) {
+				player.message("logGUIEvent", eventName, eventData);
+			}
+		});
 	});
 })(window.MTVNPlayer);

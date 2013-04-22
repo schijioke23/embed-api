@@ -3,7 +3,7 @@
  * At the moment, there may be incongruities between html5 and flash state sequences.
  * Flash also has "initializing" and "connecting" states, which aren't available in the html5 player.
  */
-MTVNPlayer.PlayState = {
+var PlayState = MTVNPlayer.PlayState = {
     /**
      * The video is playing.
      * @property

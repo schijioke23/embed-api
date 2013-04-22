@@ -1,6 +1,6 @@
 /*global MTVNPlayer, Core, $, Config, _, PackageManager */
 // HTML5 Player Module
-MTVNPlayer.module("html5").initialize = _.once(function() {
+var Html5 = _.once(function() {
     "use strict";
     var addCSS = function(e, prop, value) {
         e.style.cssText += prop + ":" + value;

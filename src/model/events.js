@@ -33,7 +33,7 @@
  *      });
  *
  */
-MTVNPlayer.Events = {
+var Events = MTVNPlayer.Events = {
     /**
      * @event metadata
      * Fired when the metadata changes. event.data is the metadata. Also see {@link MTVNPlayer.Player#currentMetadata}.

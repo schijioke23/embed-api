@@ -6,7 +6,7 @@
  * @method initializeFlash
  * @ignore
  */
-MTVNPlayer.module("flash").initialize = _.once(function() {
+var Flash = _.once(function() {
     "use strict";
     var messageNameMap = {
         play: "unpause",

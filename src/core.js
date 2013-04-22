@@ -56,7 +56,9 @@ var Core = (function(core) {
             };
         return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
     };
-
+    core.functionName = function(fn) {
+        return fn.toString().match(/function\s+(\w*)\s*\((.*?)\)/)[1];
+    };
     /**
      * Utility function. Append css to the head.
      * @ignore

@@ -1,9 +1,8 @@
-/*global MTVNPlayer, Url*/
+/*global Url, require, provide */
 /*exports UrlProcessor */
 var UrlProcessor = {
 	getUrlProcessorUrl: function(config, feedUrl) {
-		var Util = MTVNPlayer.require("mtvn-util");
-		var ff = Util.mapFormFactorID(config.formFactorID, {
+		var ff = require("mtvn-util").mapFormFactorID(config.formFactorID, {
 			"102": {
 				name: "useUrlProcessorFromFeed",
 				value: [false, true]
@@ -12,7 +11,7 @@ var UrlProcessor = {
 		return ff.useUrlProcessorFromFeed ? feedUrl : config.mediaGen;
 	},
 	mediaGen: function(player, url) {
-		var Util = MTVNPlayer.require("mtvn-util"),
+		var Util = require("mtvn-util"),
 			config = player.config,
 			templateData = Util.buildTemplateData(player);
 		url = UrlProcessor.getUrlProcessorUrl(player.config, url);
@@ -33,7 +32,7 @@ var UrlProcessor = {
 		return url;
 	},
 	feed: function(player, url) {
-		var Util = MTVNPlayer.require("mtvn-util"),
+		var Util = require("mtvn-util"),
 			config = player.config,
 			templateData = Util.buildTemplateData(player);
 		if(!url){
@@ -47,4 +46,4 @@ var UrlProcessor = {
 	}
 
 };
-MTVNPlayer.provide("mtvn-media-gen-util", UrlProcessor);
+provide("mtvn-media-gen-util", UrlProcessor);
