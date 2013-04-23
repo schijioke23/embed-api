@@ -13,22 +13,29 @@ var ConfigManager = function() {
 					"mtvn-playback": moduleBase + "mtvn-playback/latest/mtvn-playback.js"
 				}
 			},
-			mediaGensToLoad:[0],
+			mediaGensToLoad: [0],
 			tinyPlayerURL: "http://media.mtvnservices-d.mtvi.com/player/swf/TinyPlayer.swf"
 		};
 	return Module.extend({
 		name: "ConfigManager",
 		initialize: function() {
 			_.bindAll(this);
-			$.getJSON(ConfigManager.PROXY_URL + encodeURIComponent("http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=" + this.player.config.uri), this.onConfig);
+			var config = this.player.config;
+			if (config.ready) { // config is loaded.
+				this.onConfig(config);
+			} else {
+				$.getJSON(ConfigManager.PROXY_URL + encodeURIComponent("http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=" + config.uri), this.onConfig);
+			}
 		},
 		onConfig: function(config) {
 			if (config.config) {
 				config = config.config;
 			}
-			_.extend(config, CONFIG_DEFAULTS, config);
 			config.device = "iPhone2,1"; // TODO!
-			this.player.config = config;
+			if(_.isString(config.feed)){
+				config.feed = UrlProcessor.feed(this.player, config.feed);
+			}
+			_.extend(this.player.config, CONFIG_DEFAULTS, config);
 			this.loadPackages();
 		},
 		loadPackages: function() {
@@ -44,14 +51,7 @@ var ConfigManager = function() {
 			require("mtvn-util").mapFormFactorID(config.formFactorID, FormFactorMap, config);
 			this.logger.log("initializeModules()", config);
 			// Playlist Module
-			if (config.feed) {
-				var Playlist = require("mtvn-playlist");
-				player.module(Modules.PLAYLIST, new Playlist({
-					url: UrlProcessor.feed(player, config.feed),
-					mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player),
-					mediaGensToLoad:config.mediaGensToLoad
-				}));
-			}
+			var playlist = player.module(Modules.PLAYLIST, new(require("mtvn-playlist"))());
 			// User 
 			player.module(Modules.USER, UserManager);
 			// Bento Module
@@ -66,6 +66,11 @@ var ConfigManager = function() {
 			player.module(Modules.PLAYBACK_MANAGER, PlaybackManager);
 			// API Manager
 			player.module(Modules.API, APIManager);
+			playlist.load({
+				feed: config.feed,
+				mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player),
+				mediaGensToLoad: config.mediaGensToLoad
+			});
 			// TODO for testing.
 			player.play();
 		}

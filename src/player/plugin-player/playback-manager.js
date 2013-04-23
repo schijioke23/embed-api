@@ -27,7 +27,7 @@ var PlaybackManager = Module.extend({
 			// reset the queued start time.
 			this.queuedStartTime = 0;
 			// the item we're trying to play.
-			var currentItem = this.playlist.getCurrentItem();
+			var currentItem = this.playlist.currentItem;
 			// it's been loaded.
 			if (currentItem.ready) {
 				// check the media gen for errors.
@@ -115,7 +115,6 @@ var PlaybackManager = Module.extend({
 		this.logger.log("play ad");
 		this.isPlayingAd = true;
 		this.video.activeEvents = PlaybackManager.AD_EVENTS;
-		this.video.undelegateEvents();
 		this.video.delegateEvents();
 		this.currentLoadedIndex = -1;
 		this.player.trigger(Modules.Events.AD_WILL_PLAY);
@@ -135,22 +134,19 @@ var PlaybackManager = Module.extend({
 		}
 	},
 	onMediaEnd: function() {
-		if (this.isPlayingAd) {
-			this.logger.log("ignore media ended, ad playing");
+		// should never fire for ads.
+		this.trigger(Events.MEDIA_END);
+		if (this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
+			this.logger.log("onMediaEnd() play post roll.");
+			this.afterAdPlayNextVideo = true;
+			this.playAd();
 		} else {
-			this.trigger(Events.MEDIA_END);
-			if (this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
-				this.logger.log("onMediaEnd() play post roll.");
-				this.afterAdPlayNextVideo = true;
-				this.playAd();
+			if (!this.continuousPlay) {
+				this.logger.log("onMediaEnd() don't play next. wait for API input");
+				this.waitingForAPIInput = true;
 			} else {
-				if (!this.continuousPlay) {
-					this.logger.log("onMediaEnd() don't play next. wait for API input");
-					this.waitingForAPIInput = true;
-				} else {
-					this.logger.log("onMediaEnd() playNextVideo()");
-					this.playNextVideo();
-				}
+				this.logger.log("onMediaEnd() playNextVideo()");
+				this.playNextVideo();
 			}
 		}
 	},
@@ -170,17 +166,16 @@ var PlaybackManager = Module.extend({
 	setVideoSrc: function() {
 		if (!this.isPlayingAd) {
 			this.currentLoadedIndex = this.playlist.currentIndex;
-			var currentItem = this.playlist.getCurrentItem(),
-				video = this.video;
-			var src = currentItem.rss.mediaGen.renditions;
+			var currentItem = this.playlist.currentItem,
+				src = currentItem.rss.mediaGen.renditions;
 			if (!src) {
 				this.logger.error("loadItem no src in media gen for currentLoadedIndex:" + this.currentLoadedIndex);
 			} else {
 				this.logger.log("setVideoSrc() for currentLoadedIndex:" + this.currentLoadedIndex, src);
-				video.isLive(currentItem.isLive);
+				this.video.isLive(currentItem.isLive);
 				// TODO, try to do this in the video
 				//video.callPlayAfterSeek(!video.isPaused());
-				video.setSrc(src);
+				this.video.setSrc(src);
 			}
 		} else {
 			this.logger.warn("setVideoSrc not setting video src, currently playing ad.");

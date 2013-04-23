@@ -34,9 +34,7 @@ var Module = function() {
 		this.initialize.apply(this, arguments);
 	};
 	Module.prototype = {
-		initialize: function() {
-
-		}
+		initialize: function() {}
 	};
 	Module.extend = function(protoProps, staticProps) {
 		var parent = this;

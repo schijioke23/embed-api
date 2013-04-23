@@ -1,4 +1,4 @@
-/*global _, Module, MTVNPlayer*/
+/*global _, Module, MTVNPlayer, Core*/
 var PerformanceManager = Module.extend({
 	name: "PerformanceManager",
 	initialize: function() {
@@ -8,7 +8,7 @@ var PerformanceManager = Module.extend({
 	},
 	onMetadata: function() {
 		this.mrss = (new Date()).getTime();
-		this.player.trigger(MTVNPlayer.Events.PERFORMANCE, {
+		Core.processPerformance(this.player, {
 			load: this.load,
 			mrss: this.mrss
 		});
