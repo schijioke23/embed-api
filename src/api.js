@@ -14,7 +14,7 @@ if(!MTVNPlayer.Player) {
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         "use strict";
-        /*global Core, Config, PackageManager */
+        /*global Core, Config, PackageManager, Contentless */
         var _ = window._;
         MTVNPlayer.provide("_", _);
         //= core.js
@@ -22,6 +22,7 @@ if(!MTVNPlayer.Player) {
         //= util/selector.js
         //= player/flash-player.js
         //= player/html-player.js
+        //= player/contentless.js
         /**
          * Events dispatched by {@link MTVNPlayer.Player}.
          *
@@ -575,6 +576,10 @@ if(!MTVNPlayer.Player) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
+                }
+
+                if(this.config.contentless){
+                    _.extend(Player.prototype,Contentless);
                 }
 
                 /**
