@@ -1,4 +1,9 @@
 
+2.8.0 / 2013-04-25 
+==================
+
+  * BRBPL-3596: adding some player methods to support the controller integration
+
 2.7.1 / 2013-03-14 
 ==================
 
