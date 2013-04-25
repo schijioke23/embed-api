@@ -31,7 +31,7 @@ if(!MTVNPlayer.Player) {
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         &quot;use strict&quot;;
-        /*global Core, Config, PackageManager */
+        /*global Core, Config, PackageManager, Contentless */
         var _ = window._;
         MTVNPlayer.provide(&quot;_&quot;, _);
         //= core.js
@@ -39,6 +39,7 @@ if(!MTVNPlayer.Player) {
         //= util/selector.js
         //= player/flash-player.js
         //= player/html-player.js
+        //= player/contentless.js
 <span id='MTVNPlayer-Events'>        /**
 </span>         * Events dispatched by {@link MTVNPlayer.Player}.
          *
@@ -592,6 +593,10 @@ if(!MTVNPlayer.Player) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
+                }
+
+                if(this.config.contentless){
+                    _.extend(Player.prototype,Contentless);
                 }
 
 <span id='MTVNPlayer-Player-property-isFullScreen'>                /**

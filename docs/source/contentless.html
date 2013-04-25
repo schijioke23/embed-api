@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Contentless = {
+<span id='global-method-configure'>    /**
+</span>     * Configure the player without playing a video
+     * @param {String} uri for the desired configuration.
+     */
+    configure: function(uri) {
+        this.message(&quot;configure&quot;, uri);
+    },
+<span id='global-method-disableAds'>    /**
+</span>     * Disable Ads
+     * @param {Boolean} disables ads when true.
+     */
+    disableAds: function(value) {
+        this.message(&quot;disableAds&quot;, value);
+    },
+<span id='global-method-spoofAdURI'>    /**
+</span>     * SpoofAdURI
+     * @param {uri} When ads are requested use the given uri.
+     */
+    spoofAdURI: function(uri) {
+        this.message(&quot;spoofAdURI&quot;, uri);
+    },
+<span id='global-method-loadVideo'>    /**
+</span>     * Load a video from a uri
+     * @param {String} uri for video to be loaded.
+     */
+    loadVideo: function(uri) {
+        this.message(&quot;loadVideo&quot;, uri);
+    },
+<span id='global-method-loadPlaylist'>    /**
+</span>     * Load a playlist from a uri
+     * @param {String} uri for playlist to load
+     * @param {Number} index of desired playlist item.
+     */
+    loadPlaylist: function(uri, index) {
+        this.message(&quot;loadPlaylist&quot;, uri, index);
+    }
+};</pre>
+</body>
+</html>
