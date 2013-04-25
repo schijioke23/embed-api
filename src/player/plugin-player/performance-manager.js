@@ -2,9 +2,11 @@
 var PerformanceManager = Module.extend({
 	name: "PerformanceManager",
 	initialize: function() {
-		_.bindAll(this);
-		this.load = (new Date()).getTime();
-		this.player.once(MTVNPlayer.Events.METADATA, this.onMetadata);
+		if (this.player.config.performance) {
+			_.bindAll(this);
+			this.load = (new Date()).getTime();
+			this.player.once(MTVNPlayer.Events.METADATA, this.onMetadata);
+		}
 	},
 	onMetadata: function() {
 		this.mrss = (new Date()).getTime();

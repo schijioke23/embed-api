@@ -7,7 +7,8 @@
         scope.on = definition();
     }
     scope.initialized = true;
-})(window.MTVNPlayer.module("domready"), function(ready) {
+    window.MTVNPlayer.provide("domready",scope);
+})({}, function(ready) {
 
     var fns = [],
         fn, f = false,

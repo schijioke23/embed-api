@@ -1,4 +1,4 @@
-/*global _, $, MTVNPlayer, require, Module, PlayState, PackageManager, FormFactorMap, UrlProcessor, UserManager, ClosedCaptionManager, BentoManager, PlaybackManager, APIManager, Modules*/
+/*global _, $, MTVNPlayer, require, Module, PlayState, PackageManager, BTG, FormFactorMap, UrlProcessor, UserManager, ClosedCaptionManager, BentoManager, PlaybackManager, APIManager, Modules*/
 var ConfigManager = function() {
 	var moduleBase = "http://media.mtvnservices-d.mtvi.com/player/api/module/",
 		CONFIG_DEFAULTS = {
@@ -55,7 +55,7 @@ var ConfigManager = function() {
 			// User 
 			player.module(Modules.USER, UserManager);
 			// Bento Module
-			if (MTVNPlayer.has("bento")) {
+			if (BTG.Bento) {
 				player.module(Modules.BENTO, BentoManager);
 			}
 			// CC This needs to be in the GUI Tier

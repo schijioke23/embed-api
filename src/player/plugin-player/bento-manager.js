@@ -2,10 +2,13 @@
 var BentoManager = Module.extend({
 	name: "BentoManager",
 	initialize: function() {
-		var player = this.player,
-			e = MTVNPlayer.Events;
-		this.bento = MTVNPlayer.require("bento");
 		_.bindAll(this);
+		this.bento = BTG.Bento;
+		this.player.once(Events.METADATA,this.onPlayerReady);
+	},
+	onPlayerReady:function() {
+		var e = MTVNPlayer.Events,
+			player = this.player;
 		// BentoModel processing
 		this.bento.onConfig(BentoModel.config(player));
 		this.bento.onMetadata(BentoModel.metadata(player));
@@ -18,11 +21,14 @@ var BentoManager = Module.extend({
 		player.on(e.INDEX_CHANGE, this.bento.onIndexChange);
 		player.on(e.MEDIA_END, this.onMediaEnd);
 		player.on(e.UI_STATE_CHANGE, this.onUIStateChange);
-		// TODO where do these Events come from.
-		// this.addListener(Events.FW_AD_METADATA, this.onAdMetadata);
-		// this.addListener(Events.FW_AD_PLAYEND, this.onAdPlayEnd);
-		// this.addListener(Events.FW_AD_OVERLAY_START, this.onAdOverlayStart);
-		// this.addListener(Events.FW_AD_OVERLAY_END, this.onAdOverlayEnd);
+		this.addFWEvents();
+	},
+	addFWEvents:function() {
+		var events = BTG.Events;
+		events.FW_AD_METADATA.add(this.onAdMetadata);
+		events.FW_AD_PLAYEND.add(this.onAdPlayEnd);
+		events.FW_AD_OVERLAY_START.add(this.onAdOverlayStart);
+		events.FW_AD_OVERLAY_END.add(this.onAdOverlayEnd);
 	},
 	isItTimeForAnAd: function() {
 		if (this.hasAdComplete) {
@@ -51,7 +57,7 @@ var BentoManager = Module.extend({
 			case "playing":
 				if (!this.hasPlayed) {
 					this.hasPlayed = true;
-					bento.onMetadata(this.packageMetadata());
+					bento.onMetadata(BentoModel.metadata(this.player));
 					bento.onMediaStart();
 					bento.onPlay(playhead);
 				} else if (this.hasPaused) {

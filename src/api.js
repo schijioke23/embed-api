@@ -40,3 +40,6 @@ if (!MTVNPlayer.Player) {
 
 // http://media.mtvnservices.com/player/api/module/mtvn-playback/0.1.1/html5-playback.js
 //= ../../mtvn-playback/dist/html5-playback.js
+
+// http://media.mtvnservices.com/player/api/module/Bento-JS/latest/
+// ../../Bento-JS/dist/Bento.js

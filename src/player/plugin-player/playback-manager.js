@@ -1,4 +1,4 @@
-/*global _, $, MTVNPlayer, Module, Modules, require, Events, PlayState*/
+/*global _, $, MTVNPlayer, Module, Modules, require, Events, PlayState, BTG*/
 var PlaybackManager = Module.extend({
 	name: "PlaybackManager",
 	initialize: function() {
@@ -17,8 +17,8 @@ var PlaybackManager = Module.extend({
 		this.video = video;
 		this.playlist = this.player.module(Modules.PLAYLIST);
 		this.playlist.on(require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
-		if (MTVNPlayer.has("bento")) {
-			this.bentoManager = this.player.module("bentoManager");
+		if (BTG.Bento) {
+			this.bentoManager = BTG.Bento;
 		}
 		this.player.once(Events.STATE_CHANGE + ":" + PlayState.PLAYING, this.onPlaying);
 	},
