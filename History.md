@@ -1,4 +1,9 @@
 
+2.8.1 / 2013-05-01 
+==================
+
+  * Fullscreen fix: On fullscreen, also set the width and height of the iframe, since the container resize alone doesn't cause a window.resize event when the iframe is set to 100% width and height. This was introduced in 2.6.3.
+
 2.8.0 / 2013-04-25 
 ==================
 
