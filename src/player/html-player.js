@@ -29,6 +29,8 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         addCSS(e, "z-index", "auto");
         addCSS(e, "width", c.width + "px");
         addCSS(e, "height", c.height + "px");
+        player.element.width = c.width + "px";
+        player.element.height = c.height + "px";
         player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
     },
     /**
@@ -44,6 +46,8 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         e.style.cssText = cssText ? cssText : "position:fixed;left:0px;top:0px;z-index:" + (highestZIndex || 2147483645) + ";";
         addCSS(e, "width", window.innerWidth + "px");
         addCSS(e, "height", window.innerHeight + "px");
+        player.element.width = window.innerWidth + "px";
+        player.element.height = window.innerHeight + "px";
         window.scrollTo(0, 0);
         player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
     },
