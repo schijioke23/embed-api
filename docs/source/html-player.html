@@ -46,6 +46,8 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
         addCSS(e, &quot;z-index&quot;, &quot;auto&quot;);
         addCSS(e, &quot;width&quot;, c.width + &quot;px&quot;);
         addCSS(e, &quot;height&quot;, c.height + &quot;px&quot;);
+        player.element.width = c.width + &quot;px&quot;;
+        player.element.height = c.height + &quot;px&quot;;
         player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
     },
 <span id='global-method-goFullScreen'>    /**
@@ -61,6 +63,8 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
         e.style.cssText = cssText ? cssText : &quot;position:fixed;left:0px;top:0px;z-index:&quot; + (highestZIndex || 2147483645) + &quot;;&quot;;
         addCSS(e, &quot;width&quot;, window.innerWidth + &quot;px&quot;);
         addCSS(e, &quot;height&quot;, window.innerHeight + &quot;px&quot;);
+        player.element.width = window.innerWidth + &quot;px&quot;;
+        player.element.height = window.innerHeight + &quot;px&quot;;
         window.scrollTo(0, 0);
         player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
     },
