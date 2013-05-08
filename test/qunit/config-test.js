@@ -114,7 +114,7 @@
         equal(player.config.attributes.attrValue, "attrValue1", "config overrides default attribute");
     });
     test("test version comparison", function() {
-        var config = MTVNPlayer.module("config");
+        var config = MTVNPlayer.require("mtvn-player-test").Config;
         ok(config.versionIsMinimum("0", "1"), "1 is greater than 0");
         ok(config.versionIsMinimum("1", "1"), "1 is equal to 1");
         ok(config.versionIsMinimum("0.1", "0.1"), "0.1 is equal to 0.1");

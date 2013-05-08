@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: '<json:package.json>',
         clean: {
-            folder: ["dist/*"]
+            folder: ["dist/*", "build/*"]
         },
         lint: {
             devel: ['src/*.js', 'src/player/*.js', 'src/util/*.js'],
@@ -96,7 +96,7 @@ module.exports = function(grunt) {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
         grunt.log.writeln("building version:" + version);
-        grunt.file.write(targetPath + "version.js", "MTVNPlayer.version=\"" + version + "\";MTVNPlayer.build=\"" + date + "\";");
+        grunt.file.write(targetPath + "version.js", "MTVNPlayer.version=\"" + version + "\";\nMTVNPlayer.build=\"" + date + "\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {
         grunt.config("buildNumber", "-" + buildNumber);

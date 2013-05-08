@@ -120,7 +120,7 @@ var Flash = _.once(function() {
         },
         addFlashEvents = function(player) {
             var map = MTVNPlayer.Player.flashEventMap,
-                id = "player" + Math.round(Math.random() * 1000000),
+                id = _.uniqueId("player"),
                 element = player.element,
                 mapString = "MTVNPlayer.Player.flashEventMap." + id,
                 // this list of events is just for legibility. google closure compiler

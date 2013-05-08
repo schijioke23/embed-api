@@ -9,17 +9,19 @@ var MTVNPlayer = window.MTVNPlayer || {};
 if (!MTVNPlayer.Player) {
     //= ../dist/version.js
     (function() {
+        /*global Zepto*/
         //= third-party/underscore.js
+        MTVNPlayer.provide("_",this._); // underscore is put on this.
         //= third-party/zepto.js
-    }).apply(window);
+        MTVNPlayer.provide("$",Zepto); // Zepto is a var.
+    }).apply({});
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $, _) {
         "use strict";
         var require = MTVNPlayer.require,
             provide = MTVNPlayer.provide;
-        provide("_", _);
-        provide("$", $);
         //= core.js
+        //= util/logger.js
         //= util/module.js
         //= util/config.js
         //= util/url.js
@@ -30,7 +32,7 @@ if (!MTVNPlayer.Player) {
         //= util/jquery-plugin.js
         //= util/load-module.js
         //= util/finish.js
-    })(MTVNPlayer, window.jQuery || window.Zepto, window._.noConflict());
+    })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"));
 }
 // http://media.mtvnservices.com/player/api/module/mtvn-util/0.4.0/mtvn-util.js
 //= ../../mtvn-util/dist/mtvn-util.js
@@ -42,4 +44,6 @@ if (!MTVNPlayer.Player) {
 //= ../../mtvn-playback/dist/html5-playback.js
 
 // http://media.mtvnservices.com/player/api/module/Bento-JS/latest/
-// ../../Bento-JS/dist/Bento.js
+//= ../../Bento-JS/dist/Bento.js
+
+//= ../../endslate/dist/endslate.js

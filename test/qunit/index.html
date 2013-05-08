@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Embed API</title>
+  <title>Embed API QUnit Tests</title>
   <link rel="stylesheet" href="qunit-1.11.0.css">
   <script src="../libs/jQuery.js"></script>
   <script src="qunit-1.11.0.js"></script>
@@ -22,36 +22,44 @@
   </script>
   <!-- QUnit Module -->
   <script type="text/javascript">
-      module("API", {
-          // the tests could have their own modules defined per source file, 
-          // but in the meantime...
-        teardown: function() {
-            window.MTVNPlayer.defaultConfig = undefined;
+        QUnit.testStart(function(details) {
+          console.group(details.name);
+        });
+        QUnit.testDone(function(details) {
+            console.log("index.html:26 Qunit Test complete",details.name);
+            window.MTVNPlayer.defaultConfig = {
+              test: {
+                freewheelEnabled: false
+              }
+            };
             window.MTVNPlayer.defaultEvents = undefined;
+            $.each(MTVNPlayer.getPlayers(),function(index, player) {
+                player.destroy();
+            });
             window.MTVNPlayer.gc();
-        },
-      });
+            console.groupEnd(details.name);
+        });
   </script>
   <!-- FIXTURES -->
   <script type="text/template" id="test1">
-      <a class="MTVNPlayer" data-contentUri="mgid:cms:video:nick.com:920786">
+      <a class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034">
         <img 
-        src="http://mtv.mtvnimages.com/uri/mgid:cms:video:nick.com:920786?height=288&width=512"
-        height="512"
-        width="288">
+        src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:900034?height=288&width=512"
+        height="288"
+        width="512">
       </a>
   </script>
   <script type="text/template" id="test2">
-      <div class="MTVNPlayer" data-contentUri="mgid:cms:video:nick.com:920786"></div>
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034"></div>
   </script>
   <script type="text/template" id="config-test1">
-      <div class="MTVNPlayer" data-contentUri="mgid:cms:video:nick.com:920786" data-flashVars="autoPlay=true&sid=12345"></div>
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034" data-flashVars="autoPlay=true&sid=12345"></div>
   </script>
   <script type="text/template" id="config-test2">
-      <div class="MTVNPlayer" data-contentUri="mgid:cms:video:nick.com:920786" data-autoPlay="true" data-sid="12345"></div>
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034" data-autoPlay="true" data-sid="12345"></div>
   </script>
   <script type="text/template" id="config-test3">
-      <div class="MTVNPlayer" data-contentUri="mgid:cms:video:nick.com:920786"></div>
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034"></div>
   </script>
 </head>
 <body>
@@ -64,8 +72,6 @@
   <script type="text/javascript" src="events-test.js"></script>
   <script type="text/javascript" src="mtvnplayer-methods-test.js"></script>
   <script type="text/javascript" src="performance-test.js"></script>
-  <script type="text/javascript" src="load-module-test.js"></script>
   <script type="text/javascript" src="url-util-test.js"></script>
-  <script type="text/javascript" src="media-gen-test.js"></script>
 </body>
 </html>

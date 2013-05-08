@@ -1,4 +1,4 @@
-/*global MTVNPlayer*/
+/*global MTVNPlayer, _*/
 var Core = (function(core) {
     var baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
@@ -55,9 +55,6 @@ var Core = (function(core) {
                 return n.indexOf("wiiu") !== -1;
             };
         return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
-    };
-    core.functionName = function(fn) {
-        return fn.toString().match(/function\s+(\w*)\s*\((.*?)\)/)[1];
     };
     /**
      * Utility function. Append css to the head.
@@ -123,7 +120,7 @@ var Core = (function(core) {
         if (!event) {
             return;
         }
-        if (event instanceof Array) { // this will always be same-frame. (instanceof fails cross-frame.)
+        if (_.isArray(event)) {
             // clone array
             event = event.slice();
             // fire in order

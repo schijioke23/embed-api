@@ -9,7 +9,9 @@ var Modules = {
 	PLAYBACK_MANAGER: "playback-manager",
 	Events: {
 		CONFIG: "config",
+		DESTROY: "destroyModules",
 		MEDIA_GEN_ERROR: "mediaGenError",
+		AD_COMPLETE: "adComplete",
 		AD_WILL_PLAY: "adWillPlay"
 	}
 };

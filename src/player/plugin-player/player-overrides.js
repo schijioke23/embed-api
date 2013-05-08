@@ -1,4 +1,4 @@
-/*global $, _, Core, Modules, PerformanceManager, ConfigManager*/
+/*global $, _, Core, Modules, PerformanceManager, ConfigManager, Events*/
 /**
  * @ignore
  * This player overrides a few methods just like the legacy flash and html5 players.
@@ -36,7 +36,8 @@ var PlayerOverrides = _.once(function() {
 			m.message.apply(m, arguments);
 		},
 		destroy: function() {
-			// TODO
+			this.trigger(Events.DESTROY);
+			this.events = [];
 		},
 		isPaused: function() {
 			return this.module(Modules.PLAYBACK_MANAGER).isPaused();

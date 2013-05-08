@@ -1,7 +1,7 @@
 /*global QUnit, MTVNPlayer*/
 
 QUnit.test("isHTML5Player",function() {
-    var core = MTVNPlayer.module("core");
+    var core = MTVNPlayer.require("mtvn-player-test").Core;
     QUnit.ok(core.isHTML5Player("Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-us; Silk/1.1.0-80) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16 Silk-Accelerated=true") === false, "Silk 1.0");
     QUnit.ok(core.isHTML5Player("Kindle Fire (2012): Mozilla/5.0 (Linux; U; en-us; KFOT Build/IML74K) AppleWebKit/535.19 (KHTML, like Gecko) Silk/2.2 Safari/535.19 Silk-Accelerated=true ") === true, "Silk/2.0");
     QUnit.ok(core.isHTML5Player("Silk/3.0") === true, "Silk/3.0");

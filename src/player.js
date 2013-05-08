@@ -1,4 +1,4 @@
- /*global MTVNPlayer, PackageManager, Core, $, _, Config, PlayerOverrides, Flash, Html5, Modules*/
+ /*global MTVNPlayer, PackageManager, Core, $, _, Config, Events, PlayState, PlayerOverrides, Flash, Html5, Modules*/
  /**
   * @class MTVNPlayer.Player
   * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
@@ -34,8 +34,11 @@
       * Check if the event exists in our list of events.
       */
      checkEventName = function(eventName) {
+       var eventArgs;
        if (eventName.indexOf(":") !== -1) {
-         eventName = eventName.split(":")[0];
+         var parts = eventName.split(":");
+         eventName = parts[0];
+         eventArgs = parts[1];
        }
        var check = function(events) {
          for (var event in events) {
@@ -45,6 +48,13 @@
          }
          return false;
        };
+       if (eventArgs) {
+         if (eventName === Events.STATE_CHANGE) {
+           if (!_.contains(PlayState, eventArgs)) {
+             throwError("event \"" + eventName + "\" doesn't have state \"" + eventArgs + "\"");
+           }
+         }
+       }
        var eventsToCheck = _.extend(MTVNPlayer.Events, PackageManager.Events, Modules.Events);
        if (check(eventsToCheck)) {
          return;
@@ -132,7 +142,7 @@
      },
      createTarget = function() {
        var target = document.createElement("div");
-       target.setAttribute("id", "mtvnPlayer" + Math.round(Math.random() * 10000000));
+       target.setAttribute("id", _.uniqueId("mtvnPlayer"));
        return target;
      };
    // end private vars
@@ -228,8 +238,11 @@
      var instances = Core.instances,
        i = instances.length;
      for (i; i--;) {
-       if (!elementInDocument(instances[i].player.element)) {
+       var player = instances[i].player,
+        el = player.containerElement;
+       if (!elementInDocument(el)) {
          instances.splice(i, 1);
+         player.destroy();
        }
      }
    };
@@ -524,7 +537,7 @@
       * @param {Number} value between 0 and 1.
       */
      setVolume: function(volume) {
-       this.message("setVolume", volume);
+       return this.message("setVolume", volume);
      },
      /**
       * Seeks to the time specified in seconds relative to the first clip.
@@ -569,6 +582,9 @@
       * @param {Function} callback The function to invoke when the event is fired.
       */
      bind: function(eventName, callback) {
+       if (!_.isFunction(callback)) {
+         throwError("adding " + eventName + " with callback that is not a function");
+       }
        eventName = fixEventName(eventName);
        checkEventName(eventName);
        var currentEvent = this.events[eventName];
@@ -624,6 +640,9 @@
       * @param {Object} data Data will be available as event.data on the event object.
       */
      trigger: function(type, data) {
+       if (!type) {
+         throwError("event triggered without type.");
+       }
        Core.processEvent(this.events[type], {
          target: this,
          data: data,
@@ -656,5 +675,10 @@
     * @param {Function} callback The function to invoke when the event is fired.
     */
    Player.prototype.one = Player.prototype.once;
+   /**
+    * (v3.0.0) Alias for setVolume.
+    * @param {Number} volume If not passed returns the current volume.
+    */
+   Player.prototype.volume = Player.prototype.setVolume;
    return Player;
  }(window));

@@ -54,7 +54,7 @@ Config.copyProperties = function(toObj, fromObj, override) {
             if(fromObj.hasOwnProperty(prop)) {
                 if(exists(fromObj[prop])) {
                     var propName = prop.toLowerCase();
-                    if(propName === "flashvars" || propName === "attributes" || propName === "params") {
+                    if(propName === "flashvars" || propName === "attributes" || propName === "params" || propName === "test") {
                         toObj[prop] = toObj[prop] || {};
                         Config.copyProperties(toObj[prop], fromObj[prop], override);
                     } else {

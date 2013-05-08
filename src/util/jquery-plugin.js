@@ -1,6 +1,7 @@
 /*global Core, Config, MTVNPlayer, $ */
 (function() {
     var eventPrefix = "MTVNPlayer:",
+        $ = window.$ || $,
         // support for MTVN.config.player
         legacyConfig = function(MTVN) {
             if (MTVN && MTVN.config && MTVN.config.player) {

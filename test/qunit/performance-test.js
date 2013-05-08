@@ -1,11 +1,11 @@
-/*global $ asyncTest expect ok start MTVNPlayer*/
+/*global $, asyncTest, expect, ok, start, MTVNPlayer*/
 (function() {
     "use strict";
     // we're calling play
     var $fixture = $("#qunit-fixture");
     asyncTest("test performance results", function() {
         $fixture.html($("#test2").html());
-        var testVersion = MTVNPlayer.module("config").versionIsMinimum,
+        var testVersion = MTVNPlayer.require("mtvn-player-test").Config.versionIsMinimum,
             player = new MTVNPlayer.Player($(".MTVNPlayer")[0], {
                 performance: true
                 //            templateURL:"http://localhost:5050/player/html5/gwtversions/workarea/"

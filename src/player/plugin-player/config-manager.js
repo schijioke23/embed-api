@@ -1,4 +1,4 @@
-/*global _, $, MTVNPlayer, require, Module, PlayState, PackageManager, BTG, FormFactorMap, UrlProcessor, UserManager, ClosedCaptionManager, BentoManager, PlaybackManager, APIManager, Modules*/
+/*global _, $, MTVNPlayer, require, Module, PlayState, PackageManager, EndScreenManager, BTG, FormFactorMap, UrlProcessor, UserManager, ClosedCaptionManager, BentoManager, PlaybackManager, APIManager, Modules*/
 var ConfigManager = function() {
 	var moduleBase = "http://media.mtvnservices-d.mtvi.com/player/api/module/",
 		CONFIG_DEFAULTS = {
@@ -13,6 +13,7 @@ var ConfigManager = function() {
 					"mtvn-playback": moduleBase + "mtvn-playback/latest/mtvn-playback.js"
 				}
 			},
+			continuousPlay:true,
 			mediaGensToLoad: [0],
 			tinyPlayerURL: "http://media.mtvnservices-d.mtvi.com/player/swf/TinyPlayer.swf"
 		};
@@ -27,15 +28,19 @@ var ConfigManager = function() {
 				$.getJSON(ConfigManager.PROXY_URL + encodeURIComponent("http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=" + config.uri), this.onConfig);
 			}
 		},
-		onConfig: function(config) {
-			if (config.config) {
-				config = config.config;
+		onConfig: function(loadedConfig) {
+			if (loadedConfig.config) {
+				loadedConfig = loadedConfig.config;
 			}
-			config.device = "iPhone2,1"; // TODO!
-			if(_.isString(config.feed)){
-				config.feed = UrlProcessor.feed(this.player, config.feed);
+			loadedConfig.device = "iPhone2,1"; // TODO!
+			if(_.isString(loadedConfig.feed)){
+				loadedConfig.feed = UrlProcessor.feed(this.player, loadedConfig.feed);
 			}
-			_.extend(this.player.config, CONFIG_DEFAULTS, config);
+			// set the defaults.
+			_.defaults(this.player.config, CONFIG_DEFAULTS);
+			var overrides = _.extend(MTVNPlayer.defaultConfig ? MTVNPlayer.defaultConfig.test : {}, this.player.config.test);
+			// the server will override the rest, but the config test has the final say!
+			_.extend(this.player.config, loadedConfig, overrides);
 			this.loadPackages();
 		},
 		loadPackages: function() {
@@ -49,7 +54,7 @@ var ConfigManager = function() {
 				config = player.config;
 			// parse form factor
 			require("mtvn-util").mapFormFactorID(config.formFactorID, FormFactorMap, config);
-			this.logger.log("initializeModules()", config);
+			this.logger.log("initializeModules() config:", config);
 			// Playlist Module
 			var playlist = player.module(Modules.PLAYLIST, new(require("mtvn-playlist"))());
 			// User 
@@ -71,6 +76,7 @@ var ConfigManager = function() {
 				mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player),
 				mediaGensToLoad: config.mediaGensToLoad
 			});
+			player.module("end-screen",EndScreenManager);
 			// TODO for testing.
 			player.play();
 		}

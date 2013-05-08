@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, test, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     // no auto play for HTML5
@@ -10,11 +10,11 @@
         player.one("onReady", function() {
             player.play();
         });
-        player.one("onStateChange:playing", function(event) {
+        player.one("onStateChange:playing", function() {
             ok(true, "play() worked");
             player.one("stateChange:paused", function() {
                 ok(true, "pause() worked");
-                player.one("onPlayheadUpdate:2", function(event) {
+                player.one("onPlayheadUpdate:2", function() {
                     equal(Math.floor(player.playhead), 2, "cue point worked");
                     player.seek(20);
                     player.one("onPlayheadUpdate", function(event) {
@@ -35,7 +35,7 @@
         $(".MTVNPlayer").one("MTVNPlayer:onReady", function() {
             $(".MTVNPlayer").trigger("MTVNPlayer:play");
         });
-        $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function(event) {
+        $(".MTVNPlayer").one("MTVNPlayer:onStateChange:playing", function() {
             ok(true, "play() worked");
             $(".MTVNPlayer").one("MTVNPlayer:stateChange:paused", function() {
                 ok(true, "pause() worked");
@@ -43,7 +43,7 @@
                     equal(Math.floor(playerEvent.target.playhead), 2, "cue point worked");
                     $(".MTVNPlayer").trigger("MTVNPlayer:seek", 20);
                     $(".MTVNPlayer").one("MTVNPlayer:onPlayheadUpdate", function(event, playerEvent) {
-                        ok(playerEvent.data >= 20, "seek(20) worked");
+                        ok(playerEvent.data >= 20, "seek(20) worked, value:" + playerEvent.data);
                         start();
                     });
                 });

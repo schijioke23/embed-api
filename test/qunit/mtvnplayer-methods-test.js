@@ -1,22 +1,22 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, test, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     // we're calling play
     var $fixture = $("#qunit-fixture");
-    asyncTest("MTVNPlayer.getPlayer", 4, function() {
-        $fixture.html($("#test2").html());
-        var player = new MTVNPlayer.Player($(".MTVNPlayer")[0]);
-        equal(player.config.uri, MTVNPlayer.getPlayer(player.config.uri).config.uri, "getPlayer found matching uri");
-        equal(player.config.uri, MTVNPlayer.getPlayers()[0].config.uri, "getPlayers' only player matches the uri");
-        $fixture.empty();
-        //         There's a delay before the element won't be in the document.
-        setTimeout(function() {
-            MTVNPlayer.gc();
-            equal(MTVNPlayer.getPlayers().length, 0, "getPlayers has 0 players");
-            ok(!MTVNPlayer.getPlayer(player.config.uri), "gc works");
-            start();
-        }, 50);
-    });
+    // asyncTest("MTVNPlayer.getPlayer", 4, function() {
+    //     $fixture.html($("#test2").html());
+    //     var player = new MTVNPlayer.Player($(".MTVNPlayer")[0]);
+    //     equal(player.config.uri, MTVNPlayer.getPlayer(player.config.uri).config.uri, "getPlayer found matching uri");
+    //     equal(player.config.uri, MTVNPlayer.getPlayers()[0].config.uri, "getPlayers' only player matches the uri");
+    //     $fixture.empty();
+    //     //         There's a delay before the element won't be in the document.
+    //     setTimeout(function() {
+    //         MTVNPlayer.gc();
+    //         equal(MTVNPlayer.getPlayers().length, 0, "getPlayers has 0 players");
+    //         ok(!MTVNPlayer.getPlayer(player.config.uri), "gc works");
+    //         start();
+    //     }, 50);
+    // });
     asyncTest("MTVNPlayer.onPlayer MTVNPlayer.removeOnPlayer", 2, function() {
         $fixture.html($("#test2").html());
         var callback2 = function(player) {

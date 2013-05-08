@@ -1,0 +1,68 @@
+{
+	"videoId": "900034",
+	"mtvnOwner": "mtv.com",
+	"guid": "mgid:uma:video:mtv.com:900034",
+	"videoTitle": "Sneak Peek | Sure Babe_900034",
+	"description": "Jenna worries that her relationship with Matty may be on the rocks. Episode airs Tuesday at 10/9c.",
+	"videoUrl": "http://www.mtv.com/videos/misc/900034/sneak-peek-sure-babe.jhtml#id=1705843",
+	"mediaCategory": "Show Clip - Sneak Peak",
+	"artistName": "NO-ARTIST",
+	"franchise": "Awkward.",
+	"playlistTitle": "Awkward. (Season 3) | Ep. 3 | Sneak Peek",
+	"playlistType": "Episode Sneak Peeks",
+	"reportable": true,
+	"duration": 51,
+	"beacons": [],
+	"isLive": false,
+	"playlistLength": 1,
+	"playlistMetadataItems": [{
+		"duration": 51,
+		"index": 0,
+		"live": false,
+		"rss": {
+			"title": "Sneak Peek | Sure Babe",
+			"description": "Jenna worries that her relationship with Matty may be on the rocks. Episode airs Tuesday at 10/9c.",
+			"link": "http://www.mtv.com/videos/misc/900034/sneak-peek-sure-babe.jhtml#id=1705843",
+			"image": {
+				"url": "http://www.mtv.com/onair/awkward/season3/images/video/sneak_peeks/episodes/303/448x252.jpg",
+				"width": 448,
+				"height": 252
+			},
+			"guid": "mgid:uma:video:mtv.com:900034",
+			"group": {
+				"title": "Sneak Peek | Sure Babe",
+				"description": "Jenna worries that her relationship with Matty may be on the rocks. Episode airs Tuesday at 10/9c.",
+				"rating": "nonadult",
+				"categories": {
+					"isReportable": true,
+					"videoTitle": "Sneak Peek | Sure Babe",
+					"contentType": "Show Clip - Sneak Peak",
+					"playlistURI": "mgid:uma:videolist:mtv.com:1705843",
+					"playlistTitle": "Awkward. (Season 3) | Ep. 3 | Sneak Peek",
+					"playlistType": "Episode Sneak Peeks",
+					"franchise": "Awkward.",
+					"governingAgreement": "0",
+					"artist": "NO-ARTIST",
+					"seoHTMLText": "<a href=\"http://www.mtv.com/shows/awkward/series.jhtml\" style=\"color:#439CD8;\" target=\"_blank\">Awkward.</a>, <a href=\"http://www.mtv.com/videos/home.jhtml\" style=\"color:#439CD8;\" target=\"_blank\">Full Episodes</a>",
+					"eventType": "NO-EVENT"
+				}
+			},
+			"thumbnail": {
+				"url": "http://www.mtv.com/onair/awkward/season3/images/video/sneak_peeks/episodes/303/448x252.jpg",
+				"width": 448,
+				"height": 252
+			}
+		},
+		"error": "",
+		"beacons": []
+	}],
+	"isFullEpisode": false,
+	"isAd": false,
+	"eventType": "NO-EVENT",
+	"playlistURI": "mgid:uma:videolist:mtv.com:1705843",
+	"playlistID": "mgid:uma:videolist:mtv.com:1705843",
+	"hasPlayList": false,
+	"playlistDuration": 51,
+	"itemIndex": 0,
+	"bandwidth": 1024
+}

@@ -18,7 +18,7 @@ var UrlProcessor = {
 		if(!url){
 			throw "no media gen url.";
 		}
-		url = url.replace("{uri}", "{metadata.guid}");
+		url = url.replace("{uri}", "{metadata.rss.guid}");
 		if (config.network) {
 			url = Url.setQueryStringParam(url, "network", config.network);
 		}
@@ -46,4 +46,3 @@ var UrlProcessor = {
 	}
 
 };
-provide("mtvn-media-gen-util", UrlProcessor);

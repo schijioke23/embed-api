@@ -1,39 +1,64 @@
 /*global _, MTVNPlayer, Events, BTG, BentoModel, Module*/
 var BentoManager = Module.extend({
 	name: "BentoManager",
+	hasSeekStart: false,
+	hasSeekEnd: false,
+	hasResumePlay: false,
+	isBuffering: false,
+	hasPlayed: false,
+	hasPaused: false,
+	hasAdComplete: false,
+	hasContentEnd: false,
+	isActive: false,
+	currentIndex: -1,
 	initialize: function() {
 		_.bindAll(this);
-		this.bento = BTG.Bento;
-		this.player.once(Events.METADATA,this.onPlayerReady);
+		this.bento = BTG.Bento; // TODO scope this or make it an instance.
+		// wait till metadata to initiate bento
+		this.player.once(Events.METADATA, this.onPlayerReady);
 	},
-	onPlayerReady:function() {
+	onPlayerReady: function() {
+		this.logger.log("onPlayerReady, initialize Bento");
 		var e = MTVNPlayer.Events,
 			player = this.player;
-		// BentoModel processing
-		this.bento.onConfig(BentoModel.config(player));
-		this.bento.onMetadata(BentoModel.metadata(player));
 		// events
 		player.on(e.MEDIA_START, this.onMediaStart);
 		player.on(e.PLAYHEAD_UPDATE, this.onPlayhead);
 		player.on(e.STATE_CHANGE, this.onPlayStateChange);
-		player.on(e.PLAYLIST_COMPLETE, this.bento.onPlayListEnded);
+		player.on(e.PLAYLIST_COMPLETE, this.onPlaylistComplete);
 		// TODO ad click
-		player.on(e.INDEX_CHANGE, this.bento.onIndexChange);
+		player.on(e.INDEX_CHANGE, this.onIndexChange);
 		player.on(e.MEDIA_END, this.onMediaEnd);
 		player.on(e.UI_STATE_CHANGE, this.onUIStateChange);
 		this.addFWEvents();
+		// BentoModel processing
+		this.bento.onConfig(BentoModel.config(player));
+		console.log("bento-manager.js:36 BentoModel.metadata(player)",BentoModel.metadata(player));
+		this.bento.onMetadata(BentoModel.metadata(player));
 	},
-	addFWEvents:function() {
+	onIndexChange: function(event) {
+		var newIndex = event.data;
+		if (this.currentIndex !== newIndex) {
+			this.currentIndex = newIndex;
+			this.bento.onPlayIndexChanged(newIndex);
+		}
+	},
+	onPlaylistComplete: function() {
+		this.currentIndex = -1;
+		this.bento.onPlayListEnded();
+	},
+	addFWEvents: function() {
+		this.logger.log("addFWEvents");
 		var events = BTG.Events;
 		events.FW_AD_METADATA.add(this.onAdMetadata);
-		events.FW_AD_PLAYEND.add(this.onAdPlayEnd);
-		events.FW_AD_OVERLAY_START.add(this.onAdOverlayStart);
-		events.FW_AD_OVERLAY_END.add(this.onAdOverlayEnd);
+		events.FW_AD_PLAYEND.add(this.onAdComplete);
 	},
 	isItTimeForAnAd: function() {
-		if (this.hasAdComplete) {
+		if (!this.hasAdComplete) {
+			this.logger.log("isItTimeForAnAd is going to be called!!!");
 			return true;
 		}
+		this.logger.log("it's not time for an ad.");
 		this.hasAdComplete = false;
 		return false;
 	},
@@ -62,7 +87,7 @@ var BentoManager = Module.extend({
 					bento.onPlay(playhead);
 				} else if (this.hasPaused) {
 					this.hasPaused = false;
-					bento.onPlayResume(playhead);
+					bento.onResumePlay(playhead);
 				}
 				break;
 			default:
@@ -99,12 +124,15 @@ var BentoManager = Module.extend({
 		this.bento.onOverlayRezise(event.data.overlayRect);
 	},
 	// FREEWHEEEL
+	playAd: function() {
+		this.bento.isItTimeForAnAd(this.freewheelVO());
+	},
 	onAdMetadata: function(adMetadata) {
-		console.log("onAdMetadata adMetadata:" + adMetadata);
+		this.logger.log("onAdMetadata adMetadata:" + adMetadata);
 		var durations = [],
 			m = {};
 		m.isAdClickable(adMetadata.isClickable);
-		console.log("onAdMetadata adMetadata.duration:" + adMetadata.duration);
+		this.logger.log("onAdMetadata adMetadata.duration:" + adMetadata.duration);
 		durations.push(Math.max(0, adMetadata.duration));
 		m.durations = durations;
 		m.duration = Math.max(0, adMetadata.duration);
@@ -117,7 +145,7 @@ var BentoManager = Module.extend({
 		this.player.trigger(Events.DURATION_CHANGE); // TODO event doesn't exixt
 	},
 	onAdComplete: function() {
-		console.log("onAdComplete");
+		this.logger.log("onAdComplete");
 		if (!this.hasContentEnd) {
 			this.hasAdComplete = true;
 		}
@@ -126,7 +154,7 @@ var BentoManager = Module.extend({
 			type: "AD_METADATA",
 			data: null
 		});
-		this.player.trigger(Events.ON_AD_COMPLETE); // TODO
+		this.player.trigger(Events.AD_COMPLETE);
 		this.player.trigger(Events.DURATION_CHANGE); // TODO event doesn't exixt
 	},
 	freewheelVO: function() {

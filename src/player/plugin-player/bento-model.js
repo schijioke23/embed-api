@@ -1,11 +1,11 @@
-/*global require, BTG, _*/
+/*global require, BTG, _, Modules*/
 var BentoModel = {
 	config: function(player) {
 		var cfg = player.config;
+		cfg.freewheelDisplayBase = player.id;
 		cfg.freewheelTimeSinceLastAd = isNaN(cfg.freewheelMinTimeBtwAds) && isNaN(cfg.freewheelTimeSinceLastAd) ? null : !isNaN(cfg.freewheelTimeSinceLastAd) ? cfg.freewheelTimeSinceLastAd : cfg.freewheelMinTimeBtwAds;
 		cfg.omnitureMediaTrackingEnabled = cfg.omnitureMediaTracking === true || cfg.omnitureMediaTrackingEnabled === true;
 		cfg.nielsenEnabled = cfg.nielsenReporterEnabled === true || cfg.nielsenEnabled === true;
-
 		cfg.applicationType = cfg.type;
 		cfg.applicationContext = cfg.ref;
 		cfg.referrer = cfg.ref;
@@ -46,7 +46,6 @@ var BentoModel = {
 			}
 		}
 		cfg.omnitureCustomFields = customFields;
-
 		return player.config;
 	},
 	metadata: function(player) {
@@ -54,7 +53,7 @@ var BentoModel = {
 		metadata = player.currentMetadata,
 			pl = player.playlistMetadata,
 			rssItem = metadata.rss,
-			categories = rssItem.group.category,
+			categories = rssItem.group.categories,
 			guid = rssItem.guid.split(":"),
 			videoId = null,
 			videoTitle = null;
@@ -112,7 +111,7 @@ var BentoModel = {
 			reportableCount = 0;
 		_.each(pl.items, function(item){
 			duration += item.duration;
-			if (item.rss.group.category.isReportable) {
+			if (item.rss.group.categories.isReportable) {
 				reportableCount++;
 			}
 		});

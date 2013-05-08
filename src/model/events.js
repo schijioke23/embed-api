@@ -139,5 +139,10 @@ var Events = MTVNPlayer.Events = {
      * @private
      * Fired when performance data has been collected.
      */
-    PERFORMANCE: "performance"
+    PERFORMANCE: "performance",
+    /**
+     * @event durationChange
+     * Fired when the duration is updated. An alternative to the metadata event.
+     */
+    DURATION_CHANGE:"durationChange"
 };

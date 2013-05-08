@@ -3,23 +3,33 @@ var PlaybackManager = Module.extend({
 	name: "PlaybackManager",
 	initialize: function() {
 		_.bindAll(this);
+		// Backbone is in the util package, not in-lined with rigger.
+		_.extend(this,require("Backbone").Events);
 		// Video Module
-		var video = this.player.module(Modules.VIDEO, new(require("mtvn-playback").Html5.Player)({
+		var video = this.video = this.player.module(Modules.VIDEO, new(require("mtvn-playback").Html5.Player)({
 			controls: this.player.config.useNativeControls,
 			el: PlaybackManager.SHARED_VIDEO_ELEMENT
 		}));
+		// TODO, not here.
 		video.$el.css({
 			width: "100%",
 			height: "100%",
 			position: "absolute"
 		});
+		this.player.element = video.el;
 		$(this.player.playerTarget).append(video.el);
-		this.video = video;
+		// Playlist module
 		this.playlist = this.player.module(Modules.PLAYLIST);
-		this.playlist.on(require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
-		if (BTG.Bento) {
-			this.bentoManager = BTG.Bento;
-		}
+		// this require makes sense, but is ugly.
+		this.listenTo(this.playlist, require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
+		// if don't include bento, don't 
+		this.bentoManager = BTG.Bento ? this.player.module(Modules.BENTO) : {
+			isItTimeForAnAd: function() {
+				return false;
+			}
+		};
+		this.listenTo(video,require("mtvn-playback").Events.END, this.onMediaEnd);
+		this.player.once(Events.DESTROY, this.destroy);
 		this.player.once(Events.STATE_CHANGE + ":" + PlayState.PLAYING, this.onPlaying);
 	},
 	play: function(startTime) {
@@ -28,17 +38,18 @@ var PlaybackManager = Module.extend({
 			this.queuedStartTime = 0;
 			// the item we're trying to play.
 			var currentItem = this.playlist.currentItem;
+			// TODO we should load the ad even if we haven't loaded the media gen!
 			// it's been loaded.
 			if (currentItem.ready) {
 				// check the media gen for errors.
 				if (this.hasError(currentItem)) {
 					return;
 				}
-				if (this.shouldCheckForAd() && this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
+				if (this.checkForAd() && this.bentoManager.isItTimeForAnAd()) {
 					this.queuedStartTime = startTime;
 					this.playAd();
 				} else {
-					// play new item
+					// play new item for the media gen that is currently loaded.
 					if (!this.isPlayingAd && this.currentLoadedIndex !== this.playlist.currentIndex) {
 						this.logger.log("loading new index: " + this.playlist.currentIndex);
 						this.setVideoSrc();
@@ -54,28 +65,16 @@ var PlaybackManager = Module.extend({
 						this.video.play();
 					}
 				}
-			} else {
-
-				// load new mediagen
+			} else { // load new mediagen
 				this.playlist.loadItem(this.playlist.currentIndex);
-
-				this.logger.log("waiting for media gen.");
-				//TODO, try to do this in video
-				//this.video.callPlayAfterSeek(!this.video.isPaused());
-				this.video.setEnabled(false);
-
+				this.logger.log("waiting for media gen at index:" + this.playlist.currentIndex);
+				// TODO, this shouldn't be in the video module.
+				this.video.callPlayAfterSeek = !this.video.isPaused();
+				// this.video.setEnabled(false);
 				// queue start time.
 				this.queuedStartTime = startTime;
 			}
 		}
-	},
-	onItemReady: function(event) {
-		this.logger.log("onItemReady", event.data);
-		this.setVideoSrc();
-		this.play(this.queuedStartTime);
-	},
-	onPlaying: function() {
-		PlaybackManager.SHARED_VIDEO_ELEMENT = this.video.el;
 	},
 	seek: function(time) {
 		if (this.player.currentMetadata.isAd) {
@@ -112,7 +111,9 @@ var PlaybackManager = Module.extend({
 		}
 	},
 	playAd: function() {
+		// this will only be invoked if BTG.Bento exists.
 		this.logger.log("play ad");
+		this.player.once(Events.AD_COMPLETE, this.onAdComplete);
 		this.isPlayingAd = true;
 		this.video.activeEvents = PlaybackManager.AD_EVENTS;
 		this.video.delegateEvents();
@@ -120,8 +121,19 @@ var PlaybackManager = Module.extend({
 		this.player.trigger(Modules.Events.AD_WILL_PLAY);
 		this.bentoManager.playAd();
 	},
+	getStateHistory: function() {
+		return this.video.stateHistory;
+	},
+	onItemReady: function(event) {
+		this.logger.log("onItemReady", event.data);
+		this.setVideoSrc();
+		this.play(this.queuedStartTime);
+	},
+	onPlaying: function() {
+		PlaybackManager.SHARED_VIDEO_ELEMENT = this.video.el;
+	},
 	onAdComplete: function() {
-		this.player.trigger(Events.PLAYHEAD, 0);
+		this.player.trigger(Events.PLAYHEAD_UPDATE, 0);
 		// this.player.trigger(Events.BUFFER,0);
 		this.isPlayingAd = false;
 		this.video.resetEvents();
@@ -135,13 +147,13 @@ var PlaybackManager = Module.extend({
 	},
 	onMediaEnd: function() {
 		// should never fire for ads.
-		this.trigger(Events.MEDIA_END);
+		this.player.trigger(Events.MEDIA_END);
 		if (this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
 			this.logger.log("onMediaEnd() play post roll.");
 			this.afterAdPlayNextVideo = true;
 			this.playAd();
 		} else {
-			if (!this.continuousPlay) {
+			if (!this.player.config.continuousPlay) {
 				this.logger.log("onMediaEnd() don't play next. wait for API input");
 				this.waitingForAPIInput = true;
 			} else {
@@ -156,9 +168,8 @@ var PlaybackManager = Module.extend({
 			this.playlist.goToNext();
 			this.play(0);
 		} else {
-			this.currentPlayingIndex = this.currentLoadedIndex = -1;
+			this.adCheckedIndex = this.currentPlayingIndex = this.currentLoadedIndex = -1;
 			this.hasPlaylistEnded = true;
-			this.player.setEnabled(false);
 			this.player.exitFullScreen();
 			this.player.trigger(Events.PLAYLIST_COMPLETE);
 		}
@@ -173,8 +184,7 @@ var PlaybackManager = Module.extend({
 			} else {
 				this.logger.log("setVideoSrc() for currentLoadedIndex:" + this.currentLoadedIndex, src);
 				this.video.isLive(currentItem.isLive);
-				// TODO, try to do this in the video
-				//video.callPlayAfterSeek(!video.isPaused());
+				this.video.callPlayAfterSeek = !this.video.isPaused();
 				this.video.setSrc(src);
 			}
 		} else {
@@ -188,19 +198,21 @@ var PlaybackManager = Module.extend({
 		}
 		return false;
 	},
-	shouldCheckForAd: function() {
+	checkForAd: function() {
 		// we're playing an ad already.
 		if (this.isPlayingAd) {
+			this.logger.warn("checkForAd, already playing an ad.");
 			return false;
 		}
 		var currentIndex = this.playlist.currentIndex;
 		// we already checked for this index
 		if (this.adCheckedIndex == currentIndex) {
-			this.logger.log("shouldCheckForAdOnPlay() no, ad index " + this.adCheckedIndex + " already checked.");
+			this.logger.log("checkForAd() no, ad index " + this.adCheckedIndex + " already checked.");
 			return false;
 		}
 		// set the checked index.
 		this.adCheckedIndex = currentIndex;
+		this.logger.log("should check ad for index:", currentIndex);
 		return true;
 	},
 	message: function(message) {
@@ -212,12 +224,30 @@ var PlaybackManager = Module.extend({
 			case "seek":
 				this[message].apply(this, args);
 				break;
+			case "exitFullScreen":
+				break;
+			case "playIndex":
+				var index = parseInt(args[0], 10),
+					startTime = parseInt(args[1], 10);
+				if (!isNaN(index)) {
+					this.logger.info("playIndex()", index, startTime);
+					this.playlist.loadItem(index);
+					this.play(isNaN(startTime) ? 0 : startTime);
+				}
+				break;
+			case "setVolume":
+				message = "volume";
+				break;
 			default:
 				if (!this.video[message]) {
 					throw message + " not implemented.";
 				}
 				return this.video[message].apply(this.video, args);
 		}
+	},
+	destroy:function() {
+		this.stopListening();
+		this.video.destroy();
 	}
 }, {
 	SHARED_VIDEO_ELEMENT: null,
