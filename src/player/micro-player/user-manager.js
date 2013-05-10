@@ -8,10 +8,12 @@ var UserManager = Module.extend({
 		return 1;
 	},
 	isCCOn: function(ccOn) {
-		if(!_.isUndefined(ccOn)){
+		if (!_.isUndefined(ccOn)) {
 			this.ccOn = ccOn;
 		}
 		return this.ccOn;
 	},
-	ccOn:true
+	ccOn: true
+}, {
+	NAME: "UserManager"
 });

@@ -1,6 +1,5 @@
 /*global _, MTVNPlayer, Events, BTG, BentoModel, Module*/
 var BentoManager = Module.extend({
-	name: "BentoManager",
 	hasSeekStart: false,
 	hasSeekEnd: false,
 	hasResumePlay: false,
@@ -33,7 +32,7 @@ var BentoManager = Module.extend({
 		this.addFWEvents();
 		// BentoModel processing
 		this.bento.onConfig(BentoModel.config(player));
-		console.log("bento-manager.js:36 BentoModel.metadata(player)",BentoModel.metadata(player));
+		console.log("bento-manager.js:36 BentoModel.metadata(player)", BentoModel.metadata(player));
 		this.bento.onMetadata(BentoModel.metadata(player));
 	},
 	onIndexChange: function(event) {
@@ -167,4 +166,6 @@ var BentoManager = Module.extend({
 			height: 350
 		};
 	}
+}, {
+	NAME: "BentoManager"
 });

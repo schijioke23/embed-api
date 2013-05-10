@@ -26,7 +26,7 @@ if (!MTVNPlayer.Player) {
         //= util/config.js
         //= util/url.js
         //= model
-        //= player/plugin-player/
+        //= player/micro-player/
         //= player.js
         //= util/reporting.js
         //= util/jquery-plugin.js

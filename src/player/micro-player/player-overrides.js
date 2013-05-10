@@ -1,4 +1,4 @@
-/*global $, _, Core, Modules, PerformanceManager, ConfigManager, Events*/
+/*global $, _, Core, Modules, PerformanceManager, ConfigManager, Events, PlaybackManager*/
 /**
  * @ignore
  * This player overrides a few methods just like the legacy flash and html5 players.
@@ -20,27 +20,29 @@ var PlayerOverrides = _.once(function() {
 			});
 			Core.executeCallbacks(this);
 			// doesn't need to be referenced anywhere.
-			this.module("performance", PerformanceManager);
+			this.module(PerformanceManager);
 			// start up
 			// modules will now communicate through the module object. 
 			// this keeps the embed api clean.
 			// the controller is the player object itself, and events go off there.
-			this.module(Modules.CONFIG, ConfigManager);
+			this.module(ConfigManager);
 		},
 		/**
 		 * @ignore
 		 * forward messages along to the correct module.
 		 */
 		message: function() {
-			var m = this.module(Modules.PLAYBACK_MANAGER);
+			var m = this.module(PlaybackManager.NAME);
 			m.message.apply(m, arguments);
 		},
 		destroy: function() {
 			this.trigger(Events.DESTROY);
+			// so modules don't even have to listen for the event.
+			_.invoke(this.module(Modules.ALL),"destroy");
 			this.events = [];
 		},
 		isPaused: function() {
-			return this.module(Modules.PLAYBACK_MANAGER).isPaused();
+			return this.module(PlaybackManager.NAME).isPaused();
 		}
 	};
 });

@@ -1,12 +1,8 @@
 var Modules = {
-	CONFIG: "config-manager",
-	API: "api-manager",
-	BENTO: "bento-manager",
+	ALL:"all", // get a list of all modules?
 	PLAYLIST: "playlist",
-	USER: "user-manager",
 	VIDEO: "video",
 	CC:"cc-manager",
-	PLAYBACK_MANAGER: "playback-manager",
 	Events: {
 		CONFIG: "config",
 		DESTROY: "destroyModules",

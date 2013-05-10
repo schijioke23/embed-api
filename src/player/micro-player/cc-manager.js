@@ -1,9 +1,9 @@
-/*global _, Module, MTVNPlayer, Modules */
+/*global _, Module, MTVNPlayer, Modules, UserManager */
 var ClosedCaptionManager = Module.extend({
 	name: "ClosedCaptionManager",
 	initialize: function() {
 		_.bindAll(this);
-		this.userPrefs = this.player.module(Modules.USER);
+		this.userPrefs = this.player.module(UserManager);
 		this.videoElement = this.player.module(Modules.VIDEO).el;
 		this.player.once(MTVNPlayer.Events.MEDIA_START, this.processState);
 	},

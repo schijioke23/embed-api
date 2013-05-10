@@ -1,6 +1,5 @@
-/*global _, $, MTVNPlayer, Module, Modules, require, Events, PlayState, BTG*/
+/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, BTG, UserManager*/
 var PlaybackManager = Module.extend({
-	name: "PlaybackManager",
 	initialize: function() {
 		_.bindAll(this);
 		// Backbone is in the util package, not in-lined with rigger.
@@ -23,7 +22,7 @@ var PlaybackManager = Module.extend({
 		// this require makes sense, but is ugly.
 		this.listenTo(this.playlist, require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
 		// if don't include bento, don't 
-		this.bentoManager = BTG.Bento ? this.player.module(Modules.BENTO) : {
+		this.bentoManager = BTG.Bento ? this.player.module(BentoManager) : {
 			isItTimeForAnAd: function() {
 				return false;
 			}
@@ -33,7 +32,7 @@ var PlaybackManager = Module.extend({
 		this.player.once(Events.STATE_CHANGE + ":" + PlayState.PLAYING, this.onPlaying);
 	},
 	play: function(startTime) {
-		if (this.player.module(Modules.USER).isOk()) {
+		if (this.player.module(UserManager).isOk()) {
 			// reset the queued start time.
 			this.queuedStartTime = 0;
 			// the item we're trying to play.
@@ -251,5 +250,6 @@ var PlaybackManager = Module.extend({
 	}
 }, {
 	SHARED_VIDEO_ELEMENT: null,
-	AD_EVENTS: ["timeupdate", "playing", "pause", "error"]
+	AD_EVENTS: ["timeupdate", "playing", "pause", "error"],
+	NAME:"PlaybackManager"
 });

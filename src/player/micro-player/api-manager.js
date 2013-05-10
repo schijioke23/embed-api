@@ -3,16 +3,14 @@
  * Hook into module events and send them through the embed api (this.player)
  */
 var APIManager = Module.extend({
-	name: "APIManager",
 	initialize: function() {
 		_.bindAll(this);
 		_.extend(this, require("Backbone").Events);
-		this.playlist = this.configurePlaylist(this.player.module(Modules.PLAYLIST));
-		this.video = this.configureVideo(this.player.module(Modules.VIDEO));
+		this.playlist = this.configurePlaylistEvents(this.player.module(Modules.PLAYLIST));
+		this.configureVideo(this.player.module(Modules.VIDEO));
 		this.listenTo(this.playlist, Events.AD_COMPLETE, this.onAdComplete);
-		this.listenTo(this.playlist, Events.DESTROY, this.destroy);
 	},
-	configurePlaylist: function(playlist) {
+	configurePlaylistEvents: function(playlist) {
 		var e = require("mtvn-playlist").Events;
 		this.listenTo(playlist, e.READY, this.onPlaylistReady);
 		this.listenTo(playlist, e.ITEM_READY, this.onItemReady);
@@ -26,7 +24,6 @@ var APIManager = Module.extend({
 		this.listenTo(video, e.PLAYHEAD, this.onPlayhead);
 		this.listenTo(video, e.BUFFERED, this.onBuffered);
 		this.listenTo(video, e.END, this.proxyEvent);
-		return video;
 	},
 	onPlayhead: function(event) {
 		var playhead = event.data;
@@ -65,8 +62,8 @@ var APIManager = Module.extend({
 			player.trigger(Events.READY);
 		}
 	},
-	checkMediaStart: function(s) {
-		if (s === MTVNPlayer.PlayState.PLAYING && !this.player.currentMetadata.isAd) {
+	checkMediaStart: function(state) {
+		if (state === MTVNPlayer.PlayState.PLAYING && !this.player.currentMetadata.isAd) {
 			if (this.playlist.currentIndex != this.currentPlayingIndex) {
 				this.currentPlayingIndex = this.playlist.currentIndex;
 				this.logger.log("checkMediaStart() send MEDIA_START for index:" + this.currentPlayingIndex);
@@ -85,6 +82,7 @@ var APIManager = Module.extend({
 		this.checkPlayerReady();
 	},
 	destroy: function() {
+		// destroy invoked automatically by controller.
 		this.stopListening();
 	}
 }, {
@@ -94,5 +92,6 @@ var APIManager = Module.extend({
 	},
 	STATE_MAP: {
 		"pause": "paused"
-	}
+	},
+	NAME:"APIManager"
 });

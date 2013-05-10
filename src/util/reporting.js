@@ -1,3 +1,4 @@
+/*global Module */
 /**
  * @private
  * @ignore
@@ -7,10 +8,12 @@
 (function(MTVNPlayer) {
 	"use strict";
 	MTVNPlayer.onPlayer(function(player) {
-		player.module("reporting", {
+		// TODO need to revisit this, if it's even necessary.
+		player.module("reporting", Module.extend({
+			name:"ReportingAPI",
 			logGUIEvent: function(eventName, eventData) {
 				player.message("logGUIEvent", eventName, eventData);
 			}
-		});
+		}));
 	});
 })(window.MTVNPlayer);

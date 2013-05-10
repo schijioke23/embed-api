@@ -14,5 +14,8 @@ var PerformanceManager = Module.extend({
 			load: this.load,
 			mrss: this.mrss
 		});
+	},
+	destroy: function() {
+		this.player.off(MTVNPlayer.Events.METADATA, this.onMetadata);
 	}
 });

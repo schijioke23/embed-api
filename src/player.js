@@ -239,7 +239,7 @@
        i = instances.length;
      for (i; i--;) {
        var player = instances[i].player,
-        el = player.containerElement;
+         el = player.containerElement;
        if (!elementInDocument(el)) {
          instances.splice(i, 1);
          player.destroy();
@@ -380,20 +380,41 @@
       */
      this.module = (function() {
        var module = {};
+       /**
+        * @ignore
+        * framework-y stuff. 
+        * You can call module(UserManager) and register an instance of UserManager.
+        * If you want to retrieve the instance just call module(UserManager) again.
+        * Or you can call module("some-user-manager", UserManager), to register a new UserManager,
+        * and then retrieve it via the id module("some-user-manager").
+        */
        return function(name, object) {
-         if (module[name]) {
-           if (object) {
-             throw name + " already added as player module";
+         if (name === Modules.ALL) {
+           return module;
+         }
+         // you can pass just an object
+         if(_.isObject(name)){
+           object = name;
+           // the object could have a NAME property
+           if(!object.NAME){
+              // otherwise generate one and set the NAME property for next time.
+              object.NAME = _.uniqueId("PrivateModule");
            }
+           name = object.NAME;
+         }
+         if (module[name]) {
            return module[name];
          }
          if (!object) {
-           throw "module for " + name + " is null";
+           throw "Can't add null object for " + name + " module.";
          }
+         // instantiate a function, or set an object.
          module[name] = (_.isFunction(object) ? new object({
            player: this,
-           module: this.module
+           module: this.module,
+           moduleId: name
          }) : object);
+         // return the newly created module.
          return module[name];
        };
      })();
