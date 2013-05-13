@@ -34,16 +34,14 @@ if (!MTVNPlayer.Player) {
         //= util/finish.js
     })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"));
 }
-// http://media.mtvnservices.com/player/api/module/mtvn-util/0.4.0/mtvn-util.js
-//= ../../mtvn-util/dist/mtvn-util.js
+//= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-util/archive/0.5.0-18/mtvn-util.js
+// ../../mtvn-util/dist/mtvn-util.js
 
-// http://media.mtvnservices.com/player/api/module/mtvn-playlist/0.2.0/mtvn-playlist.js
-//= ../../mtvn-playlist/dist/mtvn-playlist.js
+//= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playlist/archive/0.4.0-15/mtvn-playlist.js
+// ../../mtvn-playlist/dist/mtvn-playlist.js
 
-// http://media.mtvnservices.com/player/api/module/mtvn-playback/0.1.1/html5-playback.js
-//= ../../mtvn-playback/dist/html5-playback.js
+//= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playback/archive/0.3.0-21/html5-playback.js
+// ../../mtvn-playback/dist/html5-playback.js
 
-// http://media.mtvnservices.com/player/api/module/Bento-JS/latest/
-//= ../../Bento-JS/dist/Bento.js
-
-//= ../../endslate/dist/endslate.js
+//= http://media.mtvnservices-d.mtvi.com/player/api/module/Bento-JS/1.3.0/dist/Bento.js
+// ../../Bento-JS/dist/Bento.js

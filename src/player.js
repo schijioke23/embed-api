@@ -436,6 +436,10 @@
 
      // the player target is going to go inside the containerElement.
      this.containerElement = _.isElement(elementOrId) ? elementOrId : document.getElementById(elementOrId);
+     // TODO, freewheel needs an ID, is this the best way to check if one exists?
+     if(!_.isString(this.containerElement.id)){
+        this.containerElement.id = _.uniqueId("mtvnPlayerContainer");
+     }
 
      // TODO remove this and just use the playerTarget.id through out.
      this.id = playerTarget.id;

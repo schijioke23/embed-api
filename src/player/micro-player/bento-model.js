@@ -2,7 +2,7 @@
 var BentoModel = {
 	config: function(player) {
 		var cfg = player.config;
-		cfg.freewheelDisplayBase = player.id;
+		cfg.freewheelDisplayBase = player.containerElement.id;
 		cfg.freewheelTimeSinceLastAd = isNaN(cfg.freewheelMinTimeBtwAds) && isNaN(cfg.freewheelTimeSinceLastAd) ? null : !isNaN(cfg.freewheelTimeSinceLastAd) ? cfg.freewheelTimeSinceLastAd : cfg.freewheelMinTimeBtwAds;
 		cfg.omnitureMediaTrackingEnabled = cfg.omnitureMediaTracking === true || cfg.omnitureMediaTrackingEnabled === true;
 		cfg.nielsenEnabled = cfg.nielsenReporterEnabled === true || cfg.nielsenEnabled === true;

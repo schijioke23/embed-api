@@ -1,34 +1,40 @@
 /*global _, $, Module, Modules, BentoManager, require, Events, PlayState, BTG, UserManager*/
 var PlaybackManager = Module.extend({
 	initialize: function() {
+		var Video = require("mtvn-playback"),
+			Playlist = require("mtvn-playlist");
 		_.bindAll(this);
+
 		// Backbone is in the util package, not in-lined with rigger.
-		_.extend(this,require("Backbone").Events);
-		// Video Module
-		var video = this.video = this.player.module(Modules.VIDEO, new(require("mtvn-playback").Html5.Player)({
+		_.extend(this, require("Backbone").Events);
+
+		// Video module
+		var video = this.video = this.player.module(Modules.VIDEO, new(Video.Html5.Player)({
 			controls: this.player.config.useNativeControls,
 			el: PlaybackManager.SHARED_VIDEO_ELEMENT
 		}));
-		// TODO, not here.
+		this.player.element = video.el;
 		video.$el.css({
 			width: "100%",
 			height: "100%",
 			position: "absolute"
 		});
-		this.player.element = video.el;
-		$(this.player.playerTarget).append(video.el);
+		$(this.player.playerTarget).replaceWith(video.el);
+		this.listenTo(video, Video.Events.END, this.onMediaEnd);
+
 		// Playlist module
 		this.playlist = this.player.module(Modules.PLAYLIST);
-		// this require makes sense, but is ugly.
-		this.listenTo(this.playlist, require("mtvn-playlist").Events.ITEM_READY, this.onItemReady);
-		// if don't include bento, don't 
+		this.listenTo(this.playlist, Playlist.Events.ITEM_READY, this.onItemReady);
+
+		// Bento
 		this.bentoManager = BTG.Bento ? this.player.module(BentoManager) : {
+			// dummy method
 			isItTimeForAnAd: function() {
 				return false;
 			}
 		};
-		this.listenTo(video,require("mtvn-playback").Events.END, this.onMediaEnd);
-		this.player.once(Events.DESTROY, this.destroy);
+
+		// To save an activated video element.
 		this.player.once(Events.STATE_CHANGE + ":" + PlayState.PLAYING, this.onPlaying);
 	},
 	play: function(startTime) {
@@ -244,12 +250,12 @@ var PlaybackManager = Module.extend({
 				return this.video[message].apply(this.video, args);
 		}
 	},
-	destroy:function() {
+	destroy: function() {
 		this.stopListening();
 		this.video.destroy();
 	}
 }, {
 	SHARED_VIDEO_ELEMENT: null,
 	AD_EVENTS: ["timeupdate", "playing", "pause", "error"],
-	NAME:"PlaybackManager"
+	NAME: "PlaybackManager"
 });

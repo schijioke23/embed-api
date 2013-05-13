@@ -18,7 +18,7 @@ var UrlProcessor = {
 		if(!url){
 			throw "no media gen url.";
 		}
-		url = url.replace("{uri}", "{metadata.rss.guid}");
+		url = url.replace("{uri}", "{currentMetadata.rss.guid}");
 		if (config.network) {
 			url = Url.setQueryStringParam(url, "network", config.network);
 		}

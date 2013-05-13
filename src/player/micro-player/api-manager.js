@@ -91,7 +91,9 @@ var APIManager = Module.extend({
 		"playhead": Events.PLAYHEAD_UPDATE
 	},
 	STATE_MAP: {
-		"pause": "paused"
+		canplaythrough: "canplay",
+        stalled: "buffering",
+		pause: "paused"
 	},
 	NAME:"APIManager"
 });
