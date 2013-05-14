@@ -84,11 +84,13 @@ module.exports = function(grunt) {
         copy: {
             build: {
                 src: "dist/**/*",
+                expand: true,
+                flatten: true,
                 dest: deployPath
             },
             test: {
                 src: "test/**/*",
-                dest: deployPath + "/test/"
+                dest: deployPath
             }
         },
         watch: {
