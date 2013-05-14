@@ -1,0 +1,3 @@
+var testObj = {
+	name: "testObj"
+};

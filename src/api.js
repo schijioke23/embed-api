@@ -1,5 +1,5 @@
-//= http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.3.0/mtvn-package-manager.js
-// ../../mtvn-package-manager/dist/mtvn-package-manager.js
+// http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-package-manager/0.3.0/mtvn-package-manager.js
+//= ../components/mtvn-package-manager/src/mtvn-package-manager.js
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
@@ -34,6 +34,7 @@ if (!MTVNPlayer.Player) {
         //= util/finish.js
     })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"));
 }
+
 //= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-util/archive/0.5.0-18/mtvn-util.js
 // ../../mtvn-util/dist/mtvn-util.js
 
