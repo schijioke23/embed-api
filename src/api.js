@@ -1,5 +1,5 @@
-// http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.2.0/mtvn-package-manager.js
-//= ../../mtvn-package-manager/dist/mtvn-package-manager.js
+//= http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.3.0/mtvn-package-manager.js
+// ../../mtvn-package-manager/dist/mtvn-package-manager.js
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
