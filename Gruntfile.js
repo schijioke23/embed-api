@@ -2,15 +2,19 @@
 module.exports = function(grunt) {
     var targetPath = 'dist/',
         deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
-    sourceFiles = ['dist/api.js'],
+        sourceFiles = ['dist/api.js'],
         detailedPath = targetPath + "api.js",
         autoPath = targetPath + 'auto.min.js',
         placeholdersPath = targetPath + 'placeholders.min.js',
         syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
     grunt.loadNpmTasks('grunt-rigger');
-    grunt.loadNpmTasks('grunt-contrib');
-    grunt.loadNpmTasks('grunt-remove-logging');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.initConfig({
         pkg: '<json:package.json>',
         clean: {
@@ -20,7 +24,7 @@ module.exports = function(grunt) {
             devel: ['src/*.js', 'src/player/*.js', 'src/util/*.js'],
             release: ['src/*.js', 'src/player/*.js', 'src/util/*.js']
         },
-        min: {
+        uglify: {
             dist: {
                 src: detailedPath,
                 dest: minPath
@@ -41,7 +45,7 @@ module.exports = function(grunt) {
         jshint: {
             devel: {
                 options: {
-                    asi:false,
+                    asi: false,
                     browser: true,
                     devel: true,
                     debug: true
@@ -108,6 +112,6 @@ module.exports = function(grunt) {
         }
         grunt.config("dirname", dir);
     });
-    grunt.registerTask('default', 'clean version lint:devel rig concat copy');
-    grunt.registerTask('release', 'clean version lint:release rig concat min copy');
+    grunt.registerTask('default', ['clean', 'version', 'jshint:devel', 'rig', 'concat', 'copy']);
+    grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'copy']);
 };
