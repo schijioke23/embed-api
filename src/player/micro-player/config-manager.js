@@ -1,4 +1,6 @@
-/*global _, $, MTVNPlayer, require, Module, EndScreenManager, BTG, FormFactorMap, UrlProcessor, UserManager, BentoManager, PlaybackManager, APIManager, Modules*/
+/*global _, $, MTVNPlayer, require, Module, EndScreenManager, BTG, 
+  FormFactorMap, UrlProcessor, UserManager, BentoManager, PlaybackManager, 
+  APIManager, Modules, UnicornPlaybackManager, UnicornBeacons, UnicornAdManager*/
 var ConfigManager = function() {
 	var CONFIG_BASE = "http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=",
 		CONFIG_DEFAULTS = {
@@ -62,12 +64,18 @@ var ConfigManager = function() {
 			player.module(Modules.PLAYLIST, new(require("mtvn-playlist"))());
 			// User 
 			player.module(UserManager);
-			// Bento Module
-			if (BTG.Bento) {
-				player.module(BentoManager);
+			if(player.config.unicorn){
+				player.module(UnicornPlaybackManager);
+				player.module(UnicornBeacons);
+				player.module(UnicornAdManager);
+			}else{
+				// Bento Module
+				if (BTG.Bento) {
+					player.module(BentoManager);
+				}
+				// Video Manager Module
+				player.module(PlaybackManager);
 			}
-			// Video Manager Module
-			player.module(PlaybackManager);
 			// API Manager
 			player.module(APIManager);
 			// End Screen is standalone, doesn't need a Module.name.

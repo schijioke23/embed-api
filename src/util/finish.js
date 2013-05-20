@@ -1,5 +1,5 @@
-/*global MTVNPlayer, _, PackageManager, Core, Config, UrlProcessor*/
-// execute any on API callbacks.
+/*global MTVNPlayer, _, PackageManager, Core, Config, UrlProcessor, VMAP, UnicornAdModel*/
+// execute any on API callbacks.UnicornAdModel
 if (_.isFunction(MTVNPlayer.onAPIReady)) {
 	MTVNPlayer.onAPIReady();
 }
@@ -8,7 +8,9 @@ MTVNPlayer.provide("mtvn-player-test",{
 	PackageManager:PackageManager,
 	Core:Core,
 	Config: Config,
-	UrlProcessor:UrlProcessor
+	UrlProcessor:UrlProcessor,
+	UnicornAdModel:UnicornAdModel,
+	VMAP:VMAP
 });
 /**
  * @member MTVNPlayer

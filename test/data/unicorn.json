@@ -1,0 +1,742 @@
+{
+	"vmap:VMAP": {
+		"@version": "1.0",
+		"@xmlns:uo": "uo",
+		"@xmlns:vmap": "vmap",
+		"@xmlns:xsi": "xsi",
+		"vmap:Extensions": {
+			"uo:unicornOnce": {
+				"@ttl": "600",
+				"@contenturi": "http://api01-phx.unicornmedia.com/now/stitched/mp4/b11dbc9b-9d90-4edb-b4ab-769e0049209b/2455340c-8dcd-412e-a917-c6fadfe268c7/3a41c6e4-93a3-4108-8995-64ffca7b9106/18bed8d5-15ec-40c7-8ac8-dd38db9832d9/content.mp4?oasid=9eca2d3f-2a5c-4b20-86e5-0f5e0a812307",
+				"@contentlength": "596",
+				"@payloadlength": "741",
+				"@contextid": "9eca2d3f-2a5c-4b20-86e5-0f5e0a812307"
+			},
+			"uo:contentImpressions": null,
+			"uo:requestParameters": {
+				"uo:parameter": [{
+					"@key": "path",
+					"@value": "1"
+				}, {
+					"@key": "path",
+					"@value": "3"
+				}, {
+					"@key": "path",
+					"@value": "2"
+				}, {
+					"@key": "path",
+					"@value": "1"
+				}, {
+					"@key": "path",
+					"@value": "2"
+				}, {
+					"@key": "path",
+					"@value": "3"
+				}]
+			}
+		},
+		"vmap:AdBreak": [{
+			"@breakType": "linear",
+			"@breakId": "preroll2_0_0",
+			"@timeOffset": "start",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "0",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "bird_2",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "bird_2",
+										"Linear": {
+											"Duration": "00:00:30.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "15",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "22",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "30",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/wildTurkeyBanner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/bird_2/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://wildturkeybourbon.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "bird_2",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"@breakType": "linear",
+			"@breakId": "preroll2_0_1",
+			"@timeOffset": "start",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "1",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "tragedy",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "tragedy",
+										"Linear": {
+											"Duration": "00:00:29.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "14",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "21",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "29",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/jimBeamBanner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://www.jimbeam.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "tragedy",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"@breakType": "linear",
+			"@breakId": "midroll1_30_0",
+			"@timeOffset": "00:00:30.000",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "2",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "kickback",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "kickback",
+										"Linear": {
+											"Duration": "00:00:14.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "3",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "10",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "14",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/1800Banner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://www.1800tequila.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "kickback",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"@breakType": "linear",
+			"@breakId": "midroll1_30_1",
+			"@timeOffset": "00:00:30.000",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "3",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "kickback",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "kickback",
+										"Linear": {
+											"Duration": "00:00:14.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "3",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "10",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "14",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/1800Banner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/kickback/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://www.1800tequila.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "kickback",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"@breakType": "linear",
+			"@breakId": "postroll1_596_0",
+			"@timeOffset": "end",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "4",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "tragedy",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "tragedy",
+										"Linear": {
+											"Duration": "00:00:29.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "14",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "21",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "29",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/jimBeamBanner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://www.jimbeam.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "tragedy",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}, {
+			"@breakType": "linear",
+			"@breakId": "postroll1_596_1",
+			"@timeOffset": "end",
+			"vmap:AdSource": {
+				"@allowMultipleAds": "true",
+				"@followRedirects": "true",
+				"@id": "5",
+				"vmap:VASTData": {
+					"VAST": {
+						"@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+						"Ad": {
+							"@id": "tragedy",
+							"InLine": {
+								"AdSystem": "Unknown",
+								"AdTitle": "Unknown",
+								"Impression": {
+									"@id": "Unknown",
+									"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/impression"
+								},
+								"Creatives": {
+									"Creative": [{
+										"@AdID": "tragedy",
+										"Linear": {
+											"Duration": "00:00:29.0000000+00:00",
+											"TrackingEvents": {
+												"Tracking": [{
+													"@event": "firstQuartile",
+													"@offset": "7",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/firstQuartile"
+												}, {
+													"@event": "midpoint",
+													"@offset": "14",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/midpoint"
+												}, {
+													"@event": "thirdQuartile",
+													"@offset": "21",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/thirdQuartile"
+												}, {
+													"@event": "complete",
+													"@offset": "29",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/complete"
+												}, {
+													"@event": "mute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/mute"
+												}, {
+													"@event": "unmute",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/unmute"
+												}, {
+													"@event": "collapse",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/collapse"
+												}, {
+													"@event": "expand",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/expand"
+												}, {
+													"@event": "pause",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/pause"
+												}, {
+													"@event": "resume",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/resume"
+												}, {
+													"@event": "rewind",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/rewind"
+												}, {
+													"@event": "acceptInvitation",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/acceptinvitation"
+												}, {
+													"@event": "close",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/close"
+												}]
+											},
+											"VideoClicks": {
+												"ClickTracking": {
+													"@id": "unknown",
+													"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/clicktracking"
+												}
+											},
+											"MediaFiles": null
+										}
+									}, {
+										"@AdID": "1234",
+										"CompanionAds": {
+											"Companion": {
+												"@id": "54061052904921234",
+												"@width": "300",
+												"@height": "250",
+												"StaticResource": {
+													"@creativeType": "image/jpeg",
+													"#text": "http://umrss.com/bahern/jimBeamBanner.jpg"
+												},
+												"TrackingEvents": {
+													"Tracking": {
+														"@event": "creativeView",
+														"#text": "http://tracking.adprovider.qa.unicornapp.com/beacon/tragedy/creativeView"
+													}
+												},
+												"CompanionClickThrough": "http://www.jimbeam.com/"
+											}
+										}
+									}]
+								},
+								"Extensions": {
+									"Extension": {
+										"@type": "tragedy",
+										"AdServingData": {
+											"DeliveryData": {
+												"GeoData": "ct=US&st=AZ&ac=480&zp=85282&bw=4&dma=173&city=13305"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}]
+	}
+}

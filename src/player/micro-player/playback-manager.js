@@ -27,7 +27,7 @@ var PlaybackManager = Module.extend({
 		this.listenTo(this.playlist, Playlist.Events.ITEM_READY, this.onItemReady);
 
 		// Bento
-		this.bentoManager = BTG.Bento ? this.player.module(BentoManager) : {
+		this.bentoManager = window.BTG && window.BTG.Bento ? this.player.module(BentoManager) : {
 			// dummy method
 			isItTimeForAnAd: function() {
 				return false;
