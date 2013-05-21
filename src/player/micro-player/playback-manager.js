@@ -1,4 +1,5 @@
-/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, BTG, UserManager*/
+/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, UserManager*/
+/* exported PlaybackManager */
 var PlaybackManager = Module.extend({
 	initialize: function() {
 		var Video = require("mtvn-playback"),

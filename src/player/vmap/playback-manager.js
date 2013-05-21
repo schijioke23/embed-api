@@ -1,8 +1,14 @@
-/*global $, Modules, PlaybackManager, UnicornAdManager, VMAP */
-var UnicornPlaybackManager = PlaybackManager.extend({
+/* global $, _, Modules, PlaybackManager, VMAP */
+/* exported VMAPPlaybackManager*/
+var VMAPPlaybackManager = PlaybackManager.extend({
 	loadUnicornOnceURL: false,
 	initialize: function() {
 		PlaybackManager.prototype.initialize.apply(this, arguments);
+		this.player.on(Modules.Events.UNICORN_AD, this.onVMAPAd);
+	},
+	onVMAPAd: function(event) {
+		var isContentPlaying = !_.isObject(event.data);
+		this.video.setControls(isContentPlaying);
 	},
 	onItemReady: function() {
 		if (this.loadUnicornOnceURL) {
@@ -18,13 +24,12 @@ var UnicornPlaybackManager = PlaybackManager.extend({
 		});
 	},
 	setVideoSrc: function() {
-		console.log("unicorn-playback-manager.js:19 this.vmap.uri", this.vmap.uri);
+		this.currentLoadedIndex = this.playlist.currentIndex;
 		this.video.setSrc(this.vmap.uri);
 		this.video.play();
 	},
 	onData: function(data) {
 		this.vmap = VMAP.parse(data);
-		console.log("unicorn-playback-manager.js:24 this.vmap", this.vmap);
 		this.player.trigger(Modules.Events.VMAP, this.vmap);
 		this.setVideoSrc();
 	}

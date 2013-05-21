@@ -1,7 +1,8 @@
-/*global _, Modules, Module, Events, UnicornAdModel*/
-var UnicornAdManager = function() {
-	var UnicornAdManager = Module.extend({
-		name: "UnicornAdManager",
+/*global _, Modules, Module, Events, VMAPAdModel*/
+/* exported VMAPAdManager*/
+var VMAPAdManager = function() {
+	var VMAPAdManager = Module.extend({
+		name: "VMAPAdManager",
 		currentAd: null,
 		initialize: function() {
 			_.bindAll(this);
@@ -30,8 +31,8 @@ var UnicornAdManager = function() {
 			}
 		},
 		onVMAP: function(event) {
-			this.model = new UnicornAdModel(event.data);
+			this.model = new VMAPAdModel(event.data);
 		}
 	});
-	return UnicornAdManager;
+	return VMAPAdManager;
 }();

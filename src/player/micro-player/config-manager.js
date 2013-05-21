@@ -1,6 +1,6 @@
 /*global _, $, MTVNPlayer, require, Module, EndScreenManager, BTG, 
   FormFactorMap, UrlProcessor, UserManager, BentoManager, PlaybackManager, 
-  APIManager, Modules, UnicornPlaybackManager, UnicornTrackerManager, UnicornAdManager*/
+  APIManager, Modules, VMAPPlaybackManager, VMAPTrackerManager, VMAPAdManager*/
 var ConfigManager = function() {
 	var CONFIG_BASE = "http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=",
 		CONFIG_DEFAULTS = {
@@ -65,9 +65,9 @@ var ConfigManager = function() {
 			// User 
 			player.module(UserManager);
 			if(player.config.unicorn){
-				player.module(UnicornPlaybackManager);
-				player.module(UnicornTrackerManager);
-				player.module(UnicornAdManager);
+				player.module(VMAPPlaybackManager);
+				player.module(VMAPTrackerManager);
+				player.module(VMAPAdManager);
 			}else{
 				// Bento Module
 				if (BTG.Bento) {

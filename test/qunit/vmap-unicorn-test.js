@@ -1,9 +1,9 @@
-/*global $, MTVNPlayer, asyncTest, ok, start, deepEqual, equal*/
+/* global MTVNPlayer, asyncTest, ok, start, deepEqual, equal*/
 (function() {
 	var $ = MTVNPlayer.require("$"),
 		_ = MTVNPlayer.require("_"),
 		VMAP = MTVNPlayer.require("mtvn-player-test").VMAP,
-		UnicornAdModel = MTVNPlayer.require("mtvn-player-test").UnicornAdModel,
+		VMAPAdModel = MTVNPlayer.require("mtvn-player-test").VMAPAdModel,
 		adBreakExpected = [{
 			"duration": 30,
 			"breakId": "0",
@@ -47,7 +47,7 @@
 				equal(vmap.uri, "http://api01-phx.unicornmedia.com/now/stitched/mp4/b11dbc9b-9d90-4edb-b4ab-769e0049209b/2455340c-8dcd-412e-a917-c6fadfe268c7/3a41c6e4-93a3-4108-8995-64ffca7b9106/18bed8d5-15ec-40c7-8ac8-dd38db9832d9/content.mp4?oasid=9eca2d3f-2a5c-4b20-86e5-0f5e0a812307", "content uri");
 				console.log("vmap-normalize-test.js:14 parsed VMAP", vmap);
 				deepEqual(vmap.prerolls.concat(vmap.midrolls).concat(vmap.postrolls), adBreakExpected);
-				var model = new UnicornAdModel(vmap);
+				var model = new VMAPAdModel(vmap);
 				console.log("vmap-normalize-test.js:48 model", model);
 				// TOTAL TIMES
 				equal(VMAP.formatTime(model.totalPrerollTime), "00:00:59", "totalPrerollTime");

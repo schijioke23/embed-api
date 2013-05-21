@@ -1,10 +1,11 @@
-/*global $, _, Module, Modules, Events, PlayState, UnicornAdManager*/
-var UnicornTrackerManager = Module.extend({
-	name: "UnicornTrackerManager",
+/* global $, _, Module, Modules, Events, PlayState, VMAPAdManager*/
+/* exported VMAPTrackerManager */
+var VMAPTrackerManager = Module.extend({
+	name: "VMAPTrackerManager",
 	initialize: function() {
 		_.bindAll(this);
 		this.player.on(Modules.Events.VMAP, this.onVMAP);
-		this.adManager = this.player.module(UnicornAdManager);
+		this.adManager = this.player.module(VMAPAdManager);
 	},
 	breakIdsMatch: function(id) {
 		if (this.adManager.isPlayingAd()) {
@@ -19,8 +20,8 @@ var UnicornTrackerManager = Module.extend({
 				type: 'POST',
 				url: tracker.url
 			});
-		} else {
-			console.warn("unicorn-beacons.js:23 tracker", tracker, event.data, this.adManager.isPlayingAd(), this.adManager.currentAd);
+		} else if(tracker.timeToFire){
+			this.logger.warn("ad tracker fired but no ad was found", tracker, event.data, this.adManager.isPlayingAd(), this.adManager.currentAd);
 		}
 	},
 	onVMAP: function(event) {
