@@ -31,7 +31,7 @@ if (!MTVNPlayer.Player) {
         //= player/unicorn/unicorn-playback-manager.js
         //= player/unicorn/unicorn-ad-model.js
         //= player/unicorn/unicorn-ad-manager.js
-        //= player/unicorn/unicorn-beacons.js
+        //= player/unicorn/unicorn-tracker-manager.js
         //= player.js
         //= util/reporting.js
         //= util/jquery-plugin.js

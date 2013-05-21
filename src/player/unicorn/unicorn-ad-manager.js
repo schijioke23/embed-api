@@ -17,6 +17,7 @@ var UnicornAdManager = function() {
 			if (this.currentAd != ad) {
 				this.currentAd = ad;
 				this.updateLog(currentTime);
+				// these events would be used to update the UI.
 				this.player.trigger(Modules.Events.UNICORN_AD, this.currentAd);
 			}
 		},
@@ -29,7 +30,7 @@ var UnicornAdManager = function() {
 			}
 		},
 		onVMAP: function(event) {
-			this.model = new UnicornAdModel(event.data.adBreaks);
+			this.model = new UnicornAdModel(event.data);
 		}
 	});
 	return UnicornAdManager;

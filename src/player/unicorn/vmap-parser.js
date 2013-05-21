@@ -7,7 +7,6 @@ var VMAP = function() {
 	 * find all objects with a specific name.
 	 */
 
-
 	function find(source, target) {
 		var result = [];
 		if (_.isObject(source) || _.isArray(source)) {
@@ -29,7 +28,7 @@ var VMAP = function() {
 	function getAdDuration(data) {
 		var durations = find(data, "Duration");
 		// seems to be only one?
-		return durations[0].slice(0, 8);
+		return VMAP.rawTime(durations[0].slice(0, 8));
 	}
 
 	function cleanProps(obj) {
@@ -63,34 +62,34 @@ var VMAP = function() {
 		}
 	}
 
-	function isPreroll(timeOffset) {
-		return timeOffset == "start";
-	}
-
-	function isPostroll(timeOffset) {
-		return timeOffset == "end";
-	}
-
-	function isMidroll(timeOffset) {
-		return timeOffset != "end" && timeOffset != "start";
-	}
-
 	function getAdType(timeOffset) {
-		if (isPreroll(timeOffset)) {
+		if (timeOffset == "start") {
 			return PREROLL;
-		} else if (isPostroll(timeOffset)) {
+		} else if (timeOffset == "end") {
 			return POSTROLL;
 		}
 		return MIDROLL;
 	}
 
+	function getMidrollStartTime(adBreak) {
+		var firstMidroll = _.find(adBreak, function(midroll) {
+			return getAdType(midroll.timeOffset) === MIDROLL;
+		});
+		return firstMidroll ? VMAP.rawTime(firstMidroll.timeOffset) : 0;
+	}
+
+	function getTotalDuration(memo, item) {
+		return memo + item.duration;
+	}
+
 	function getPostrollDuration(adBreak) {
-		var postRolls = _.where(adBreak, {
+		// this is used while processing, before postrolls in the parse function is done.
+		var postrolls = _.where(adBreak, {
 			timeOffset: "end"
 		});
-		return _.reduce(postRolls, function(memo, item) {
-			return memo + VMAP.rawTime(getAdDuration(item));
-		},0);
+		return _.reduce(postrolls, function(memo, item) {
+			return memo + getAdDuration(item);
+		}, 0);
 	}
 
 	/**
@@ -101,91 +100,100 @@ var VMAP = function() {
 		clean: clean,
 		parse: function(vmap) {
 			var trackers = [],
-				adBreaks = [],
-				prerollAggregate = 0,
-				postrollDuration = null,
-				totalDuration = null,
-				postrollAggregate = 0,
-				midrollAggregate = 0;
+				prerolls = [],
+				midrolls = [],
+				postrolls = [],
+				prerollOffset = 0,
+				postrollOffset = 0,
+				totalPostrollTime,
+				totalDuration,
+				midrollOffset;
 
-			function adjustTime(type, adDuration) {
-				var duration = VMAP.rawTime(adDuration);
-				if (type === PREROLL) {
-					prerollAggregate += duration;
-				} else if (type === MIDROLL) {
-					midrollAggregate += duration;
-				} else {
-					postrollAggregate += duration;
-				}
-			}
-
-			function adjustMidroll(type, timeOffset) {
-				if (type === MIDROLL) {
-					if (midrollAggregate === 0) {
-						midrollAggregate += VMAP.rawTime(timeOffset);
-					}
-				}
-			}
-
-			function getAdBreaks(adBreak) {
-				var AdSource = adBreak.AdSource,
-					type = getAdType(adBreak.timeOffset);
-				_.each(adBreak.AdSource, clean);
-				// parse
-				console.group(adBreak.breakId);
-				var adDuration = getAdDuration(AdSource.VASTData.VAST.Ad);
-				// 
-				adjustMidroll(type, adBreak.timeOffset);
-				updateAdTracking(AdSource.id, type, _.flatten(find(AdSource, "Tracking")));
-				adjustTime(type, adDuration, adBreak.timeOffset);
-				adBreaks.push({
-					breakType: adBreak.breakType,
-					breakId: AdSource.id,
-					timeOffset: adBreak.timeOffset,
-					adDuration: adDuration
-				});
-				console.groupEnd(adBreak.breakId);
-			}
-
-			function updateAdTracking(index, type, tracking) {
-				console.log("UPDATE AD TRACKING vmap-parser.js:112 type ", type);
-				_.each(tracking, function(item) {
-					_.each(item, clean);
-					var offset = parseInt(item.offset, 10),
-						tracker = {
-							breakId: index,
-							offset: offset,
-							event: item.event,
-							url: item.text
-						};
-					var timeToFire;
-					if (!isNaN(offset)) {
-						if (type === PREROLL) {
-							timeToFire = prerollAggregate + offset;
-						} else if (type === MIDROLL) {
-							timeToFire = prerollAggregate + midrollAggregate + offset;
-						} else {
-							timeToFire = totalDuration - postrollDuration + postrollAggregate + offset;
-						}
-						console.debug("vmap-parser.js:135 timeToFire", timeToFire);
-						tracker.timeToFire = timeToFire;
-					}
-					trackers.push(tracker);
-				});
-			}
 			// let's simplify this.
 			vmap = vmap["vmap:VMAP"];
 			_.each(vmap, clean);
 			cleanProps(vmap, "AdBreak", "Extensions");
 			cleanProps(vmap.Extensions, "unicornOnce", "requestParameters");
-			postrollDuration = getPostrollDuration(vmap.AdBreak);
+
+			function adjustTime(type, duration) {
+				if (type === PREROLL) {
+					prerollOffset += duration;
+				} else if (type === MIDROLL) {
+					midrollOffset += duration;
+				} else {
+					postrollOffset += duration;
+				}
+			}
+
+			function processAdBreak(adBreak) {
+				var AdSource = adBreak.AdSource,
+					type = getAdType(adBreak.timeOffset);
+				if (type === MIDROLL) {
+					// midroll timeOffset is a number.
+					adBreak.timeOffset = VMAP.rawTime(adBreak.timeOffset);
+				}
+				_.each(AdSource, clean);
+				// parse
+				console.group(adBreak.breakId);
+				var duration = getAdDuration(AdSource.VASTData.VAST.Ad);
+				// 
+				updateAdTracking(AdSource.id, type, _.flatten(find(AdSource, "Tracking")));
+				adjustTime(type, duration);
+				var result = {
+					type: type,
+					breakId: AdSource.id,
+					timeOffset: adBreak.timeOffset,
+					duration: duration
+				};
+				if (type == PREROLL) {
+					prerolls.push(result);
+				} else if (type == MIDROLL) {
+					midrolls.push(result);
+				} else {
+					postrolls.push(result);
+				}
+				console.groupEnd(adBreak.breakId);
+			}
+
+			function updateAdTracking(breakId, type, tracking) {
+				_.each(tracking, function(item) {
+					_.each(item, clean);
+					var offset = parseFloat(item.offset, 10),
+						tracker = {
+							breakId: breakId,
+							event: item.event,
+							url: item.text
+						};
+					if (!isNaN(offset)) {
+						if (type === PREROLL) {
+							tracker.timeToFire = prerollOffset + offset;
+						} else if (type === MIDROLL) {
+							tracker.timeToFire = prerollOffset + midrollOffset + offset;
+						} else {
+							tracker.timeToFire = totalDuration - totalPostrollTime + postrollOffset + offset;
+						}
+						console.log("Fire at", VMAP.formatTime(tracker.timeToFire), "or " + tracker.timeToFire + " seconds");
+					}
+					trackers.push(tracker);
+				});
+			}
+			// aggregate of postroll durations, required before trackers are initialized.
+			totalPostrollTime = getPostrollDuration(vmap.AdBreak);
+			// the first midroll's offset, or start time.
+			midrollOffset = getMidrollStartTime(vmap.AdBreak);
+			// the whole thing, content and ads.
 			totalDuration = vmap.Extensions.unicornOnce.payloadlength;
-			console.log("vmap-parser.js:100 vmap", vmap);
-			// parse adBreak
-			_.each(vmap.AdBreak, getAdBreaks);
+			// parse all the ad breaks.
+			_.each(vmap.AdBreak, processAdBreak);
 			return {
 				uri: vmap.Extensions.unicornOnce.contenturi,
-				adBreaks: adBreaks,
+				totalDuration: totalDuration,
+				prerolls: prerolls,
+				midrolls: midrolls,
+				postrolls: postrolls,
+				totalPostrollTime: totalPostrollTime,
+				totalPrerollTime: _.reduce(prerolls, getTotalDuration, 0),
+				totalMidrollTime: _.reduce(midrolls, getTotalDuration, 0),
 				trackers: trackers
 			};
 		},

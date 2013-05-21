@@ -1,3 +1,0 @@
-var VMAPNormalize = function(vmap){
-
-};

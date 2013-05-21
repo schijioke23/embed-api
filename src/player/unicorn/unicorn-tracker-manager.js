@@ -1,6 +1,6 @@
 /*global $, _, Module, Modules, Events, PlayState, UnicornAdManager*/
-var UnicornBeacons = Module.extend({
-	name: "UnicornBeacons",
+var UnicornTrackerManager = Module.extend({
+	name: "UnicornTrackerManager",
 	initialize: function() {
 		_.bindAll(this);
 		this.player.on(Modules.Events.VMAP, this.onVMAP);
@@ -14,7 +14,7 @@ var UnicornBeacons = Module.extend({
 	},
 	fire: function(tracker, event) {
 		if (this.breakIdsMatch(tracker.breakId)) {
-			this.logger.log("tracker", tracker.event || tracker.timeToFire, tracker.url);
+			this.logger.log("tracker", tracker.event || tracker.timeToFire, tracker.url, this.player.playhead);
 			$.ajax({
 				type: 'POST',
 				url: tracker.url
@@ -32,7 +32,7 @@ var UnicornBeacons = Module.extend({
 			if (tracker.timeToFire) {
 				this.player.once(Events.PLAYHEAD_UPDATE + ":" + tracker.timeToFire, fireTracker);
 			} else {
-				// other tracker events
+				// TODO! other tracker events
 				switch (tracker.event) {
 					case "pause":
 						this.player.on(Events.STATE_CHANGE + ":" + PlayState.PAUSED, fireTracker);
