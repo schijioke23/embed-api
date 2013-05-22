@@ -16,7 +16,7 @@ if (!MTVNPlayer.Player) {
         MTVNPlayer.provide("$",Zepto); // Zepto is a var.
     }).apply({});
     // we can 'use strict' below, no more third-party stuff.
-    (function(MTVNPlayer, $, _) {
+    (function(MTVNPlayer, $, _, BTG) {
         "use strict";
         var require = MTVNPlayer.require,
             provide = MTVNPlayer.provide;
@@ -33,7 +33,7 @@ if (!MTVNPlayer.Player) {
         //= util/jquery-plugin.js
         //= util/load-module.js
         //= util/finish.js
-    })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"));
+    })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"), window.BTG);
 }
 //= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-util/archive/0.5.0-18/mtvn-util.js
 // ../../mtvn-util/dist/mtvn-util.js
@@ -41,7 +41,7 @@ if (!MTVNPlayer.Player) {
 //= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playlist/archive/0.4.0-15/mtvn-playlist.js
 // ../../mtvn-playlist/dist/mtvn-playlist.js
 
-//= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playback/archive/0.3.0-21/html5-playback.js
+//= http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playback/archive/0.3.0-22/html5-playback.js
 // ../../mtvn-playback/dist/html5-playback.js
 
 // http://media.mtvnservices-d.mtvi.com/player/api/module/Bento-JS/1.3.0/dist/Bento.js

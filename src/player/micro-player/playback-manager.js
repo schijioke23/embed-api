@@ -1,4 +1,4 @@
-/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, UserManager*/
+/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, UserManager, BTG*/
 /* exported PlaybackManager */
 var PlaybackManager = Module.extend({
 	initialize: function() {
@@ -28,7 +28,7 @@ var PlaybackManager = Module.extend({
 		this.listenTo(this.playlist, Playlist.Events.ITEM_READY, this.onItemReady);
 
 		// Bento
-		this.bentoManager = window.BTG && window.BTG.Bento ? this.player.module(BentoManager) : {
+		this.bentoManager = BTG && BTG.Bento ? this.player.module(BentoManager) : {
 			// dummy method
 			isItTimeForAnAd: function() {
 				return false;
@@ -242,8 +242,7 @@ var PlaybackManager = Module.extend({
 				}
 				break;
 			case "setVolume":
-				message = "volume";
-				break;
+				return this.video.volume.apply(this.video, args);
 			default:
 				if (!this.video[message]) {
 					throw message + " not implemented.";

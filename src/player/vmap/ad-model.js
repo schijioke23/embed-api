@@ -1,5 +1,9 @@
 /* global _, VMAP*/
 /* exported VMAPAdModel*/
+/**
+ * VMAPAdModel
+ * Wrap the object with some utility functions to determine which ad is playing based on a time passed.
+ */
 var VMAPAdModel = function(model) {
 	_.extend(this, model);
 };

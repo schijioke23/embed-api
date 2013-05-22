@@ -129,6 +129,11 @@ var Events = MTVNPlayer.Events = {
      */
     FULL_SCREEN_CHANGE: "fullScreenChange",
     /**
+     * @event volumeChange
+     * HTML5 only. Fired when the player.element.volume property has been changed.
+     */
+    VOLUME_CHANGE: "volumeChange",
+    /**
      * @event airplay
      * @private
      * Fired when the airplay button is clicked

@@ -20,11 +20,12 @@ var VMAPTrackerManager = Module.extend({
 				type: 'POST',
 				url: tracker.url
 			});
-		} else if(tracker.timeToFire){
+		} else if (tracker.timeToFire) {
 			this.logger.warn("ad tracker fired but no ad was found", tracker, event.data, this.adManager.isPlayingAd(), this.adManager.currentAd);
 		}
 	},
 	onVMAP: function(event) {
+		var isMuted = this.player.volume() === 0;
 		this.trackers = event.data.trackers;
 		_.each(this.trackers, function(tracker) {
 			// tracker event.
@@ -38,8 +39,24 @@ var VMAPTrackerManager = Module.extend({
 					case "pause":
 						this.player.on(Events.STATE_CHANGE + ":" + PlayState.PAUSED, fireTracker);
 						break;
-					case "play":
+					case "resume":
 						this.player.on(Events.STATE_CHANGE + ":" + PlayState.PLAYING, fireTracker);
+						break;
+					case "mute":
+						this.player.on(Events.VOLUME_CHANGE, function(event) {
+							if (event.data === 0) {
+								isMuted = true;
+								fireTracker();
+							}
+						});
+						break;
+					case "unmute":
+						this.player.on(Events.VOLUME_CHANGE, function(event) {
+							if (event.data > 0 && isMuted) {
+								isMuted = false;
+								fireTracker();
+							}
+						});
 						break;
 					default:
 						break;

@@ -33,7 +33,7 @@ var PlayerOverrides = _.once(function() {
 		 */
 		message: function() {
 			var m = this.module(PlaybackManager.NAME);
-			m.message.apply(m, arguments);
+			return m.message.apply(m, arguments);
 		},
 		destroy: function() {
 			this.trigger(Events.DESTROY);

@@ -1,5 +1,10 @@
 /* global $, _, Modules, PlaybackManager, VMAP */
 /* exported VMAPPlaybackManager*/
+/**
+ * VMAPPlaybackManager
+ * Override some of the PlaybackManager's methods.
+ * 
+ */
 var VMAPPlaybackManager = PlaybackManager.extend({
 	loadUnicornOnceURL: false,
 	initialize: function() {

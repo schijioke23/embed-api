@@ -22,8 +22,12 @@ var APIManager = Module.extend({
 		this.listenTo(video, e.DURATION, this.onDuration);
 		this.listenTo(video, e.DURATION, this.proxyEvent);
 		this.listenTo(video, e.PLAYHEAD, this.onPlayhead);
+		this.listenTo(video, e.VOLUME, this.onVolumeChange);
 		this.listenTo(video, e.BUFFERED, this.onBuffered);
 		this.listenTo(video, e.END, this.proxyEvent);
+	},
+	onVolumeChange:function(event){
+		this.player.trigger(Events.VOLUME_CHANGE,event.data);
 	},
 	onPlayhead: function(event) {
 		var playhead = event.data;
