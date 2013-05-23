@@ -26,8 +26,9 @@ if (!MTVNPlayer.Player) {
         //= util/config.js
         //= util/url.js
         //= model
-        //= player/micro-player/
-        //= player/vmap/
+        //= player/micro-player
+        //= player/micro-player/bento
+        //= player/vmap
         //= player.js
         //= util/reporting.js
         //= util/jquery-plugin.js
