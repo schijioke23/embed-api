@@ -1,4 +1,5 @@
-/*global MTVNPlayer, Config, _*/
+/* global MTVNPlayer, Config, _*/
+/* exported PackageManager */
 var PackageManager = function() {
     function provideJQuery() {
         // provide $ if it's on the window
@@ -46,3 +47,4 @@ var PackageManager = function() {
         Events: Events
     };
 }();
+_.extend(Events, PackageManager.Events);

@@ -1,6 +1,6 @@
 /*global MTVNPlayer, Core, $, Config, _, PackageManager */
-// HTML5 Player Module
-var Html5 = _.once(function() {
+/* exported PlayerOverrides */
+var PlayerOverrides = _.once(function() {
     "use strict";
     var addCSS = function(e, prop, value) {
         e.style.cssText += prop + ":" + value;

@@ -199,8 +199,7 @@ var VMAP = function() {
 		},
 		rawTime: function(seconds) {
 			var b = seconds.split(/\D/);
-			var secTime = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
-			return secTime;
+			return (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]) + (b[3] ? parseFloat("." + b[3]) : 0);
 		},
 		formatTime: function(secs) {
 			var hours = Math.floor(secs / (60 * 60));

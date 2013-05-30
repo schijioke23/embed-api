@@ -1,3 +1,0 @@
-var testObj = {
-	name: "testObj"
-};

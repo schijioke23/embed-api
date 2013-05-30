@@ -55,8 +55,7 @@
            }
          }
        }
-       var eventsToCheck = _.extend(MTVNPlayer.Events, PackageManager.Events, Modules.Events);
-       if (check(eventsToCheck)) {
+       if (check(Events)) {
          return;
        }
        throwError("event:" + eventName + " doesn't exist.");
@@ -461,9 +460,7 @@
      // make sure the events are valid
      checkEvents(events);
      // The module contains platform specific code
-     this.config.jsmodules = true; // TODO!
-     var overrides = this.config.jsmodules ? PlayerOverrides : (this.isFlash ? Flash : Html5);
-     _.extend(this, overrides());
+     _.extend(this, PlayerOverrides());
      // wait for ready event
      var eventQueue = [];
      this.message = _.wrap(this.message, function(func) {

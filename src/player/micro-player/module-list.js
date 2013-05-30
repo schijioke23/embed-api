@@ -1,3 +1,5 @@
+/* global _, Events*/
+/* exported Modules */
 var Modules = {
 	ALL:"all", // get a list of all modules?
 	PLAYLIST: "playlist",
@@ -13,3 +15,4 @@ var Modules = {
 		AD_WILL_PLAY: "adWillPlay"
 	}
 };
+_.extend(Events, Modules.Events);

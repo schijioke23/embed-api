@@ -3,15 +3,20 @@
 if (_.isFunction(MTVNPlayer.onAPIReady)) {
 	MTVNPlayer.onAPIReady();
 }
-//exports 
-MTVNPlayer.provide("mtvn-player-test",{
-	PackageManager:PackageManager,
-	Core:Core,
-	Config: Config,
-	UrlProcessor:UrlProcessor,
-	VMAPAdModel:VMAPAdModel,
-	VMAP:VMAP
-});
+//exports TODO this isn't flexible with the permutation set up.
+try {
+	MTVNPlayer.provide("mtvn-player-test", {
+		PackageManager: PackageManager,
+		Core: Core,
+		Config: Config,
+		UrlProcessor: UrlProcessor,
+		VMAPAdModel: VMAPAdModel,
+		VMAP: VMAP
+	});
+} catch (e) {
+
+}
+
 /**
  * @member MTVNPlayer
  * @property {Boolean}

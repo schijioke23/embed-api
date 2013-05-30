@@ -1,0 +1,10 @@
+//= core.js
+//= util/config.js
+//= model
+//= player.js
+//= util/reporting.js
+//= util/jquery-plugin.js
+//= util/load-module.js
+//= third-party/swfobject.js
+//= player/flash-player.js
+//= util/finish.js

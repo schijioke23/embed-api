@@ -1,0 +1,13 @@
+//= core.js
+//= util/logger.js
+//= util/module.js
+//= util/config.js
+//= util/url.js
+//= model
+//= player/micro-player/
+//= player/vmap
+//= player.js
+//= util/reporting.js
+//= util/jquery-plugin.js
+//= util/load-module.js
+//= util/finish.js

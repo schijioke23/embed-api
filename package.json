@@ -9,19 +9,19 @@
     "url": "https://mtvn-player@github.com/mtvn-player/embed-api.git"
   },
   "scripts": {
+    "preinstall": "bower install",
     "test": "testem ci"
   },
   "devDependencies": {
     "grunt": "0.4.x",
     "grunt-contrib": "0.4.x",
     "grunt-contrib-uglify": "*",
-    "grunt-rigger": "0.4.x",
+    "grunt-rigger": "git://github.com/giannif/grunt-rigger.git",
     "grunt-remove-logging": "0.1.x",
     "grunt-contrib-watch": "~0.3.1",
     "grunt-contrib-jshint": "~0.4.3",
     "grunt-contrib-clean": "~0.4.1",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0"
+    "grunt-contrib-copy": "~0.4.1"
   },
   "license": "MIT",
   "engine": {

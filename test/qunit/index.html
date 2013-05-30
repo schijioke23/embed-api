@@ -15,10 +15,11 @@
   <script type="text/javascript" language="javascript">
       (function() {
         var isInDist = location.href.indexOf("dist/test") !== -1,
-            deployed = location.href.indexOf("media.mtvnservices") !== -1,
-            src = isInDist || deployed ? "../../api.js" : "../../dist/api.js";
-            document.write('<script src="' + src + '"></'+'script>');
-       })();
+        deployed = location.href.indexOf("media.mtvnservices") !== -1,
+        player = "unicorn",
+        src = isInDist || deployed ? "../../" + player + ".js" : "../../dist/" + player + ".js";
+        document.write('<script src="' + src + '"></' + 'script>');
+      })();
   </script>
   <!-- QUnit Module -->
   <script type="text/javascript">

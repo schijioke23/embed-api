@@ -1,0 +1,9 @@
+//= core.js
+//= util/config.js
+//= model
+//= player.js
+//= util/reporting.js
+//= util/jquery-plugin.js
+//= util/load-module.js
+//= player/html5-player.js
+//= util/finish.js

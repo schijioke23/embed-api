@@ -1,4 +1,5 @@
-/*global MTVNPlayer, Config, Core, PackageManager, _ */
+/* global MTVNPlayer, Config, Core, PackageManager, _, SWFObject */
+/* exported PlayerOverrides */
 /**
  * set up handling of flash external interface calls
  * create functions to map metadata to new format,
@@ -6,13 +7,13 @@
  * @method initializeFlash
  * @ignore
  */
-var Flash = _.once(function() {
+var PlayerOverrides = _.once(function() {
     "use strict";
     var messageNameMap = {
         play: "unpause",
         seek: "setPlayheadTime"
     },
-    swfobject = MTVNPlayer.module("swfobject").getSWFObject(),
+    swfobject = SWFObject.get(),
         makeWSwfObject = function(targetID, config) {
             var attributes = config.attributes || {},
             params = config.params || {
