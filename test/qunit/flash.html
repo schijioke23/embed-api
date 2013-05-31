@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Embed API QUnit Tests</title>
+  <link rel="stylesheet" href="qunit-1.11.0.css">
+  <script src="../libs/jQuery.js"></script>
+  <script src="qunit-1.11.0.js"></script>
+  <!-- this must be after the qunit.js -->
+  <script>
+    if (location.hash === '#testem'){
+        document.write('<script src="/testem.js"></'+'script>');
+    }
+  </script>
+  <script type="text/javascript" language="javascript">
+      (function() {
+        var isInDist = location.href.indexOf("dist/test") !== -1,
+        deployed = location.href.indexOf("media.mtvnservices") !== -1,
+        src = isInDist || deployed ? "../../flash.js" : "../../dist/flash.js";
+        document.write('<script src="' + src + '"></' + 'script>');
+      })();
+  </script>
+  <script type="text/javascript" src="qunit-module.js"></script>
+  <!-- FIXTURES -->
+  <script type="text/template" id="test1">
+      <a class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034">
+        <img 
+        src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:900034?height=288&width=512"
+        height="288"
+        width="512">
+      </a>
+  </script>
+  <script type="text/template" id="test2">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034"></div>
+  </script>
+  <script type="text/template" id="config-test1">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034" data-flashVars="autoPlay=true&sid=12345"></div>
+  </script>
+  <script type="text/template" id="config-test2">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034" data-autoPlay="true" data-sid="12345"></div>
+  </script>
+  <script type="text/template" id="config-test3">
+      <div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:900034"></div>
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script type="text/javascript" src="tests/placeholder-test.js"></script>
+  <script type="text/javascript" src="tests/player-creation-test.js"></script>
+  <script type="text/javascript" src="tests/methods-test.js"></script>
+  <script type="text/javascript" src="tests/config-test.js"></script>
+  <script type="text/javascript" src="tests/events-test.js"></script>
+  <script type="text/javascript" src="tests/mtvnplayer-methods-test.js"></script>
+  <script type="text/javascript" src="tests/performance-test.js"></script>
+  <script type="text/javascript" src="tests/url-util-test.js"></script>
+</body>
+</html>

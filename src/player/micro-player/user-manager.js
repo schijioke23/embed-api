@@ -1,6 +1,8 @@
-/*global _, Module*/
+/* global _, Module*/
+/* exported UserManager */
 var UserManager = Module.extend({
 	name: "UserManager",
+	ccOn: true,
 	isOk: function() {
 		return true;
 	},
@@ -13,7 +15,9 @@ var UserManager = Module.extend({
 		}
 		return this.ccOn;
 	},
-	ccOn: true
+	destroy: function() {
+		// nothing to clean up.
+	}
 }, {
 	NAME: "UserManager"
 });

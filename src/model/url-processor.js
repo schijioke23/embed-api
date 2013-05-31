@@ -1,4 +1,4 @@
-/*global Url, require, provide */
+/* global Url, require */
 /*exports UrlProcessor */
 var UrlProcessor = {
 	getUrlProcessorUrl: function(config, feedUrl) {

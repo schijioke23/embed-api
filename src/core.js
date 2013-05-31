@@ -1,4 +1,5 @@
-/*global MTVNPlayer, _*/
+/* global MTVNPlayer, _*/
+/* exported Core */
 var Core = (function(core) {
     var baseURL = "http://media.mtvnservices.com/",
         onPlayerCallbacks = [],
@@ -28,34 +29,6 @@ var Core = (function(core) {
      * These are fired when a player laods.
      */
     core.onPlayerCallbacks = onPlayerCallbacks;
-    /**
-     * @property isHTML5Player
-     * @ignore
-     * The logic that determines whether we're using flash or html
-     */
-    core.isHTML5Player = function(userAgent) {
-        var n = userAgent ? userAgent.toLowerCase() : "",
-            checkSilk = function(n) {
-                if (n.indexOf("silk") !== -1) {
-                    var reg = /silk\/(\d)/ig,
-                        result = parseInt(reg.exec(n)[1], 10);
-                    return !isNaN(result) && result >= 2;
-                }
-                return false;
-            },
-            checkAndroid = function(n) {
-                if (n.indexOf("android") !== -1) {
-                    var reg = /android (\d)/ig,
-                        result = parseInt(reg.exec(n)[1], 10);
-                    return !isNaN(result) && result >= 4;
-                }
-                return false;
-            },
-            checkWiiu = function(n) {
-                return n.indexOf("wiiu") !== -1;
-            };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
-    };
     /**
      * Utility function. Append css to the head.
      * @ignore

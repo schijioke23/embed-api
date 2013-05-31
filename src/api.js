@@ -19,7 +19,8 @@ if (!MTVNPlayer.Player) {
     (function(MTVNPlayer, $, _, BTG) {
         "use strict";
         var require = MTVNPlayer.require,
-            provide = MTVNPlayer.provide;
+            provide = MTVNPlayer.provide,
+            Exports = {}; // used for testing.
         //= <%= project %>
     })(MTVNPlayer, MTVNPlayer.require("$"), MTVNPlayer.require("_"), window.BTG);
 }

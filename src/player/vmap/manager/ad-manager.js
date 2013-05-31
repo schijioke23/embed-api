@@ -6,7 +6,7 @@ var VMAPAdManager = function() {
 		currentAd: null,
 		initialize: function() {
 			_.bindAll(this);
-			this.player.on(Modules.Events.VMAP, this.onVMAP);
+			this.player.one(Modules.Events.VMAP, this.onVMAP);
 			this.player.on(Events.PLAYHEAD_UPDATE, this.onPlayhead);
 		},
 		isPlayingAd: function() {
@@ -32,6 +32,9 @@ var VMAPAdManager = function() {
 		},
 		onVMAP: function(event) {
 			this.model = new VMAPAdModel(event.data);
+		},
+		destroy:function() {
+			this.player.off(Events.PLAYHEAD_UPDATE, this.onPlayhead);
 		}
 	});
 	return VMAPAdManager;

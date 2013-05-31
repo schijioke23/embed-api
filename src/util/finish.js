@@ -1,22 +1,15 @@
-/*global MTVNPlayer, _, PackageManager, Core, Config, UrlProcessor, VMAP, VMAPAdModel*/
-// execute any on API callbacks.VMAPAdModel
+/* global MTVNPlayer, _, provide, PackageManager, Core, Config, Url, UrlProcessor, Exports*/
+// execute any on API callbacks.
 if (_.isFunction(MTVNPlayer.onAPIReady)) {
 	MTVNPlayer.onAPIReady();
 }
-//exports TODO this isn't flexible with the permutation set up.
-try {
-	MTVNPlayer.provide("mtvn-player-test", {
-		PackageManager: PackageManager,
-		Core: Core,
-		Config: Config,
-		UrlProcessor: UrlProcessor,
-		VMAPAdModel: VMAPAdModel,
-		VMAP: VMAP
-	});
-} catch (e) {
-
-}
-
+provide("mtvn-player-test", _.extend({
+	PackageManager: PackageManager,
+	Core: Core,
+	Config: Config,
+	Url: Url,
+	UrlProcessor: UrlProcessor
+}, Exports));
 /**
  * @member MTVNPlayer
  * @property {Boolean}

@@ -1,4 +1,4 @@
-/*global MTVNPlayer*/
+/* exported Url*/
 var Url = {
 	/**
 	 * This will only add the param if doesn't exist.
@@ -34,4 +34,3 @@ var Url = {
 		}
 	}
 };
-MTVNPlayer.provide("mtvn-url-util", Url);

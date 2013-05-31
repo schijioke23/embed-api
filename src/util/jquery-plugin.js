@@ -48,7 +48,8 @@
             // prepare placeholders.
             self.each(function() {
                 var $el = $(this);
-                if (!MTVNPlayer.isHTML5Player && $el.children().length > 0) { // if element has children, assume placeholders.
+                // TODO, isHTML5Player is no longer a valid indicator of placeholder.
+                if ($el.children().length > 0) { // if element has children, assume placeholders.
                     // inject placeholder styles.
                     setStyles();
                     // wrap the placeholder and add the button.

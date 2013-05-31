@@ -1,4 +1,4 @@
-/*globals $, test, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
+/* global $, asyncTest, expect, equal, ok, start, MTVNPlayer*/
 (function() {
     "use strict";
     // no auto play for HTML5

@@ -40,6 +40,11 @@ var PlayerOverrides = _.once(function() {
 			// so modules don't even have to listen for the event.
 			_.invoke(this.module(Modules.ALL),"destroy");
 			this.events = [];
+			// remove references to dom elements.
+			delete this.$el;
+			delete this.playerTarget;
+			delete this.containerElement;
+			delete this.element;
 		},
 		isPaused: function() {
 			return this.module(PlaybackManager.NAME).isPaused();

@@ -1,7 +1,7 @@
 /*global MTVNPlayer, equal, test*/
 test("url util",function() {
 	var url = "http://test.com",
-		Url = MTVNPlayer.require("mtvn-url-util");
+		Url = MTVNPlayer.require("mtvn-player-test").Url;
 	// append
 	equal(Url.addQueryStringParam(url,"a","b"),"http://test.com/?a=b");
 	equal(Url.addQueryStringParam(url+"/","a","b"),"http://test.com/?a=b");

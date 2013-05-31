@@ -65,7 +65,7 @@ var ConfigManager = function() {
 			// User 
 			player.module(UserManager);
 			// Custom Modules.
-			_.each(ModuleIncludes(),function(module) {
+			_.each(ModuleIncludes,function(module) {
 				player.module(module);
 			});
 			// API Manager

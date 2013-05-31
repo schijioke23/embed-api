@@ -222,7 +222,7 @@ var PlayerOverrides = _.once(function() {
                 e(id);
             }
             var player = Core.getPlayerInstance(id);
-            Core.executeCallbacks(player);
+                Core.executeCallbacks(player);
             addFlashEvents(player);
         };
     }(window.mtvnPlayerLoaded);
@@ -236,6 +236,7 @@ var PlayerOverrides = _.once(function() {
         create: function(exists) {
             var targetID = this.id,
                 config = this.config;
+            config.isFlash = true; // TODO not a fan of this.
             Core.instances.push({
                 source: targetID,
                 player: this

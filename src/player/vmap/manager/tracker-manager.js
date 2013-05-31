@@ -4,7 +4,7 @@ var VMAPTrackerManager = Module.extend({
 	name: "VMAPTrackerManager",
 	initialize: function() {
 		_.bindAll(this);
-		this.player.on(Modules.Events.VMAP, this.onVMAP);
+		this.player.one(Modules.Events.VMAP, this.onVMAP);
 		this.adManager = this.player.module(VMAPAdManager);
 	},
 	breakIdsMatch: function(id) {
@@ -63,5 +63,8 @@ var VMAPTrackerManager = Module.extend({
 				}
 			}
 		}, this);
+	},
+	destroy:function() {
+		// hmm. rely on PlayerOverrides to clean this up?
 	}
 });

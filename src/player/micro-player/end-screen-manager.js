@@ -30,5 +30,8 @@ var EndScreenManager = Module.extend({
 		};
 		this.player.trigger(PackageManager.Events.ENDSLATE,config);
 	},
+	destroy:function() {
+		this.player.off(Events.PLAYLIST_COMPLETE, this.loadFeed);
+	},
 	onMetadata: function() {}
 });

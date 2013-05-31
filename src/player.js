@@ -151,7 +151,7 @@
     * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
     * otherwise they'll be flash players. This is determined by checking the user agent.
     */
-   MTVNPlayer.isHTML5Player = Core.isHTML5Player(window.navigator.userAgent);
+   MTVNPlayer.isHTML5Player = false;
    /**
     * @member MTVNPlayer
     * Whenever a player is created, the callback passed will fire with the player as the first
@@ -239,7 +239,7 @@
      for (i; i--;) {
        var player = instances[i].player,
          el = player.containerElement;
-       if (!elementInDocument(el)) {
+       if (!el || !elementInDocument(el)) {
          instances.splice(i, 1);
          player.destroy();
        }
@@ -456,7 +456,7 @@
      this.containerElement.appendChild(playerTarget);
 
      this.events = Config.copyEvents(events || {}, MTVNPlayer.defaultEvents);
-     this.isFlash = this.config.isFlash === undefined ? !MTVNPlayer.isHTML5Player : this.config.isFlash;
+
      // make sure the events are valid
      checkEvents(events);
      // The module contains platform specific code

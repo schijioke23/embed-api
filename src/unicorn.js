@@ -5,9 +5,11 @@
 //= util/url.js
 //= model
 //= player/micro-player/
-//= player/vmap
+//= player/vmap/model/
+//= player/vmap/manager/
+//= player/vmap/includes.js
+//= player/vmap/exports.js
 //= player.js
-//= util/reporting.js
 //= util/jquery-plugin.js
 //= util/load-module.js
 //= util/finish.js
