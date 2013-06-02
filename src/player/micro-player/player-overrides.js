@@ -1,9 +1,20 @@
-/*global $, _, Core, Modules, PerformanceManager, ConfigManager, Events, PlaybackManager*/
+/* global $, _, Core, Modules, PerformanceManager, ConfigManager, Events, PlaybackManager*/
+/* exported PlayerOverrides */
 /**
  * @ignore
  * This player overrides a few methods just like the legacy flash and html5 players.
  */
 var PlayerOverrides = _.once(function() {
+	/**
+	 * remove an instance from the hash map.
+	 * @ignore
+	 * @param {contentWindow} source
+	 */
+	var removePlayerInstance = function(id) {
+		Core.instances = _.reject(Core.instances, function(instance) {
+			return instance.source === id;
+		});
+	};
 	return {
 		/**
 		 * @ignore
@@ -19,7 +30,6 @@ var PlayerOverrides = _.once(function() {
 				position: "relative" // TODO not here.
 			});
 			Core.executeCallbacks(this);
-			// doesn't need to be referenced anywhere.
 			this.module(PerformanceManager);
 			// start up
 			// modules will now communicate through the module object. 
@@ -38,13 +48,14 @@ var PlayerOverrides = _.once(function() {
 		destroy: function() {
 			this.trigger(Events.DESTROY);
 			// so modules don't even have to listen for the event.
-			_.invoke(this.module(Modules.ALL),"destroy");
+			_.invoke(this.module(Modules.ALL), "destroy");
 			this.events = [];
 			// remove references to dom elements.
 			delete this.$el;
 			delete this.playerTarget;
 			delete this.containerElement;
 			delete this.element;
+			removePlayerInstance(this.id);
 		},
 		isPaused: function() {
 			return this.module(PlaybackManager.NAME).isPaused();
