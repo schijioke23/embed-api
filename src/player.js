@@ -1,4 +1,4 @@
- /*global MTVNPlayer, PackageManager, Core, $, _, Config, Events, PlayState, PlayerOverrides, Flash, Html5, Modules*/
+ /*global MTVNPlayer, Core, $, _, Config, Events, PlayState, PlayerOverrides, Modules, ShareUtil*/
  /**
   * @class MTVNPlayer.Player
   * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
@@ -17,7 +17,8 @@
    var throwError = function(message) {
      throw new Error("Embed API:" + message);
    },
-   document = window.document,
+     document = window.document,
+     PLAYER_CONTAINER_PREFIX = "mtvnPlayerContainer",
      Player, fixEventName = function(eventName) {
        if (eventName && eventName.indexOf("on") === 0) {
          if (eventName === "onUIStateChange") {
@@ -79,63 +80,6 @@
          }
        }
      },
-     getEmbedCodeDimensions = function(config, el) {
-       // we don't need to know the exaxt dimensions, just enough to get the ratio
-       var width = config.width === "100%" ? el.clientWidth : config.width,
-         height = config.height === "100%" ? el.clientHeight : config.height,
-         Dimensions16x9 = {
-           width: 512,
-           height: 288
-         },
-         Dimensions4x3 = {
-           width: 360,
-           height: 293
-         },
-         aspect = width / height,
-         Diff4x3 = Math.abs(aspect - 4 / 3),
-         Diff16x9 = Math.abs(aspect - 16 / 9);
-       return Diff16x9 < Diff4x3 ? Dimensions16x9 : Dimensions4x3;
-     },
-     getEmbedCode = function() {
-       var config = this.config,
-         metadata = this.currentMetadata,
-         displayDataPrefix = "<p style=\"text-align:left;background-color:#FFFFFF;padding:4px;margin-top:4px;margin-bottom:0px;font-family:Arial, Helvetica, sans-serif;font-size:12px;\">",
-         displayMetadata = (function() {
-           if (!metadata) {
-             return "";
-           }
-           var copy = "",
-             categories = metadata.rss.group.categories,
-             source = categories.source,
-             sourceLink = categories.sourceLink,
-             seoHTMLText = categories.seoHTMLText;
-           if (source) {
-             if (sourceLink) {
-               copy += "<b><a href=\"" + sourceLink + "\">" + source + "</a></b>";
-             } else {
-               copy += "<b>" + source + "</b> ";
-             }
-           }
-           if (seoHTMLText) {
-             if (copy) {
-               copy += "<br/>";
-             }
-             copy += "Get More: " + seoHTMLText;
-           }
-           if (copy) {
-             copy = displayDataPrefix + copy + "</p>";
-           }
-           return copy;
-         })(),
-         embedDimensions = getEmbedCodeDimensions(config, this.element),
-         embedCode = "<div style=\"background-color:#000000;width:{divWidth}px;\"><div style=\"padding:4px;\">" + "<iframe src=\"http://media.mtvnservices.com/embed/{uri}\" width=\"{width}\" height=\"{height}\" frameborder=\"0\"></iframe>" + "{displayMetadata}</div></div>";
-       embedCode = embedCode.replace(/\{uri\}/, config.uri);
-       embedCode = embedCode.replace(/\{width\}/, embedDimensions.width);
-       embedCode = embedCode.replace(/\{divWidth\}/, embedDimensions.width + 8);
-       embedCode = embedCode.replace(/\{height\}/, embedDimensions.height);
-       embedCode = embedCode.replace(/\{displayMetadata\}/, displayMetadata);
-       return embedCode;
-     },
      getDim = function(dim) {
        return isNaN(dim) ? dim : dim + "px";
      },
@@ -145,13 +89,6 @@
        return target;
      };
    // end private vars
-   /**
-    * @member MTVNPlayer
-    * @property {Boolean}
-    * (Available in 2.2.4) Whether the player(s) that will be created will be html5 players,
-    * otherwise they'll be flash players. This is determined by checking the user agent.
-    */
-   MTVNPlayer.isHTML5Player = false;
    /**
     * @member MTVNPlayer
     * Whenever a player is created, the callback passed will fire with the player as the first
@@ -381,7 +318,7 @@
        var module = {};
        /**
         * @ignore
-        * framework-y stuff. 
+        * framework-y stuff.
         * You can call module(UserManager) and register an instance of UserManager.
         * If you want to retrieve the instance just call module(UserManager) again.
         * Or you can call module("some-user-manager", UserManager), to register a new UserManager,
@@ -392,12 +329,12 @@
            return module;
          }
          // you can pass just an object
-         if(_.isObject(name)){
+         if (_.isObject(name)) {
            object = name;
            // the object could have a NAME property
-           if(!object.NAME){
-              // otherwise generate one and set the NAME property for next time.
-              object.NAME = _.uniqueId("PrivateModule");
+           if (!object.NAME) {
+             // otherwise generate one and set the NAME property for next time.
+             object.NAME = _.uniqueId("PrivateModule");
            }
            name = object.NAME;
          }
@@ -436,8 +373,8 @@
      // the player target is going to go inside the containerElement.
      this.containerElement = _.isElement(elementOrId) ? elementOrId : document.getElementById(elementOrId);
      // TODO, freewheel needs an ID, is this the best way to check if one exists?
-     if(!_.isString(this.containerElement.id)){
-        this.containerElement.id = _.uniqueId("mtvnPlayerContainer");
+     if (!_.isString(this.containerElement.id)) {
+       this.containerElement.id = _.uniqueId(PLAYER_CONTAINER_PREFIX);
      }
 
      // TODO remove this and just use the playerTarget.id through out.
@@ -471,8 +408,9 @@
          return func.apply(this, args);
        }
      });
-     // wait for ready event
-     this.one("ready", function(event) {
+
+     // wait for ready event, then fire the eventQueue.
+     this.one(Events.READY, function(event) {
        var player = event.target,
          message = player.message;
        for (var i = 0, len = eventQueue.length; i < len; i++) {
@@ -485,20 +423,16 @@
        if (document.readyState === "complete") {
          throwError("target div " + this.id + " not found");
        } else {
-         if ($) {
-           // wait for document ready, then try again.
-           (function(ref) {
-             $(document).ready(function() {
-               if (document.getElementById(ref.id)) {
-                 ref.create();
-               } else {
-                 throwError("target div " + ref.id + " not found");
-               }
-             });
-           })(this);
-         } else {
-           throwError("Only call new MTVNPlayer.Player(targetID,..) after the targetID element is in the DOM.");
-         }
+         // wait for document ready, then try again.
+         (function(ref) {
+           $(document).ready(function() {
+             if (document.getElementById(ref.id)) {
+               ref.create();
+             } else {
+               throwError("target div " + ref.id + " not found");
+             }
+           });
+         })(this);
        }
        return;
      } else {
@@ -575,7 +509,7 @@
       * @return {String} the embed code as a string.
       */
      getEmbedCode: function() {
-       return getEmbedCode.call(this);
+       return ShareUtil.getEmbedCode.call(this);
      },
      /**
       * Puts the player in full screen mode, does not work for the flash player do the flash restrictions.

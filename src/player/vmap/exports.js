@@ -1,4 +1,4 @@
-/* global _, Exports, VMAPAdModel, VMAPAdManager, VMAP */
+/* global _, Exports, VMAPAdModel, VMAPAdManager, VMAP*/
 _.extend(Exports, {
 	VMAPAdModel: VMAPAdModel,
 	VMAPAdManager: VMAPAdManager,

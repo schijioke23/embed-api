@@ -1,5 +1,4 @@
-/*global MTVNPlayer, Core, $, Config, _, PackageManager */
-MTVNPlayer.isHTML5Player = true;
+/* global MTVNPlayer, Core, $, Config, _, EndSlateLoader */
 /* exported PlayerOverrides */
 var PlayerOverrides = _.once(function() {
     "use strict";
@@ -52,29 +51,6 @@ var PlayerOverrides = _.once(function() {
             window.scrollTo(0, 0);
             player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
         },
-        jsonParse = function(str) {
-            // choose method.
-            jsonParse = function() {
-                if (window.JSON) {
-                    return function(str) {
-                        if (str) {
-                            return JSON.parse(str);
-                        } else {
-                            return null;
-                        }
-                    };
-                } else if ($ && $.parseJSON) {
-                    return function(str) {
-                        return $.parseJSON(str);
-                    };
-                } else {
-                    return function() {
-                        // no json parsing, fail silently.
-                    };
-                }
-            }();
-            return jsonParse(str);
-        },
         /**
          * @method getMessageData
          * @ignore
@@ -89,7 +65,7 @@ var PlayerOverrides = _.once(function() {
          * @param {MTVNPlayer.Player} player A player instance
          */
         onMetadata = function(data, player) {
-            var obj = jsonParse(getMessageData(data)),
+            var obj = $.parseJSON(getMessageData(data)),
                 newIndex = obj.index,
                 oldIndex = player.playlistMetadata.index;
             player.currentMetadata = obj;
@@ -118,10 +94,10 @@ var PlayerOverrides = _.once(function() {
                         player.trigger(eventTypes.STATE_CHANGE, player.state);
                         player.trigger(eventTypes.STATE_CHANGE + ":" + player.state, player.state);
                     } else if (data.indexOf("config:") === 0) {
-                        Config.copyProperties(player.config, jsonParse(getMessageData(data)));
+                        Config.copyProperties(player.config, $.parseJSON(getMessageData(data)));
                     } else if (data.indexOf("performance:") === 0) {
                         if (player.config.performance) {
-                            Core.processPerformance(player, jsonParse(getMessageData(data)));
+                            Core.processPerformance(player, $.parseJSON(getMessageData(data)));
                         }
                     } else if (data.indexOf("playlistComplete") === 0) {
                         player.trigger(eventTypes.PLAYLIST_COMPLETE);
@@ -141,7 +117,7 @@ var PlayerOverrides = _.once(function() {
                             player.trigger(eventTypes.PLAYHEAD_UPDATE + ":" + Math.floor(playhead), playhead);
                         }
                     } else if (data.indexOf("playlistMetadata:") === 0) {
-                        player.playlistMetadata = jsonParse(getMessageData(data));
+                        player.playlistMetadata = $.parseJSON(getMessageData(data));
                     } else if (data === "onReady") {
                         player.ready = true;
                         var fv = player.config.flashVars;
@@ -157,13 +133,13 @@ var PlayerOverrides = _.once(function() {
                             goFullScreen(player);
                         }
                     } else if (data.indexOf("overlayRectChange:") === 0) {
-                        player.trigger(eventTypes.OVERLAY_RECT_CHANGE, jsonParse(getMessageData(data)));
+                        player.trigger(eventTypes.OVERLAY_RECT_CHANGE, $.parseJSON(getMessageData(data)));
                     } else if (data.indexOf("onUIStateChange:") === 0) {
-                        player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
+                        player.trigger(eventTypes.UI_STATE_CHANGE, $.parseJSON(getMessageData(data)));
                     } else if (data.indexOf("airplay") === 0) {
                         player.trigger(eventTypes.AIRPLAY);
-                    } else if (data.indexOf("onEndSlate") === 0 || data.indexOf(PackageManager.Events.ENDSLATE) === 0) {
-                        player.trigger(PackageManager.Events.ENDSLATE, jsonParse(getMessageData(data)));
+                    } else if (data.indexOf("onEndSlate") === 0 || data.indexOf(EndSlateLoader.Events.ENDSLATE) === 0) {
+                        player.trigger(EndSlateLoader.Events.ENDSLATE, $.parseJSON(getMessageData(data)));
                     }
                 }
             }

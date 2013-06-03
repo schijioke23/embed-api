@@ -13,9 +13,7 @@
             $container = $("div.MTVNPlayer_placeholder ", $placeholder);
         equal($placeholder.length, 1, "placeholder tag is there");
         ok($placeholder.hasClass("MTVNPlayer"), "is MTVNPlayer class");
-        if(!MTVNPlayer.isHTML5Player) {
-            equal($placeholder.data("contenturi"), "mgid:uma:video:mtv.com:900034", "uri is there");
-        }
+        ok($placeholder.data("contenturi").indexOf("mgid") === 0, "uri is there");
         equal($container.length, 1, "child div has MTVNPlayer_placeholder class");
         // is there a domEqual?
         equal($container.children(":first-child")[0].tagName, "IMG", "first child is img");

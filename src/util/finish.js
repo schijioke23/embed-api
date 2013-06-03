@@ -1,14 +1,20 @@
-/* global MTVNPlayer, _, provide, PackageManager, Core, Config, Url, UrlProcessor, Exports*/
+/* global MTVNPlayer, _, provide, EndSlateLoader, Core, Config, Exports*/
 // execute any on API callbacks.
 if (_.isFunction(MTVNPlayer.onAPIReady)) {
 	MTVNPlayer.onAPIReady();
 }
+// simpler than the callback chain.
+if (_.isArray(window._mtvnPlayerReady)) {
+	_.each(window._mtvnPlayerReady,function(cb) {
+		if(_.isFunction(cb)){
+			cb();
+		}
+	});
+}
 provide("mtvn-player-test", _.extend({
-	PackageManager: PackageManager,
+	EndSlateLoader: EndSlateLoader,
 	Core: Core,
-	Config: Config,
-	Url: Url,
-	UrlProcessor: UrlProcessor
+	Config: Config
 }, Exports));
 /**
  * @member MTVNPlayer

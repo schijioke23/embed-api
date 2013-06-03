@@ -8,10 +8,10 @@ var MTVNPlayer = window.MTVNPlayer || {};
 if (!MTVNPlayer.Player) {
     //= ../dist/version.js
     (function() {
-        /*global Zepto*/
-        //= third-party/underscore.js
-        MTVNPlayer.provide("_",this._); // underscore is put on this.
-        //= third-party/zepto.js
+        /* global Zepto*/
+        //= ../components/underscore/underscore.js
+        MTVNPlayer.provide("_",this._); // underscore is put on this, a temporary scope.
+        //= ../components/zepto/zepto.js
         MTVNPlayer.provide("$",Zepto); // Zepto is a var.
     }).apply({});
     // we can 'use strict' below, no more third-party stuff.

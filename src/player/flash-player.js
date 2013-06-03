@@ -1,4 +1,4 @@
-/* global MTVNPlayer, Config, Core, PackageManager, _, SWFObject */
+/* global MTVNPlayer, Config, Core, EndSlateLoader, _, SWFObject */
 /* exported PlayerOverrides */
 /**
  * set up handling of flash external interface calls
@@ -211,7 +211,7 @@ var PlayerOverrides = _.once(function() {
             element.addEventListener("MEDIA_ENDED", mapString + mediaEnd);
             // fired when the end slate is shown, if the player's configuration is set to do so.
             map[id + "onEndSlate"] = function(data) {
-                player.trigger(PackageManager.Events.ENDSLATE, data);
+                player.trigger(EndSlateLoader.Events.ENDSLATE, data);
             };
             element.addEventListener("ENDSLATE", mapString + "onEndSlate");
         };

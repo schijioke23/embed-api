@@ -48,7 +48,7 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "dist/html5.js": "src/api.js"
+                    "dist/html5.js": "src/main.js"
                 }
             },
             flash: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "dist/flash.js": "src/api.js"
+                    "dist/flash.js": "src/main.js"
                 }
             },
             unicorn: {
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "dist/unicorn.js": "src/api.js"
+                    "dist/unicorn.js": "src/main.js"
                 }
             },
             micro: {
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "dist/micro.js": "src/api.js"
+                    "dist/micro.js": "src/main.js"
                 }
             }
         },

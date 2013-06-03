@@ -1,5 +1,5 @@
 /* global BentoManager, PlaybackManager */
-/* exported ModuleIncludes */
-var ModuleIncludes = function() {
+/* exported Managers */
+var Managers = function() {
 	return [BentoManager, PlaybackManager];
 };

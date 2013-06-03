@@ -1,7 +1,6 @@
-//= core.js
-//= util/config.js
+//= util/[core.js, config.js]
 //= model
 //= player.js
-//= util/[url.js, jquery-plugin.js, load-module.js]
 //= player/html5-player.js
+//= util/[jquery-plugin.js, end-slate-loader.js, share-util.js]
 //= util/finish.js

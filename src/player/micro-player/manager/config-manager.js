@@ -1,6 +1,6 @@
 /*global _, $, MTVNPlayer, require, Module, EndScreenManager,
   FormFactorMap, UrlProcessor, UserManager, 
-  APIManager, Modules, ModuleIncludes */
+  APIManager, Modules, Managers */
 var ConfigManager = function() {
 	var CONFIG_BASE = "http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=",
 		CONFIG_DEFAULTS = {
@@ -65,7 +65,7 @@ var ConfigManager = function() {
 			// User 
 			player.module(UserManager);
 			// Custom Modules.
-			_.each(ModuleIncludes,function(module) {
+			_.each(Managers,function(module) {
 				player.module(module);
 			});
 			// API Manager

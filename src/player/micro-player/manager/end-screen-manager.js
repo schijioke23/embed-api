@@ -1,4 +1,5 @@
-/*global _, Module, UrlProcessor, require, Events, PackageManager*/
+/* global _, Module, UrlProcessor, require, Events, EndSlateLoader*/
+/* exported EndScreenManager */
 var EndScreenManager = Module.extend({
 	name: "EndScreenManager",
 	initialize: function() {
@@ -28,7 +29,7 @@ var EndScreenManager = Module.extend({
 				items:event.data.items
 			}
 		};
-		this.player.trigger(PackageManager.Events.ENDSLATE,config);
+		this.player.trigger(EndSlateLoader.Events.ENDSLATE,config);
 	},
 	destroy:function() {
 		this.player.off(Events.PLAYLIST_COMPLETE, this.loadFeed);
