@@ -1,6 +1,7 @@
 //= util/[core.js, config.js]
 //= util/[logger.js, module.js, config.js, url.js, share-util.js]
 //= model
+//= player/contentless.js
 //= player/micro-player/[model, manager, bento]
 //= player/micro-player/[player-overrides.js, exports.js]
 //= player/vmap/[model, manager]

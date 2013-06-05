@@ -1,4 +1,4 @@
- /*global MTVNPlayer, Core, $, _, Config, Events, PlayState, PlayerOverrides, Modules, ShareUtil*/
+ /*global MTVNPlayer, Core, $, _, Config, Events, PlayState, PlayerOverrides, Modules, ShareUtil, Contentless*/
  /**
   * @class MTVNPlayer.Player
   * The player object: use it to hook into events ({@link MTVNPlayer.Events}), call methods, and read properties.
@@ -360,6 +360,10 @@
        this.config.performance = {
          startTime: (new Date()).getTime()
        };
+     }
+
+     if (this.config.contentless) {
+       _.extend(Player.prototype, Contentless);
      }
 
      /**
