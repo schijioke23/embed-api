@@ -1,4 +1,4 @@
-/* global MTVNPlayer, Config, Core, EndSlateLoader, _, SWFObject */
+/* global MTVNPlayer, require, Config, Core, EndSlateLoader, _ */
 /* exported PlayerOverrides */
 /**
  * set up handling of flash external interface calls
@@ -7,13 +7,11 @@
  * @method initializeFlash
  * @ignore
  */
-var PlayerOverrides = _.once(function() {
-    "use strict";
+var PlayerOverrides = function() {
     var messageNameMap = {
         play: "unpause",
         seek: "setPlayheadTime"
     },
-    swfobject = SWFObject.get(),
         makeWSwfObject = function(targetID, config) {
             var attributes = config.attributes || {},
             params = config.params || {
@@ -33,7 +31,7 @@ var PlayerOverrides = _.once(function() {
                 }
                 return s ? s.slice(0, -1) : "";
             })(flashVars);
-            Core.getPlayerInstance(targetID).element = swfobject.createSWF(attributes, params, targetID);
+            Core.getPlayerInstance(targetID).element = require("swfobject").createSWF(attributes, params, targetID);
         },
         removePlayerInstance = function(id) {
             Core.instances = _.reject(Core.instances, function(instance) {
@@ -120,10 +118,10 @@ var PlayerOverrides = _.once(function() {
             return m;
         },
         addFlashEvents = function(player) {
-            var map = MTVNPlayer.Player.flashEventMap,
+            var map = MTVNPlayer._flashEventMap,
                 id = _.uniqueId("player"),
                 element = player.element,
-                mapString = "MTVNPlayer.Player.flashEventMap." + id,
+                mapString = "MTVNPlayer._flashEventMap." + id,
                 // this list of events is just for legibility. google closure compiler
                 // will in-line the strings
                 metadataEvent = MTVNPlayer.Events.METADATA,
@@ -215,7 +213,7 @@ var PlayerOverrides = _.once(function() {
             };
             element.addEventListener("ENDSLATE", mapString + "onEndSlate");
         };
-    MTVNPlayer.Player.flashEventMap = {};
+    MTVNPlayer._flashEventMap = {};
     window.mtvnPlayerLoaded = function(e) {
         return function(id) {
             if (e) {
@@ -246,7 +244,7 @@ var PlayerOverrides = _.once(function() {
             }
         },
         destroy: function() {
-            swfobject.removeSWF(this.element.id);
+            require("swfobject").removeSWF(this.element.id);
             removePlayerInstance(this.id);
         },
         /**
@@ -279,4 +277,4 @@ var PlayerOverrides = _.once(function() {
             }
         }
     };
-});
+}();

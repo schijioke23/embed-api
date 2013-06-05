@@ -2,7 +2,8 @@
 module.exports = function(grunt) {
     var targetPath = 'dist/',
         deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
-        inPageComponents = ["components/mtvn-util/dist/mtvn-util.js", "components/html5-playback/index.js", "components/mtvn-playlist/index.js"];
+        inPageComponents = ["components/mtvn-util/dist/mtvn-util.js", "components/html5-playback/index.js", "components/mtvn-playlist/index.js"],
+        finish = "src/util/fire-api-callbacks.js";
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         clean: {
@@ -28,13 +29,14 @@ module.exports = function(grunt) {
         uglify: {
             all: {
                 files: [{
-                    expand: true,
-                    cwd: "dist",
-                    src: "{flash,html5,micro,unicorn}.js",
-                    dest: "dist/",
-                    ext: ".min.js"
+                        expand: true,
+                        cwd: "dist",
+                        src: "{flash,html5,micro,unicorn}.js",
+                        dest: "dist/",
+                        ext: ".min.js"
 
-                }]
+                    }
+                ]
             }
         },
         rig: {
@@ -84,12 +86,20 @@ module.exports = function(grunt) {
         },
         concat: {
             unicorn: {
-                src: ["dist/unicorn.js"].concat(inPageComponents),
+                src: ["dist/unicorn.js"].concat(inPageComponents).concat([finish]),
                 dest: "dist/unicorn.js"
             },
             micro: {
-                src: ["dist/micro.js"].concat(inPageComponents).concat(["components/Bento.JS/index.js"]),
+                src: ["dist/micro.js"].concat(inPageComponents).concat(["components/Bento.JS/index.js", finish]),
                 dest: "dist/micro.js"
+            },
+            flash: {
+                src: ["dist/flash.js"].concat(["src/third-party/swfobject.js", finish]),
+                dest: "dist/flash.js"
+            },
+            html5: {
+                src: ["dist/html5.js"].concat([finish]),
+                dest: "dist/html5.js"
             }
         },
         copy: {

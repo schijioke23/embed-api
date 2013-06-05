@@ -12,7 +12,7 @@
   * @param {Object} events Event callbacks, see: {@link MTVNPlayer.Events}
   * @returns MTVNPlayer.Player
   */
- MTVNPlayer.Player = (function(window) {
+ MTVNPlayer.Player = function() {
    // static methods variables
    var throwError = function(message) {
      throw new Error("Embed API:" + message);
@@ -396,8 +396,7 @@
 
      // make sure the events are valid
      checkEvents(events);
-     // The module contains platform specific code
-     _.extend(this, PlayerOverrides());
+
      // wait for ready event
      var eventQueue = [];
      this.message = _.wrap(this.message, function(func) {
@@ -441,6 +440,11 @@
    };
    // public api
    Player.prototype = {
+     /**
+      * @ignore
+      * Used internally by the placeholder code.
+      */
+     canUsePlaceholder: true,
      /**
       * 2.1.0 Use {@link MTVNPlayer.Player#element}
       * @deprecated
@@ -636,5 +640,7 @@
     * @param {Number} volume If not passed returns the current volume.
     */
    Player.prototype.volume = Player.prototype.setVolume;
+   // Extend the prototype with the Player Implementation.
+   _.extend(Player.prototype, PlayerOverrides);
    return Player;
- }(window));
+ }(window);

@@ -65,6 +65,5 @@ var VMAPTrackerManager = Module.extend({
 		}, this);
 	},
 	destroy:function() {
-		// hmm. rely on PlayerOverrides to clean this up?
 	}
 });

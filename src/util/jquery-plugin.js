@@ -44,7 +44,7 @@
             self = this.not(function() {
                 return $(this).data("contenturi") ? false : true;
             });
-        if (self.length > 0) {
+        if (MTVNPlayer.Player.prototype.canAutoPlay && self.length > 0) {
             // prepare placeholders.
             self.each(function() {
                 var $el = $(this);

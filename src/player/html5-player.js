@@ -1,7 +1,7 @@
-/* global MTVNPlayer, Core, $, Config, _, EndSlateLoader */
+/* global Core, $, Config, Events, _, EndSlateLoader */
 /* exported PlayerOverrides */
-var PlayerOverrides = _.once(function() {
-    "use strict";
+var PlayerOverrides = function() {
+    // TODO, I can use $ now.
     var addCSS = function(e, prop, value) {
         e.style.cssText += prop + ":" + value;
     },
@@ -31,7 +31,7 @@ var PlayerOverrides = _.once(function() {
             addCSS(e, "height", c.height + "px");
             player.element.width = c.width + "px";
             player.element.height = c.height + "px";
-            player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
+            player.trigger(Events.FULL_SCREEN_CHANGE);
         },
         /**
          * @method goFullScreen
@@ -49,7 +49,7 @@ var PlayerOverrides = _.once(function() {
             player.element.width = window.innerWidth + "px";
             player.element.height = window.innerHeight + "px";
             window.scrollTo(0, 0);
-            player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
+            player.trigger(Events.FULL_SCREEN_CHANGE);
         },
         /**
          * @method getMessageData
@@ -73,10 +73,10 @@ var PlayerOverrides = _.once(function() {
                 player.playlistMetadata.items[obj.index] = obj;
                 player.playlistMetadata.index = obj.index;
                 if (newIndex !== oldIndex) {
-                    player.trigger(MTVNPlayer.Events.INDEX_CHANGE, newIndex);
+                    player.trigger(Events.INDEX_CHANGE, newIndex);
                 }
             }
-            player.trigger(MTVNPlayer.Events.METADATA, obj);
+            player.trigger(Events.METADATA, obj);
         },
         /**
          * @method handleMessage
@@ -84,7 +84,7 @@ var PlayerOverrides = _.once(function() {
          */
         handleMessage = function(event) {
             var data = event.data,
-                player, playhead, events, eventTypes = MTVNPlayer.Events;
+                player, playhead, events, eventTypes = Events;
             if (data && data.indexOf && data.indexOf("logMessage:") === -1) {
                 player = Core.getPlayerInstance(event.source);
                 if (player) {
@@ -174,6 +174,7 @@ var PlayerOverrides = _.once(function() {
     }
     // method overrides 
     return {
+        canUsePlaceholder: false,
         /**
          * create the player iframe
          * @method create
@@ -218,7 +219,7 @@ var PlayerOverrides = _.once(function() {
             }
         },
         destroy: function() {
-            if(this.element){
+            if (this.element) {
                 removePlayerInstance(this.element.contentWindow);
             }
             var el = this.containerElement;
@@ -230,4 +231,4 @@ var PlayerOverrides = _.once(function() {
             delete this.playerTarget;
         }
     };
-});
+}();

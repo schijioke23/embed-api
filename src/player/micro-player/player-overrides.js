@@ -4,7 +4,7 @@
  * @ignore
  * This player overrides a few methods just like the legacy flash and html5 players.
  */
-var PlayerOverrides = _.once(function() {
+var PlayerOverrides = function() {
 	/**
 	 * remove an instance from the hash map.
 	 * @ignore
@@ -61,4 +61,4 @@ var PlayerOverrides = _.once(function() {
 			return this.module(PlaybackManager.NAME).isPaused();
 		}
 	};
-});
+}();
