@@ -6,7 +6,6 @@
  *
  */
 var VMAPPlaybackManager = PlaybackManager.extend({
-	loadUnicornOnceURL: false,
 	initialize: function() {
 		PlaybackManager.prototype.initialize.apply(this, arguments);
 		this.player.on(Modules.Events.UNICORN_AD, this.onVMAPAd);
