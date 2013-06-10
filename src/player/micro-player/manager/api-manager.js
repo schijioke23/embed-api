@@ -8,10 +8,9 @@ var APIManager = Module.extend({
 		_.extend(this, require("Backbone").Events);
 		this.playlist = this.configurePlaylistEvents(this.player.module(Modules.PLAYLIST));
 		this.configureVideo(this.player.module(Modules.VIDEO));
-		this.listenTo(this.playlist, Events.AD_COMPLETE, this.onAdComplete);
 	},
 	configurePlaylistEvents: function(playlist) {
-		var e = require("mtvn-playlist").Events;
+		var e = require("mtvn-util").Playlist.Events;
 		this.listenTo(playlist, e.READY, this.onPlaylistReady);
 		this.listenTo(playlist, e.ITEM_READY, this.onItemReady);
 		return playlist;
@@ -26,8 +25,8 @@ var APIManager = Module.extend({
 		this.listenTo(video, e.BUFFERED, this.onBuffered);
 		this.listenTo(video, e.END, this.proxyEvent);
 	},
-	onVolumeChange:function(event){
-		this.player.trigger(Events.VOLUME_CHANGE,event.data);
+	onVolumeChange: function(event) {
+		this.player.trigger(Events.VOLUME_CHANGE, event.data);
 	},
 	onPlayhead: function(event) {
 		var playhead = event.data;
@@ -50,12 +49,6 @@ var APIManager = Module.extend({
 		this.player.trigger(Events.STATE_CHANGE, state);
 		this.player.trigger(Events.STATE_CHANGE + ":" + state, state);
 	},
-	onAdComplete: function() {
-		// really? I don't believe this is right.
-		// this.proxyEvent({
-		//  type: Event.MEDIA_END
-		// });
-	},
 	proxyEvent: function(event) {
 		this.player.trigger(APIManager.EVENT_MAP[event.type] || event.type, event.data);
 	},
@@ -76,7 +69,7 @@ var APIManager = Module.extend({
 		}
 	},
 	onItemReady: function(event) {
-		this.player.currentMetadata = event.data; // TODO check this with a multi item playlist
+		this.player.currentMetadata = event.data;
 	},
 	onPlaylistReady: function(event) {
 		var player = this.player;
@@ -86,7 +79,6 @@ var APIManager = Module.extend({
 		this.checkPlayerReady();
 	},
 	destroy: function() {
-		// destroy invoked automatically by controller.
 		this.stopListening();
 	}
 }, {
@@ -96,8 +88,8 @@ var APIManager = Module.extend({
 	},
 	STATE_MAP: {
 		canplaythrough: "canplay",
-        stalled: "buffering",
+		stalled: "buffering",
 		pause: "paused"
 	},
-	NAME:"APIManager"
+	NAME: "APIManager"
 });

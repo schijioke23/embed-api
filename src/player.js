@@ -342,7 +342,7 @@
            return module[name];
          }
          if (!object) {
-           throw "Can't add null object for " + name + " module.";
+           throw "" + name + " module isn't registered yet.";
          }
          // instantiate a function, or set an object.
          module[name] = (_.isFunction(object) ? new object({

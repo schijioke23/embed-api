@@ -76,11 +76,10 @@ var BentoPlaybackManager = PlaybackManager.extend({
 			}
 		}
 	},
-	setVideoSrc: function() {
+	setVideoSrc: function(src) {
 		if (!this.isPlayingAd) {
 			this.currentLoadedIndex = this.playlist.currentIndex;
-			var currentItem = this.playlist.currentItem,
-				src = currentItem.rss.mediaGen.renditions;
+			var currentItem = this.playlist.currentItem;
 			if (!src) {
 				this.logger.error("loadItem no src in media gen for currentLoadedIndex:" + this.currentLoadedIndex);
 			} else {

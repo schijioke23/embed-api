@@ -1,6 +1,4 @@
-/*global _, $, MTVNPlayer, require, Module, EndScreenManager,
-  FormFactorMap, UrlProcessor, UserManager, 
-  APIManager, Modules, Managers */
+/*global _, $, MTVNPlayer, require, Module, Modules, Managers, FormFactorMap, UrlProcessor */
 var ConfigManager = function() {
 	var CONFIG_BASE = "http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=",
 		CONFIG_DEFAULTS = {
@@ -60,31 +58,15 @@ var ConfigManager = function() {
 		initializeModules: function() {
 			var player = this.player;
 			this.logger.log("initializeModules() config:", player.config);
-			// Playlist Module
-			player.module(Modules.PLAYLIST, new(require("mtvn-playlist"))());
-			// User 
-			player.module(UserManager);
-			// Custom Modules.
-			_.each(Managers,function(module) {
+			// loop through the Managers array and register them.
+			_.each(Managers(), function(module) {
 				player.module(module);
 			});
-			// API Manager
-			player.module(APIManager);
-			// End Screen is standalone, doesn't need a Module.name.
-			player.module(EndScreenManager);
-			this.createPlaylist();
-		},
-		createPlaylist:function() {
-			var player = this.player;
-			player.module(Modules.PLAYLIST).load({
-				feed: player.config.feed,
-				mediaGenProcessor: _.partial(UrlProcessor.mediaGen, player),
-				mediaGensToLoad: player.config.mediaGensToLoad
-			});
-			// TODO for testing.
+			player.module(Modules.PLAYLIST).load();
 			player.play();
 		},
-		destroy: function() { // no clean up needed
+		destroy: function() {
+			// no clean up needed
 		}
 	}, {
 		PROXY_URL: "http://media.mtvnservices.com/player/jsonp/?callback=?&url=",

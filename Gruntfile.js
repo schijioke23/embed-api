@@ -2,7 +2,8 @@
 module.exports = function(grunt) {
     var targetPath = 'dist/',
         deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
-        inPageComponents = ["components/mtvn-util/dist/mtvn-util.js", "components/html5-playback/index.js", "components/mtvn-playlist/index.js"],
+        package_manager = "components/mtvn-package-manager/dist/mtvn-package-manager.js",
+        mtvn_util = "../components/mtvn-util/dist/mtvn-util.js",
         finish = "src/util/fire-api-callbacks.js";
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -66,7 +67,8 @@ module.exports = function(grunt) {
             unicorn: {
                 options: {
                     data: {
-                        project: "unicorn.js"
+                        project: "unicorn.js",
+                        modules: "[" + mtvn_util + ", ../components/html5-playback/index.js]"
                     }
                 },
                 files: {
@@ -86,11 +88,11 @@ module.exports = function(grunt) {
         },
         concat: {
             unicorn: {
-                src: ["dist/unicorn.js"].concat(inPageComponents).concat([finish]),
+                src: [package_manager, "dist/unicorn.js"].concat([finish]),
                 dest: "dist/unicorn.js"
             },
             micro: {
-                src: ["dist/micro.js"].concat(inPageComponents).concat(["components/Bento.JS/index.js", finish]),
+                src: ["dist/micro.js"].concat(["components/Bento.JS/index.js", finish]),
                 dest: "dist/micro.js"
             },
             flash: {
@@ -115,8 +117,8 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['grunt.js', 'src/**/*.js'],
-            tasks: 'default'
+            files: ['Gruntfile.js', 'src/**/*.js'],
+            tasks: ["rig", "concat"]
         }
     });
     grunt.loadNpmTasks('grunt-rigger');
@@ -140,6 +142,6 @@ module.exports = function(grunt) {
         }
         grunt.config("dirname", dir);
     });
-    grunt.registerTask('default', ['clean', 'version', 'jshint:devel', 'rig', 'concat', 'copy']);
+    grunt.registerTask('default', ['clean', 'version', 'jshint:devel', 'rig', 'concat']);
     grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'copy']);
 };

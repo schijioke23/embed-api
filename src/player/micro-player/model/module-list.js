@@ -4,7 +4,6 @@ var Modules = {
 	ALL:"all", // get a list of all modules?
 	PLAYLIST: "playlist",
 	VIDEO: "video",
-	CC:"cc-manager",
 	Events: {
 		CONFIG: "config",
 		DESTROY: "destroyModules",

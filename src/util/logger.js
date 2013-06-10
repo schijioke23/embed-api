@@ -1,4 +1,5 @@
-/*global _, MTVNPlayer */
+/* global _, MTVNPlayer */
+/* exported Logger */
 var Logger = (function() {
 	var colors = {
 		debug: "blue",

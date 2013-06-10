@@ -1,4 +1,3 @@
-//= ../components/mtvn-package-manager/dist/mtvn-package-manager.js
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
@@ -14,6 +13,7 @@ if (!MTVNPlayer.Player) {
         //= ../components/zepto/zepto.js
         MTVNPlayer.provide("$",Zepto); // Zepto is a var.
     }).apply({});
+    //= <%= modules %>
     // we can 'use strict' below, no more third-party stuff.
     /* jshint unused: false */
     (function(MTVNPlayer, $, _, BTG) {

@@ -7,7 +7,7 @@ var EndScreenManager = Module.extend({
 		this.player.on(Events.PLAYLIST_COMPLETE, this.loadFeed);
 	},
 	loadFeed: function() {
-		var Playlist = require("mtvn-playlist");
+		var Playlist = require("mtvn-util").Playlist;
 		var playlist = new Playlist(),
 			feed = this.player.config.relatedFeedURL;
 		if (_.isString(feed)) {

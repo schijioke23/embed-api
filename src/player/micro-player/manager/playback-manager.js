@@ -1,12 +1,10 @@
-/*global _, $, Module, Modules, BentoManager, require, Events, PlayState, UserManager, BTG*/
+/* global _, $, Module, Modules, require, Events, PlayState, UserManager*/
 /* exported PlaybackManager */
 var PlaybackManager = Module.extend({
 	initialize: function() {
 		var Video = require("mtvn-playback"),
-			Playlist = require("mtvn-playlist");
+			Playlist = require("mtvn-util").Playlist;
 		_.bindAll(this);
-
-		// Backbone is in the util package, not in-lined with rigger.
 		_.extend(this, require("Backbone").Events);
 
 		// Video module
@@ -40,13 +38,13 @@ var PlaybackManager = Module.extend({
 			if (currentItem.ready) {
 				this.playItem(currentItem);
 			} else { // load new mediagen
-				this.loadNewMediaGen(startTime);
+				this.loadItem(startTime);
 			}
 		}
 	},
-	loadNewMediaGen: function(startTime) {
+	loadItem: function(startTime) {
 		this.playlist.loadItem(this.playlist.currentIndex);
-		this.logger.log("waiting for media gen at index:" + this.playlist.currentIndex);
+		this.logger.log("waiting for item (media gen or vmap) at index:" + this.playlist.currentIndex);
 		// TODO, this shouldn't be in the video module.
 		this.video.callPlayAfterSeek = !this.video.isPaused();
 		// queue start time.
@@ -60,7 +58,7 @@ var PlaybackManager = Module.extend({
 		// play new item for the media gen that is currently loaded.
 		if (this.currentLoadedIndex !== this.playlist.currentIndex) {
 			this.logger.log("loading new index: " + this.playlist.currentIndex);
-			this.setVideoSrc();
+			this.setVideoSrc(this.getRenditions());
 		} else {
 			this.logger.log("playing or seeking on same index:" + this.currentLoadedIndex);
 		}
@@ -112,7 +110,7 @@ var PlaybackManager = Module.extend({
 	},
 	onItemReady: function(event) {
 		this.logger.log("onItemReady", event.data);
-		this.setVideoSrc();
+		this.setVideoSrc(this.getRenditions());
 		this.play(this.queuedStartTime);
 	},
 	onPlaying: function() {
@@ -121,19 +119,8 @@ var PlaybackManager = Module.extend({
 	onMediaEnd: function() {
 		// should never fire for ads.
 		this.player.trigger(Events.MEDIA_END);
-		if (this.bentoManager && this.bentoManager.isItTimeForAnAd()) {
-			this.logger.log("onMediaEnd() play post roll.");
-			this.afterAdPlayNextVideo = true;
-			this.playAd();
-		} else {
-			if (!this.player.config.continuousPlay) {
-				this.logger.log("onMediaEnd() don't play next. wait for API input");
-				this.waitingForAPIInput = true;
-			} else {
-				this.logger.log("onMediaEnd() playNextVideo()");
-				this.playNextVideo();
-			}
-		}
+		this.logger.log("onMediaEnd() playNextVideo()");
+		this.playNextVideo();
 	},
 	playNextVideo: function() {
 		this.logger.log("playNextVideo() playlist.hasNext():" + this.playlist.hasNext() + " currentLoadedIndex:" + this.currentLoadedIndex);
@@ -141,33 +128,29 @@ var PlaybackManager = Module.extend({
 			this.playlist.goToNext();
 			this.play(0);
 		} else {
-			this.adCheckedIndex = this.currentPlayingIndex = this.currentLoadedIndex = -1;
-			this.hasPlaylistEnded = true;
+			this.currentPlayingIndex = this.currentLoadedIndex = -1;
+			this.video.setControls(false);
 			this.player.exitFullScreen();
 			this.player.trigger(Events.PLAYLIST_COMPLETE);
 		}
 	},
-	setVideoSrc: function() {
-		if (!this.isPlayingAd) {
-			this.currentLoadedIndex = this.playlist.currentIndex;
-			var currentItem = this.playlist.currentItem,
-				src = currentItem.rss.mediaGen.renditions;
-			if (!src) {
-				this.logger.error("loadItem no src in media gen for currentLoadedIndex:" + this.currentLoadedIndex);
-			} else {
-				this.logger.log("setVideoSrc() for currentLoadedIndex:" + this.currentLoadedIndex, src);
-				this.video.isLive(currentItem.isLive);
-				this.video.callPlayAfterSeek = !this.video.isPaused();
-				this.video.setSrc(src);
-			}
-		} else {
-			this.logger.warn("setVideoSrc not setting video src, currently playing ad.");
+	setVideoSrc: function(src) {
+		if (!src) {
+			this.logger.error("no src in media gen for currentLoadedIndex:" + this.currentLoadedIndex);
 		}
+		this.currentLoadedIndex = this.playlist.currentIndex;
+		this.logger.log("setVideoSrc() for currentLoadedIndex:" + this.currentLoadedIndex, src);
+		this.video.isLive(this.playlist.currentItem.isLive);
+		this.video.callPlayAfterSeek = !this.video.isPaused();
+		this.video.setSrc(src);
 	},
-	hasError: function(currentItem) {
-		var renditions = currentItem.rss.mediaGen.renditions;
-		if (renditions.length === 0) {
-			this.player.trigger(Modules.Events.MEDIA_GEN_ERROR, currentItem.rss.mediaGen.errorMessage);
+	getRenditions: function() {
+		return this.playlist.currentItem.rss.mediaGen.renditions;
+	},
+	hasError: function() {
+		var renditions = this.getRenditions();
+		if (!renditions || renditions.length === 0) {
+			this.player.trigger(Modules.Events.MEDIA_GEN_ERROR, this.playlist.currentItem.rss.mediaGen.errorMessage);
 		}
 		return false;
 	},
