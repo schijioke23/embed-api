@@ -4,9 +4,12 @@ module.exports = function(grunt) {
         deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
         package_manager = "components/mtvn-package-manager/dist/mtvn-package-manager.js",
         mtvn_util = "../components/mtvn-util/dist/mtvn-util.js",
+        mtvn_playback = "../components/html5-playback/index.js",
+        mtvn_playlist = "../components/mtvn-playlist/index.js",
         finish = "src/util/fire-api-callbacks.js";
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        build:deployPath,
         clean: {
             folder: ["dist/*", "build/*"]
         },
@@ -68,7 +71,7 @@ module.exports = function(grunt) {
                 options: {
                     data: {
                         project: "unicorn.js",
-                        modules: "[" + mtvn_util + ", ../components/html5-playback/index.js]"
+                        modules: "[" + mtvn_util + "," + mtvn_playback + "]"
                     }
                 },
                 files: {
@@ -78,7 +81,8 @@ module.exports = function(grunt) {
             micro: {
                 options: {
                     data: {
-                        project: "micro.js"
+                        project: "micro.js",
+                        modules: "[" + mtvn_util + "," + mtvn_playback + "," + mtvn_playlist + "]"
                     }
                 },
                 files: {
@@ -116,6 +120,13 @@ module.exports = function(grunt) {
                 dest: deployPath
             }
         },
+        plato: {
+            all: {
+                files: {
+                    "<%=build%>report/":['src/**/*.js', '!**/third-party/**']
+                }
+            }
+        },
         watch: {
             files: ['Gruntfile.js', 'src/**/*.js'],
             tasks: ["rig", "concat"]
@@ -128,6 +139,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-plato');
     grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
@@ -143,5 +155,5 @@ module.exports = function(grunt) {
         grunt.config("dirname", dir);
     });
     grunt.registerTask('default', ['clean', 'version', 'jshint:devel', 'rig', 'concat']);
-    grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'copy']);
+    grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'plato', 'copy']);
 };
