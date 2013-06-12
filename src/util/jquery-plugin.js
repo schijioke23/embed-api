@@ -1,4 +1,4 @@
-/*global Core, Config, MTVNPlayer, $ */
+/*global Core, Config, MTVNPlayer, Logger*/
 (function() {
     var eventPrefix = "MTVNPlayer:",
         $ = window.$ || $,
@@ -28,28 +28,37 @@
             }
         },
         // creates a player and hooks up
-        createPlayer = function($el) {
-            var config = Config.buildConfig($el[0], defaultConfig),
-                player;
-            player = new MTVNPlayer.Player($el[0], config);
+        createPlayer = function($el, config, events) {
+            // ugh. first copy the default, but don't override.
+            // I have to do this since internally I don't support the MTVN.config stuff.
+            config = Config.copyProperties(config, defaultConfig);
+            // next apply that config to the element properties.
+            config = Config.buildConfig($el[0], config);
+            var player = new MTVNPlayer.Player($el[0], config, events);
             $el.data("player", player);
             player.$el = $el;
             mapMethods($el);
         };
     // main plugin function
     $.fn.player = function(options) {
+        options = options || {};
+        if ($.isFunction(options)) {
+            options = {
+                callback: options
+            };
+        }
         // callback is fired after an MTVNPlayer is created.
-        var callback = $.isFunction(options) ? options : function() {},
+        var callback = $.isFunction(options.callback) ? options.callback : function() {},
             // first we look for .MTVNPlayer, then we refine to .MTVNPlayers with contenturis.
             self = this.not(function() {
                 return $(this).data("contenturi") ? false : true;
-            });
-        if (MTVNPlayer.Player.prototype.canAutoPlay && self.length > 0) {
+            }),
+            canUsePlaceholder = MTVNPlayer.Player.prototype.canUsePlaceholder;
+        if (self.length > 0) {
             // prepare placeholders.
             self.each(function() {
                 var $el = $(this);
-                // TODO, isHTML5Player is no longer a valid indicator of placeholder.
-                if ($el.children().length > 0) { // if element has children, assume placeholders.
+                if (canUsePlaceholder && $el.children().length > 0) { // if element has children, assume placeholders.
                     // inject placeholder styles.
                     setStyles();
                     // wrap the placeholder and add the button.
@@ -67,12 +76,12 @@
                             delete $el.data().player;
                         });
                         $el.data("autoplay", true);
-                        createPlayer($el);
+                        createPlayer($el, options.config, options.events);
                         callback();
                     });
-                } else { // else add the div for the player to grow into.
+                } else { // else create the player
                     $el.empty();
-                    createPlayer($el);
+                    createPlayer($el, options.config, options.events);
                     callback();
                 }
             });

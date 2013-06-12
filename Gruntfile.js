@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         finish = "src/util/fire-api-callbacks.js";
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        build:deployPath,
+        build: deployPath,
         clean: {
             folder: ["dist/*", "build/*"]
         },
@@ -123,13 +123,13 @@ module.exports = function(grunt) {
         plato: {
             all: {
                 files: {
-                    "<%=build%>report/":['src/**/*.js', '!**/third-party/**']
+                    "<%=build%>report/": ['src/**/*.js', '!**/third-party/**']
                 }
             }
         },
         watch: {
             files: ['Gruntfile.js', 'src/**/*.js'],
-            tasks: ["rig", "concat"]
+            tasks: ["version", "rig", "concat"]
         }
     });
     grunt.loadNpmTasks('grunt-rigger');
@@ -142,7 +142,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-plato');
     grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
-            date = grunt.template.today("mm/dd/yyyy hh:mm:ss");
+            date = grunt.template.today("mm/dd/yyyy hh:MM:ss TT");
         grunt.file.write(targetPath + "version.js", "MTVNPlayer.version=\"" + version + "\";\nMTVNPlayer.build=\"" + date + "\";");
     });
     grunt.registerTask('buildNumber', 'append a build number to the build', function(buildNumber) {

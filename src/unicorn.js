@@ -1,5 +1,4 @@
-//= util/[core.js, config.js]
-//= util/[logger.js, module.js, config.js, url.js, share-util.js]
+//= util/[logger.js, core.js, config.js, module.js, module-manager.js, url.js, share-util.js]
 //= model
 //= player/contentless.js
 //= player/micro-player/[model, manager]
@@ -7,4 +6,4 @@
 //= player/vmap/[model, manager]
 //= player/vmap/[managers.js, exports.js]
 //= player.js
-//= util/[jquery-plugin.js, end-slate-loader.js, finish.js]
+//= util/[static-methods.js, jquery-plugin.js, end-slate-loader.js, finish.js]
