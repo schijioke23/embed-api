@@ -13,7 +13,7 @@
   "dependencies": {
     "underscore":"underscore#1.4.4",
     "zepto":"zepto#1.0.0",
-    "mtvn-package-manager": "mtvn-player/mtvn-package-manager#0.3.0",
+    "mtvn-package-manager": "mtvn-player/mtvn-package-manager#0.4.0",
     "mtvn-util": "mtvn-player/mtvn-util#0.7.0",
     "mtvn-playlist": "http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playlist/archive/0.4.0-15/mtvn-playlist.js",
     "html5-playback": "http://media.mtvnservices-d.mtvi.com/player/api/module/mtvn-playback/archive/0.3.0-22/html5-playback.js",

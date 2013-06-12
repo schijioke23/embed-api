@@ -6,7 +6,7 @@ Config.requiresJQuery(function() {
 	// $ may have been updated, let's reset the var.
 	/* jshint unused:false */
 	var $ = MTVNPlayer.require("$");
-	//= util/[logger.js, core.js, module-manager.js]
+	//= util/[core.js, module-manager.js]
 	//= model
 	//= player/[contentless.js, flash-player.js]
 	//= player.js

@@ -96,15 +96,15 @@ module.exports = function(grunt) {
                 dest: "dist/unicorn.js"
             },
             micro: {
-                src: ["dist/micro.js"].concat(["components/Bento.JS/index.js", finish]),
+                src: [package_manager, "dist/micro.js"].concat(["components/Bento.JS/index.js", finish]),
                 dest: "dist/micro.js"
             },
             flash: {
-                src: ["dist/flash.js"].concat(["src/third-party/swfobject.js", finish]),
+                src: [package_manager, "dist/flash.js"].concat(["src/third-party/swfobject.js", finish]),
                 dest: "dist/flash.js"
             },
             html5: {
-                src: ["dist/html5.js"].concat([finish]),
+                src: [package_manager, "dist/html5.js"].concat([finish]),
                 dest: "dist/html5.js"
             }
         },
@@ -155,5 +155,5 @@ module.exports = function(grunt) {
         grunt.config("dirname", dir);
     });
     grunt.registerTask('default', ['clean', 'version', 'jshint:devel', 'rig', 'concat']);
-    grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'plato', 'copy']);
+    grunt.registerTask('release', ['clean', 'version', 'jshint:release', 'rig', 'concat', 'uglify', 'copy', 'plato']);
 };

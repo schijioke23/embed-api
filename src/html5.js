@@ -1,4 +1,4 @@
-//= util/[logger.js, core.js, config.js, module-manager.js]
+//= util/[core.js, config.js, module-manager.js]
 //= model
 //= player/[contentless.js, html5-player.js]
 //= player.js

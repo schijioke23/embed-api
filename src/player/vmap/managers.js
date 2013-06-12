@@ -1,4 +1,4 @@
-/* global UserManager, VMAPPlaybackManager, VMAPTrackerManager, VMAPAdManager, VMAPPlaylistManager, APIManager, EndScreenManager */
+/* global UserManager, VMAPPlaybackManager, VMAPTrackerManager, VMAPAdManager, VMAPPlaylistManager, APIManager, PlaceholderManager */
 /* exported Managers */
 var Managers = function() {
 	return [
@@ -8,5 +8,5 @@ var Managers = function() {
 		VMAPTrackerManager,
 		VMAPAdManager,
 		APIManager,
-		EndScreenManager];
+		PlaceholderManager];
 };

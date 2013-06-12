@@ -1,7 +1,12 @@
+/* exported FormFactorMap */
 var FormFactorMap = function() {
 	var DEFAULT_FALSE = [false, true],
 		DEFAULT_TRUE = [true, false];
 	return {
+		"1": {
+			name: "autoPlay",
+			value: DEFAULT_FALSE
+		},
 		"8": {
 			name: "ccEnabled",
 			value: DEFAULT_FALSE
@@ -15,9 +20,9 @@ var FormFactorMap = function() {
 			value: DEFAULT_FALSE,
 			defaultValue: true
 		},
-		"27" : {
-			name : "useCoda",
-			value : DEFAULT_TRUE
+		"27": {
+			name: "useCoda",
+			value: DEFAULT_TRUE
 		}
 	};
 }();

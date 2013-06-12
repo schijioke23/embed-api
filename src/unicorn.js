@@ -6,4 +6,4 @@
 //= player/vmap/[model, manager]
 //= player/vmap/[managers.js, exports.js]
 //= player.js
-//= util/[static-methods.js, jquery-plugin.js, end-slate-loader.js, finish.js]
+//= util/[static-methods.js, jquery-plugin.js, finish.js]
