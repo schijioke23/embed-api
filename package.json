@@ -1,32 +1,33 @@
 {
-  "name": "embed-api",
-  "version": "3.0.0",
-  "author": "gianni ferullo <giannif@gmail.com>",
-  "private": true,
-  "description": "The embed api provides a unified interface for different player implementations.",
-  "repository": {
-    "type": "git",
-    "url": "https://mtvn-player@github.com/mtvn-player/embed-api.git"
-  },
-  "scripts": {
-    "preinstall": "bower install",
-    "test": "testem ci"
-  },
-  "devDependencies": {
-    "grunt": "0.4.x",
-    "grunt-contrib": "0.4.x",
-    "grunt-contrib-uglify": "*",
-    "grunt-rigger": "git://github.com/giannif/grunt-rigger.git",
-    "grunt-remove-logging": "0.1.x",
-    "grunt-contrib-watch": "~0.3.1",
-    "grunt-contrib-jshint": "~0.4.3",
-    "grunt-contrib-clean": "~0.4.1",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-plato": "~0.2.0"
-  },
-  "license": "MIT",
-  "engine": {
-    "node": ">=0.6"
-  }
+    "name": "embed-api",
+    "version": "3.0.0",
+    "author": "gianni ferullo <giannif@gmail.com>",
+    "private": true,
+    "description": "The embed api provides a unified interface for different player implementations.",
+    "repository": {
+        "type": "git",
+        "url": "https://mtvn-player@github.com/mtvn-player/embed-api.git"
+    },
+    "scripts": {
+        "preinstall": "bower install",
+        "test": "testem ci"
+    },
+    "devDependencies": {
+        "grunt": "0.4.x",
+        "grunt-contrib": "0.4.x",
+        "grunt-contrib-uglify": "*",
+        "grunt-rigger": "git://github.com/giannif/grunt-rigger.git",
+        "grunt-remove-logging": "0.1.x",
+        "grunt-contrib-watch": "~0.3.1",
+        "grunt-contrib-jshint": "~0.4.3",
+        "grunt-contrib-clean": "~0.4.1",
+        "grunt-contrib-copy": "~0.4.1",
+        "grunt-contrib-concat": "~0.3.0",
+        "grunt-plato": "~0.2.0",
+        "grunt-bumpx": "~0.1.5"
+    },
+    "license": "MIT",
+    "engine": {
+        "node": ">=0.6"
+    }
 }

@@ -127,6 +127,9 @@ module.exports = function(grunt) {
                 }
             }
         },
+        bump: {
+            files: ['package.json']
+        },
         watch: {
             files: ['Gruntfile.js', 'src/**/*.js'],
             tasks: ["version", "rig", "concat"]
@@ -139,6 +142,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-bumpx');
     grunt.loadNpmTasks('grunt-plato');
     grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
