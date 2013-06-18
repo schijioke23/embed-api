@@ -1,4 +1,4 @@
-/*global Core, Config, MTVNPlayer, Logger*/
+/*global Core, Config, MTVNPlayer, Logger, SHARED_VIDEO_ELEMENT:true*/
 (function() {
     var eventPrefix = "MTVNPlayer:",
         $ = window.$ || $,
@@ -68,6 +68,13 @@
                     // when clicked, create a player.
                     $el.delegate("div.MTVNPlayer_placeholder", "click", function(e) {
                         e.preventDefault();
+                        // for iPhone. Activate the video element.
+                        if(!SHARED_VIDEO_ELEMENT){
+                            var $video = $("<video></video>");
+                            $video[0].play();
+                            SHARED_VIDEO_ELEMENT = $video[0];
+                            (new Logger("MTVNPlayer.Placeholder")).info("video element activated.");
+                        }
                         // store markup for later use
                         $el.find("div.MTVNPlayer_placeholder").hide();
                         $el.bind("MTVNPlayer:showPlaceholder", function() {

@@ -1,0 +1,2 @@
+/* exported SHARED_VIDEO_ELEMENT */
+var SHARED_VIDEO_ELEMENT;

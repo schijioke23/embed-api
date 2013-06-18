@@ -1,4 +1,4 @@
-/* global _, $, Module, Modules, require, Events, PlayState, UserManager*/
+/* global _, $, Module, Modules, require, Events, PlayState, UserManager, SHARED_VIDEO_ELEMENT:true*/
 /* exported PlaybackManager */
 var PlaybackManager = Module.extend({
 	initialize: function() {
@@ -6,11 +6,10 @@ var PlaybackManager = Module.extend({
 			Playlist = require("mtvn-util").Playlist;
 		_.bindAll(this);
 		_.extend(this, require("Backbone").Events);
-
 		// Video module
 		var video = this.video = this.player.module(Modules.VIDEO, new(Video.Html5.Player)({
 			controls: this.player.config.useNativeControls,
-			el: PlaybackManager.SHARED_VIDEO_ELEMENT
+			el: SHARED_VIDEO_ELEMENT
 		}));
 		this.player.element = video.el;
 		video.$el.css({
@@ -19,6 +18,12 @@ var PlaybackManager = Module.extend({
 			position: "absolute"
 		});
 		$(this.player.playerTarget).replaceWith(video.el);
+
+		if(!SHARED_VIDEO_ELEMENT){
+			// we'll try to activate, but it should already have been activated.
+			video.el.play();
+		}
+
 		this.listenTo(video, Video.Events.END, this.onMediaEnd);
 
 		// Playlist module
@@ -114,7 +119,7 @@ var PlaybackManager = Module.extend({
 		this.play(this.queuedStartTime);
 	},
 	onPlaying: function() {
-		PlaybackManager.SHARED_VIDEO_ELEMENT = this.video.el;
+		SHARED_VIDEO_ELEMENT = this.video.el;
 	},
 	onMediaEnd: function() {
 		// should never fire for ads.
@@ -188,7 +193,6 @@ var PlaybackManager = Module.extend({
 		this.video.destroy();
 	}
 }, {
-	SHARED_VIDEO_ELEMENT: null,
 	AD_EVENTS: ["timeupdate", "playing", "pause", "error"],
 	NAME: "PlaybackManager"
 });

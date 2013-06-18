@@ -69,7 +69,6 @@ var ConfigManager = function() {
 			// no clean up needed
 		}
 	}, {
-		PROXY_URL: "http://media.mtvnservices.com/player/jsonp/?callback=?&url=",
-		SHARED_VIDEO_ELEMENT: null
+		PROXY_URL: "http://media.mtvnservices.com/player/jsonp/?callback=?&url="
 	});
 }();
