@@ -46,6 +46,7 @@ var Config = {
      * The properties will not be overriden on the toObj, unless override is specified.
      */
     copyProperties: function(toObj, fromObj, override) {
+        toObj = toObj || {};
         function exists(value) {
             return value !== undefined && value !== null;
         }

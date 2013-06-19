@@ -69,6 +69,8 @@ var VMAPPlaylistManager = function() {
 				type: Playlist.Events.ITEM_READY,
 				data: loadedItem
 			});
+		},
+		destroy:function() {
 		}
 	}, {
 		NAME: Modules.PLAYLIST

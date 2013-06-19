@@ -29,6 +29,8 @@ var PlayerOverrides = function() {
 			$(this.containerElement).css({
 				position: "relative" // TODO not here.
 			});
+			// TODO is needed? 
+			// $(this.containerElement).on("remove",this.destroy);
 			Core.executeCallbacks(this);
 			this.module(PerformanceManager);
 			// start up

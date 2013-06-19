@@ -7,7 +7,6 @@ var ConfigManager = function() {
 			tinyPlayerURL: "http://media.mtvnservices-d.mtvi.com/player/swf/TinyPlayer.swf"
 		};
 	return Module.extend({
-		name: "ConfigManager",
 		initialize: function() {
 			_.bindAll(this);
 			this.loadConfig(this.player.config);
@@ -21,7 +20,7 @@ var ConfigManager = function() {
 			if (config.ready) { // config is loaded.
 				this.onConfig(config);
 			} else {
-				$.getJSON(ConfigManager.PROXY_URL + encodeURIComponent(CONFIG_BASE + config.uri), this.onConfig);
+				this.request = $.getJSON(ConfigManager.PROXY_URL + encodeURIComponent(CONFIG_BASE + config.uri), this.onConfig);
 			}
 		},
 		/**
@@ -66,9 +65,12 @@ var ConfigManager = function() {
 			player.play();
 		},
 		destroy: function() {
-			// no clean up needed
+			if (this.request) {
+				this.request.abort();
+			}
 		}
 	}, {
+		NAME: "ConfigManager",
 		PROXY_URL: "http://media.mtvnservices.com/player/jsonp/?callback=?&url="
 	});
 }();

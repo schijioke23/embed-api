@@ -1,4 +1,4 @@
-/*global Core, Config, MTVNPlayer, Logger, SHARED_VIDEO_ELEMENT:true*/
+/*global _, Core, Config, MTVNPlayer, Logger, SHARED_VIDEO_ELEMENT:true*/
 (function() {
     var eventPrefix = "MTVNPlayer:",
         $ = window.$ || $,
@@ -17,12 +17,15 @@
             Core.appendStyle(rules);
         },
         // allow $("MTVNPlayer").trigger("MTVNPlayer:playIndex",[0,20]);.
-        mapMethods = function(el) {
-            var player = el.data("player"),
-                invoke = function(event, arg1, arg2) {
-                    var method = event.type.replace(eventPrefix, "");
-                    player[method].apply(player, [arg1, arg2]);
-                };
+        mapMethods = function(el, player) {
+            var invoke = function(event) {
+                var methodName = event.type.replace(eventPrefix, ""),
+                    args = _.rest(_.toArray(arguments)),
+                    method = player[methodName];
+                if (_.isFunction(method)) {
+                    method.apply(player, args);
+                }
+            };
             for (var prop in MTVNPlayer.Player.prototype) {
                 el.bind(eventPrefix + prop, invoke);
             }
@@ -35,9 +38,9 @@
             // next apply that config to the element properties.
             config = Config.buildConfig($el[0], config);
             var player = new MTVNPlayer.Player($el[0], config, events);
-            $el.data("player", player);
             player.$el = $el;
-            mapMethods($el);
+            mapMethods($el, player);
+            return player;
         };
     // main plugin function
     $.fn.player = function(options) {
@@ -69,7 +72,7 @@
                     $el.delegate("div.MTVNPlayer_placeholder", "click", function(e) {
                         e.preventDefault();
                         // for iPhone. Activate the video element.
-                        if(!SHARED_VIDEO_ELEMENT){
+                        if (!SHARED_VIDEO_ELEMENT) {
                             var $video = $("<video></video>");
                             $video[0].play();
                             SHARED_VIDEO_ELEMENT = $video[0];
@@ -77,13 +80,12 @@
                         }
                         // store markup for later use
                         $el.find("div.MTVNPlayer_placeholder").hide();
+                        var player = createPlayer($el, options.config, options.events);
                         $el.bind("MTVNPlayer:showPlaceholder", function() {
+                            player.destroy();
                             $el.children().not("div.MTVNPlayer_placeholder").remove();
                             $el.find("div.MTVNPlayer_placeholder").show();
-                            delete $el.data().player;
                         });
-                        $el.data("autoplay", true);
-                        createPlayer($el, options.config, options.events);
                         callback();
                     });
                 } else { // else create the player
