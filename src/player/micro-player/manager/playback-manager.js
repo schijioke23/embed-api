@@ -190,7 +190,6 @@ var PlaybackManager = Module.extend({
 	},
 	destroy: function() {
 		this.stopListening();
-		this.video.destroy();
 	}
 }, {
 	AD_EVENTS: ["timeupdate", "playing", "pause", "error"],

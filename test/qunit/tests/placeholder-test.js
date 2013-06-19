@@ -1,4 +1,4 @@
-/*global $, MTVNPlayer, test, asyncTest, expect, equal, ok, start */
+/* global $, test, asyncTest, expect, equal, ok, start */
 (function() {
     "use strict";
     var $fixture = $("#qunit-fixture");

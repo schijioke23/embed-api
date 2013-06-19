@@ -47,7 +47,7 @@ var VMAPPlaylistManager = function() {
 				type: Playlist.Events.READY,
 				data: this.metadata
 			});
-			$.getJSON(ConfigManager.PROXY_URL + encodeURIComponent(vmapURL), _.partial(this.onData, index));
+			this.request = $.getJSON(ConfigManager.PROXY_URL + encodeURIComponent(vmapURL), _.partial(this.onData, index));
 		},
 		onData: function(index, data) {
 			// pull VMAP from media gen JSON.
@@ -71,6 +71,9 @@ var VMAPPlaylistManager = function() {
 			});
 		},
 		destroy:function() {
+			if(this.request){
+				this.request.cancel();
+			}
 		}
 	}, {
 		NAME: Modules.PLAYLIST
