@@ -9,7 +9,7 @@
     test("test placeholder creation", function() {
         $fixture.html($("#test1").html());
         $(".MTVNPlayer").player();
-        var $placeholder = $("a.MTVNPlayer", $fixture),
+        var $placeholder = $(".MTVNPlayer", $fixture),
             $container = $("div.MTVNPlayer_placeholder ", $placeholder);
         equal($placeholder.length, 1, "placeholder tag is there");
         ok($placeholder.hasClass("MTVNPlayer"), "is MTVNPlayer class");

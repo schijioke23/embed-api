@@ -1,4 +1,5 @@
-/* global $, _, Core, Modules, PerformanceManager, ConfigManager, Events, PlaybackManager*/
+/* global $, _, Core, Modules, PerformanceManager, 
+  ConfigManager, Events, PlaybackManager, SHARED_VIDEO_ELEMENT:true, Logger*/
 /* exported PlayerOverrides */
 /**
  * @ignore
@@ -26,6 +27,13 @@ var PlayerOverrides = function() {
 				source: this.id,
 				player: this
 			});
+			// for iPhone. Activate the video element.
+			if (!SHARED_VIDEO_ELEMENT) {
+				var $video = $("<video></video>");
+				$video[0].play();
+				SHARED_VIDEO_ELEMENT = $video[0];
+				(new Logger("Player")).info("video element activated.");
+			}
 			$(this.containerElement).css({
 				position: "relative" // TODO not here.
 			});

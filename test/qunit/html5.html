@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <title>Embed API QUnit Tests</title>
   <link rel="stylesheet" href="qunit-1.11.0.css">
-  <script src="../libs/jQuery.js"></script>
   <script src="qunit-1.11.0.js"></script>
   <!-- this must be after the qunit.js -->
   <script>
@@ -12,6 +11,7 @@
         document.write('<script src="/testem.js"></'+'script>');
     }
   </script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script type="text/javascript" language="javascript">
       (function() {
         var isInDist = location.href.indexOf("dist/test") !== -1,
@@ -46,7 +46,6 @@
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
-  <script type="text/javascript" src="tests/placeholder-test.js"></script>
   <script type="text/javascript" src="tests/config-test.js"></script>
   <script type="text/javascript" src="tests/performance-test.js"></script>
 </body>
