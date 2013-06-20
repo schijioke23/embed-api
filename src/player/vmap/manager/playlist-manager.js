@@ -72,7 +72,7 @@ var VMAPPlaylistManager = function() {
 		},
 		destroy:function() {
 			if(this.request){
-				this.request.cancel();
+				this.request.abort();
 			}
 		}
 	}, {

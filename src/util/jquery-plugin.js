@@ -11,11 +11,15 @@
         // also copy the properties from MTVN.player.config or MTVNPlayer.defaultConfig.
         defaultConfig = Config.copyProperties({}, legacyConfig || MTVNPlayer.defaultConfig),
         // inject styles once.
-        setStyles = function() {
-            setStyles = function() {};
-            var rules = "\n.MTVNPlayer_placeholder {cursor:pointer; position: relative;}\n" + ".MTVNPlayer_placeholder_button {\n" + "position:absolute;\n" + "height: 100%;\n" + "width: 100%;\n" + "top:0;\n" + "left:0;\n" + "background: no-repeat url(http://media.mtvnservices.com/player/images/Button_playBig_upSkin.png) center;\n" + "}\n" + "\n" + ".MTVNPlayer_placeholder_button:hover {\n" + "background-image: url(http://media.mtvnservices.com/player/images/Button_playBig_overSkin.png)\n" + "}\n";
+        setStyles = _.once(function() {
+            var rules = "\n.MTVNPlayer_placeholder {cursor:pointer; position: relative;}\n" +
+                ".MTVNPlayer_placeholder_button {\n" +
+                "position:absolute;\n" + "height: 100%;\n" +
+                "width: 100%;\n" + "top:0;\n" + "left:0;\n" +
+                "background: no-repeat url(http://media.mtvnservices.com/player/images/Button_playBig_upSkin.png) center;\n" + "}\n" + "\n" + ".MTVNPlayer_placeholder_button:hover {\n" + "background-image: url(http://media.mtvnservices.com/player/images/Button_playBig_overSkin.png)\n" +
+                "}\n";
             Core.appendStyle(rules);
-        },
+        }),
         // allow $("MTVNPlayer").trigger("MTVNPlayer:playIndex",[0,20]);.
         mapMethods = function(el, player) {
             var invoke = function(event) {
