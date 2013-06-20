@@ -54,16 +54,19 @@
             count = 0,
             callback = function() {
                 count++; // should equal 1
-                player.unbind("onPlayheadUpdate", callback);
+                console.log(player.id, "events-test.js:56 count",count);
+                player.off("playheadUpdate", callback);
             };
-        player.one("onReady", function() {
+        player.one("ready", function() {
             player.play();
         });
-        player.bind("onPlayheadUpdate", callback);
+        player.bind("playheadUpdate", callback);
         var otherCB = function(event) {
+            console.log(player.id, "events-test.js:64 event.data",event.data);
             if (event.data > 2) {
-                player.off("onPlayheadUpdate", otherCB);
+                player.off("playheadUpdate", otherCB);
                 equal(count, 1, "unbind worked");
+                player.destroy();
                 start();
             }
         };

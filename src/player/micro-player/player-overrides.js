@@ -37,8 +37,6 @@ var PlayerOverrides = function() {
 			$(this.containerElement).css({
 				position: "relative" // TODO not here.
 			});
-			// TODO is needed? 
-			// $(this.containerElement).on("remove",this.destroy);
 			Core.executeCallbacks(this);
 			this.module(PerformanceManager);
 			// start up
@@ -60,6 +58,9 @@ var PlayerOverrides = function() {
 			// so modules don't even have to listen for the event.
 			_.invoke(this.module(Modules.ALL), "destroy");
 			this.events = [];
+			if(this.$el){
+				this.$el.remove(); // clean up the events.
+			}
 			// remove references to dom elements.
 			delete this.$el;
 			delete this.playerTarget;

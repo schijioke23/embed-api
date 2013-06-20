@@ -11,6 +11,7 @@
         document.write('<script src="/testem.js"></'+'script>');
     }
   </script>
+  <script type="text/javascript" src="qunit-module.js"></script>
   <script type="text/javascript" language="javascript">
       (function() {
         var isInDist = location.href.indexOf("dist/test") !== -1,
@@ -19,7 +20,6 @@
         document.write('<script src="' + src + '"></' + 'script>');
       })();
   </script>
-  <script type="text/javascript" src="qunit-module.js"></script>
   <!-- FIXTURES -->
   <script type="text/template" id="test1">
       <a class="MTVNPlayer" data-contentUri="mgid:cms:video:colbertnation.com:419436">

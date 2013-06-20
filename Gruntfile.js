@@ -130,6 +130,32 @@ module.exports = function(grunt) {
         bump: {
             files: ['package.json']
         },
+        testem: {
+            options: {
+                "framework": "qunit"
+            },
+            unicorn: {
+                options: {
+                    launch_in_ci: ['safari']
+                },
+                src: ['test/qunit/vmap.html'],
+                dest: 'tests.tap'
+            },
+            flash: {
+                options: {
+                    launch_in_ci: ['safari', 'chrome']
+                },
+                src: ['test/qunit/flash.html'],
+                dest: 'tests.tap'
+            },
+            html5: {
+                options: {
+                    launch_in_ci: ['safari']
+                },
+                src: ['test/qunit/html5.html'],
+                dest: 'tests.tap'
+            }
+        },
         watch: {
             files: ['Gruntfile.js', 'src/**/*.js'],
             tasks: ["version", "rig", "concat"]
@@ -144,6 +170,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-bumpx');
     grunt.loadNpmTasks('grunt-plato');
+    grunt.loadNpmTasks('grunt-testem');
     grunt.registerTask('version', 'write some javascript that contains the version.', function() {
         var version = grunt.config("pkg").version,
             date = grunt.template.today("mm/dd/yyyy hh:MM:ss TT");

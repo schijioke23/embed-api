@@ -1,5 +1,4 @@
 {
-      "framework":"qunit",
-      "test_page": "test/qunit/index.html",
-      "launch_in_ci" : ["Chrome","Firefox","Safari"]
+	"framework": "qunit",
+	"test_page": "test/qunit/vmap.html"
 }

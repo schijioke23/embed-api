@@ -10,6 +10,7 @@ if (!MTVNPlayer.Player) {
         /* global Zepto*/
         //= ../components/underscore/underscore.js
         MTVNPlayer.provide("_",this._); // underscore is put on this, a temporary scope.
+        // Zepto will define $ if it's not defined in global.
         //= ../components/zepto/zepto.js
         MTVNPlayer.provide("$",Zepto); // Zepto is a var.
     }).apply({});
