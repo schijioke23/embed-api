@@ -1,4 +1,4 @@
-/*global _, $, MTVNPlayer, require, Module, Modules, Managers, FormFactorMap, UrlProcessor */
+/*global _, $, MTVNPlayer, require, provide, Module, Modules, Managers, FormFactorMap, UrlProcessor */
 var ConfigManager = function() {
 	var CONFIG_BASE = "http://media.mtvnservices.com/pmt/e1/access/index.html?playertype=html&uri=",
 		CONFIG_DEFAULTS = {
@@ -40,6 +40,7 @@ var ConfigManager = function() {
 			_.extend(this.player.config, loadedConfig, this.getOverrides(MTVNPlayer.defaultConfig));
 			// parse form factor
 			require("mtvn-util").mapFormFactorID(this.player.config.formFactorID, FormFactorMap, this.player.config);
+			this.configureExternalPackages();
 			this.initializeModules();
 		},
 		/**
@@ -63,6 +64,16 @@ var ConfigManager = function() {
 			});
 			player.module(Modules.PLAYLIST).load();
 			player.play();
+		},
+		configureExternalPackages: function() {
+			MTVNPlayer.configurePackages({
+				"mtvn-player/dialog": {
+					shim: true,
+					url: "http://media.mtvnservices-d.mtvi.com/player/api/module/dialog/0.0.0/dialog.min.js",
+					exports: "Dialog",
+					css:"http://media.mtvnservices-d.mtvi.com/player/api/module/dialog/0.0.0/style.css"
+				}
+			});
 		},
 		destroy: function() {
 			if (this.request) {

@@ -54,7 +54,7 @@ var VMAPPlaylistManager = function() {
 			var vmap = data.package ? data.package.item.vmap : data;
 			// if it's not an object, and it's a string, we have an error.
 			if (_.isString(vmap)) {
-				alert(vmap);
+				this.options.player.trigger(Modules.Events.MEDIA_GEN_ERROR, vmap);
 				return;
 			}
 			vmap = VMAP.parse(vmap);
@@ -70,8 +70,8 @@ var VMAPPlaylistManager = function() {
 				data: loadedItem
 			});
 		},
-		destroy:function() {
-			if(this.request){
+		destroy: function() {
+			if (this.request) {
 				this.request.abort();
 			}
 		}

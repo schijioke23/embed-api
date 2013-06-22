@@ -1,3 +1,5 @@
+/* global MTVNPlayer */
+/* exported Events */
 /**
  * Events dispatched by {@link MTVNPlayer.Player}.
  *

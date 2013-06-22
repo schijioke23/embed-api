@@ -2,7 +2,9 @@
 module.exports = function(grunt) {
     var targetPath = 'dist/',
         deployPath = 'build/<%= grunt.config("dirname") %><%= pkg.version %><%= grunt.config("buildNumber") %>/',
+        // this is concatted
         package_manager = "components/mtvn-package-manager/dist/mtvn-package-manager.js",
+        // the below are rigged, so the path is relative to the src.
         mtvn_util = "../components/mtvn-util/dist/mtvn-util.js",
         mtvn_playback = "../components/html5-playback/index.js",
         mtvn_playlist = "../components/mtvn-playlist/index.js",
