@@ -1,5 +1,6 @@
 var Contentless = {
     /**
+     * @ignore
      * Configure the player without playing a video
      * @param {String} uri for the desired configuration.
      */
@@ -7,6 +8,7 @@ var Contentless = {
         this.message("configure", uri);
     },
     /**
+     * @ignore
      * Disable Ads
      * @param {Boolean} disables ads when true.
      */
@@ -14,6 +16,7 @@ var Contentless = {
         this.message("disableAds", value);
     },
     /**
+     * @ignore
      * SpoofAdURI
      * @param {uri} When ads are requested use the given uri.
      */
@@ -21,6 +24,7 @@ var Contentless = {
         this.message("spoofAdURI", uri);
     },
     /**
+     * @ignore
      * Load a video from a uri
      * @param {String} uri for video to be loaded.
      */
@@ -28,6 +32,7 @@ var Contentless = {
         this.message("loadVideo", uri);
     },
     /**
+     * @ignore
      * Load a playlist from a uri
      * @param {String} uri for playlist to load
      * @param {Number} index of desired playlist item.
