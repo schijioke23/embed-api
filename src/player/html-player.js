@@ -147,6 +147,10 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
                     if (fv && fv.sid) {
                         player.message.call(player, "setSSID:" + fv.sid);
                     }
+                    var startIndex = parseInt(player.config.startIndex, 10);
+                    if (!isNaN(startIndex) && startIndex > 0) {
+                        player.message.call(player, "startIndex:" + startIndex);
+                    }
                     Core.executeCallbacks(player);
                     player.trigger(eventTypes.READY);
                 } else if (data === "fullscreen") {

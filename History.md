@@ -1,3 +1,8 @@
+2.9.0 / 2013-07-11 
+==================
+
+  * pass startIndex into html5 player if defined in config.
+ 
 
 2.8.1 / 2013-05-01 
 ==================

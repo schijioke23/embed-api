@@ -131,12 +131,10 @@ A play button image will be layered over the img below by the embed api.
 When the placeholder is clicked, an `MTVNPlayer.Player` will be created.
 
 ```html
-<a class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
-    <img 
-    src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:661024?height=288&width=512"
-    height="512"
-    width="288">
-</a>
+<div class="MTVNPlayer" data-contentUri="mgid:uma:video:mtv.com:661024">
+    <img src="http://mtv.mtvnimages.com/uri/mgid:uma:video:mtv.com:661024?width=640&height=360"
+    width="640" height="360">
+</div>
 ```
 ###### Placeholder configuration
 The configuration for the `MTVNPlayer.Player` will come from [MTVNPlayer.defaultConfig](#a4-1), and from the [data attributes](#a2-1) defined on the placeholder itself. The data attributes will override the config values.
