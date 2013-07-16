@@ -71,7 +71,7 @@
   * [BRBPL-3345](http://jira.mtvi.com/browse/BRBPL-3345) Support for placeholders and jQuery style event binding and method invokation.
   * `on`, `off`, and `one` deprecate `bind`, `unbind`, and `once`, respectively. 
   * Event name change - 'on' is no longer needed to prefix events. e.g. `player.on("ready",..` instead of `player.on("onReady",..`.
-  * Support for filtered events such as `playStateChange:playing`. 
+  * Support for filtered events such as `stateChange:playing`. 
   * Support for cue points `playheadUpdate:20`, fires at 20 seconds.
   * Fixed a bug where events fired in the reverse order they were added. They now fire in order.
   * `MTVNPlayer.getPlayer(uri)`, gets a player that was created with a specific uri.

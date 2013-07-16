@@ -219,7 +219,7 @@ var MTVNPlayer = MTVNPlayer || {};
         //Or perhaps listen for player creation.
         MTVNPlayer.onPlayer(function(player){
             // I didn't create this player, but I can still tie into events.
-            player.bind("onStateChange",function(event){});
+            player.on("stateChange",function(event){});
         });
     });
 ```
@@ -231,7 +231,7 @@ This function, only available when the API is loaded, will let you know every ti
 ```javascript
 MTVNPlayer.onPlayer(function(player){
     // I didn't create this player, but I can still tie into events.
-    player.bind("onStateChange",function(event){});
+    player.on("stateChange",function(event){});
     });
 });
 ```
