@@ -197,44 +197,39 @@ Likewise, and events object may be defined. See more here [MTVNPlayer.defaultEve
 var MTVNPlayer = MTVNPlayer || {};
 MTVNPlayer.defaultEvents = {onMediaStart:function(event){}};
 ```
-### Callbacks
+### Callbacks (v2.10.x, for older api versions contact the player team.)
 
 *These callbacks are great way to write decoupled code, you don't need to know when or how the API is loaded, 
 or how a player is created, but you can define logic based on these events.*
 
 <a name="a4-2"/>
-##### MTVNPlayer.addCallback
-This code snippit gives you a decoupled way to know when the Embed API is loaded. Once it is, you can create players, or you can listen for player creation with [MTVNPlayer.onPlayer](#a4-3).
-
+##### _mtvnPlayerAPIReady
 ```javascript
-var MTVNPlayer = MTVNPlayer || {};
-    MTVNPlayer.addCallback = function(n){
-        this.onAPIReady = function(e){
-            return e ? function(){e();n();} : n;
-        }(this.onAPIReady);
-    };
-    MTVNPlayer.addCallback(function(){
-        // The API is ready. Create as many players as you like.
-        var player = new MTVNPlayer.Player("player", {uri:"mgid:cms:video:nick.com:920786"});
-        //Or perhaps listen for player creation.
-        MTVNPlayer.onPlayer(function(player){
-            // I didn't create this player, but I can still tie into events.
-            player.on("stateChange",function(event){});
-        });
-    });
+var _mtvnPlayerAPIReady = _mtvnPlayerAPIReady || [];
+// it's best to add functions with "push", the api overrides it once it loads,
+// so you don't have to check MTVNPlayer.isReady.
+_mtvnPlayerAPIReady.push(function(){
+    // fires when the api has loaded.
+    // or if the api is already loaded.
+    // now I can create players.
+    var player = new MTVNPlayer.Player(element);
+});
 ```
+
 <a name="a4-3"/>
-##### MTVNPlayer.onPlayer
-
-This function, only available when the API is loaded, will let you know every time there is a new player created. 
-
+##### _mtvnPlayerReady
 ```javascript
-MTVNPlayer.onPlayer(function(player){
-    // I didn't create this player, but I can still tie into events.
-    player.on("stateChange",function(event){});
+var _mtvnPlayerReady = _mtvnPlayerReady || [];
+_mtvnPlayerReady.push(function(player){
+    // fired every time a player is created. 
+    // I can now add listeners and invoke methods.
+    player.mute();
+    player.on("stateChange:playing",function(){
+        // playing.
     });
 });
 ```
+
 <a name="a4-4"/>
 #### jQuery/Zepto support
 
