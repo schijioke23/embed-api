@@ -216,7 +216,8 @@ var Core = (function(core, $) {
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
     core.executeCallbacks = function(player) {
-        var cbs = onPlayerCallbacks.slice(),
+        var newCallbacks = window._mtvnPlayerReady || [],
+            cbs = onPlayerCallbacks.concat(newCallbacks).slice(),
             i = 0,
             len = cbs.length;
         for (i; i &lt; len; i++) {
