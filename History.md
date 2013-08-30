@@ -1,3 +1,8 @@
+2.9.1 / 2013-08-29 
+==================
+
+  * fullscreen fix for orientation change on android.
+
 2.9.0 / 2013-07-11 
 ==================
 
