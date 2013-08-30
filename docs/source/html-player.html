@@ -254,21 +254,18 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
         removePlayerInstance(this.element.contentWindow);
         this.element.parentNode.removeChild(this.element);
     };
-    // set up orientationchange handler for iPad
-    var n = window.navigator.userAgent.toLowerCase();
-    if (n.indexOf(&quot;ipad&quot;) !== -1) {
-        document.addEventListener(&quot;orientationchange&quot;, function() {
-            var i, player = null,
-                instances = Core.instances,
-                numberOfInstances = instances.length;
-            for (i = numberOfInstances; i--;) {
-                player = instances[i].player;
-                if (player.isFullScreen) {
-                    goFullScreen(player);
-                }
+    // set up orientationchange handler
+    window.addEventListener(&quot;orientationchange&quot;, function() {
+        var i, player = null,
+            instances = Core.instances,
+            numberOfInstances = instances.length;
+        for (i = numberOfInstances; i--;) {
+            player = instances[i].player;
+            if (player.isFullScreen) {
+                goFullScreen(player);
             }
-        }, false);
-    }
+        }
+    }, false);
 });</pre>
 </body>
 </html>
