@@ -1,4 +1,3 @@
-
 2.10.0 / 2013-08-20 
 ==================
 
@@ -6,12 +5,15 @@
   * `_mtvnPlayerAPIReady` is an array of functions that fire when the api loads (replaces MTVNPlayer.addCallback). (see issue #24)
   * `_mtvnPlayerReady` is an array of functions that fire when a player is ready (replaces MTVNPlayer.onPlayer). (see issue #24)
 
- 
+2.9.1 / 2013-08-29 
+==================
+
+  * fullscreen fix for orientation change on android.
+
 2.9.0 / 2013-07-11 
 ==================
 
   * pass startIndex into html5 player if defined in config.
- 
 
 2.8.1 / 2013-05-01 
 ==================
