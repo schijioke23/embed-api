@@ -5,6 +5,11 @@
   * `_mtvnPlayerAPIReady` is an array of functions that fire when the api loads (replaces MTVNPlayer.addCallback). (see issue #24)
   * `_mtvnPlayerReady` is an array of functions that fire when a player is ready (replaces MTVNPlayer.onPlayer). (see issue #24)
 
+2.9.2 / 2013-09-03 
+==================
+
+  * more fixes for android fullscreen, fire fullscreen resize after a delay so width and height are correct.
+ 
 2.9.1 / 2013-08-29 
 ==================
 
