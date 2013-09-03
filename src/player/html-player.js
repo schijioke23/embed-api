@@ -231,8 +231,7 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
         removePlayerInstance(this.element.contentWindow);
         this.element.parentNode.removeChild(this.element);
     };
-    // set up orientationchange handler
-    window.addEventListener("orientationchange", function() {
+    function callFullScreenOnAll() {
         var i, player = null,
             instances = Core.instances,
             numberOfInstances = instances.length;
@@ -242,5 +241,11 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
                 goFullScreen(player);
             }
         }
+    }
+    // set up orientationchange handler
+    window.addEventListener("orientationchange", function() {
+        callFullScreenOnAll();
+        // some browsers don't have a refreshed innerWidth and innerHeight immediately, invoke again after 500ms.
+        setTimeout(callFullScreenOnAll, 500);
     }, false);
 });
