@@ -1,3 +1,8 @@
+2.9.2 / 2013-09-03 
+==================
+
+  * more fixes for android fullscreen, fire fullscreen resize after a delay so width and height are correct.
+ 
 2.9.1 / 2013-08-29 
 ==================
 
