@@ -220,6 +220,12 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
             case "exitFullScreen":
                 exitFullScreen.apply(this, [this]);
                 break;
+            case "playUri":
+            case "playURI":
+                this.config.uri = arguments[1];
+                // when calling play uri from the player we lose the ref, call it from the page instead.
+                this.element.src = Core.getPath(this.config);
+                break;
             default:
                 if (arguments[1] !== undefined) {
                     message += ":" + arguments[1] + (arguments[2] !== undefined ? "," + arguments[2] : "");

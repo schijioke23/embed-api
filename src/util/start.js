@@ -31,7 +31,7 @@ if(!MTVNPlayer.require) {
      */
     MTVNPlayer.require = function(name) {
         if(!packages[name]) {
-            throw new Error("MTNVPlayer: package " + name + " not found.");
+            throw new Error("MTVNPlayer: package " + name + " not found.");
         }
         return packages[name];
     };

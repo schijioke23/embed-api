@@ -1,3 +1,10 @@
+2.10.0 / 2013-08-20 
+==================
+
+  * calling playUri from the page instead of from inside the html5 player, so the ref isn't lost. (see issue #25)
+  * `_mtvnPlayerAPIReady` is an array of functions that fire when the api loads (replaces MTVNPlayer.addCallback). (see issue #24)
+  * `_mtvnPlayerReady` is an array of functions that fire when a player is ready (replaces MTVNPlayer.onPlayer). (see issue #24)
+
 2.9.2 / 2013-09-03 
 ==================
 
@@ -12,7 +19,6 @@
 ==================
 
   * pass startIndex into html5 player if defined in config.
- 
 
 2.8.1 / 2013-05-01 
 ==================
@@ -81,7 +87,7 @@
   * [BRBPL-3345](http://jira.mtvi.com/browse/BRBPL-3345) Support for placeholders and jQuery style event binding and method invokation.
   * `on`, `off`, and `one` deprecate `bind`, `unbind`, and `once`, respectively. 
   * Event name change - 'on' is no longer needed to prefix events. e.g. `player.on("ready",..` instead of `player.on("onReady",..`.
-  * Support for filtered events such as `playStateChange:playing`. 
+  * Support for filtered events such as `stateChange:playing`. 
   * Support for cue points `playheadUpdate:20`, fires at 20 seconds.
   * Fixed a bug where events fired in the reverse order they were added. They now fire in order.
   * `MTVNPlayer.getPlayer(uri)`, gets a player that was created with a specific uri.
