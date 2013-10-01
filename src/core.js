@@ -1,4 +1,5 @@
-/*global MTVNPlayer, _ */
+/*global MTVNPlayer, _, Url */
+/* exported Core */
 var Core = (function(core, $) {
     "use strict";
     var baseURL = "http://media.mtvnservices.com/",
@@ -120,10 +121,23 @@ var Core = (function(core, $) {
      * otherwise join the baseURL with the config.uri
      */
     core.getPath = function(config) {
+        var path = baseURL + config.uri;
         if (config.templateURL) {
-            return config.templateURL.replace("{uri}", config.uri);
+            path = config.templateURL.replace("{uri}", config.uri);
         }
-        return baseURL + config.uri;
+        if (MTVNPlayer.isHTML5Player) {
+            path = core.processQSParams(path, config);
+        }
+        return path;
+    };
+    core.processQSParams = function(path, config) {
+        if (_.isObject(config.flashVars)) {
+           path = Url.addQueryStringParam(path, "flashVars", encodeURIComponent(JSON.stringify(config.flashVars)));
+        }
+        if (_.isObject(config.test)) {
+           path = Url.addQueryStringParam(path, "testConfig", encodeURIComponent(JSON.stringify(config.test)));
+        }
+        return path;
     };
     /**
      * @method processPerformance

@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, test, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     var $fixture = $("#qunit-fixture");
@@ -152,4 +152,25 @@
         ok(!config.versionIsMinimum("11.1.0", "11.0.0"), "11.1.0 is not greater than 11.0.0");
         ok(!config.versionIsMinimum("11.0.1", "11.0.0"), "11.0.1 is not greater than 11.0.0");
     });
+    if (MTVNPlayer.isHTML5Player) {
+        test("test config.flashVars for HTML5 comparison", function() {
+            var Core = MTVNPlayer.module("core"),
+                config = {
+                    uri: "test-uri"
+                };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri", "no flashvars works");
+            config.flashVars = {
+                123:"abc",
+                456:"def"
+            };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?flashVars=%7B%22123%22%3A%22abc%22%2C%22456%22%3A%22def%22%7D", "flashVars works");
+            config.test = {
+                678:"ghi",
+                910:"jkl"
+            };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?flashVars=%7B%22123%22%3A%22abc%22%2C%22456%22%3A%22def%22%7D&testConfig=%7B%22678%22%3A%22ghi%22%2C%22910%22%3A%22jkl%22%7D", "flashVars works");
+            delete config.flashVars;
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?testConfig=%7B%22678%22%3A%22ghi%22%2C%22910%22%3A%22jkl%22%7D", "flashVars works");
+        });
+    }
 })();

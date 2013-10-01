@@ -20,6 +20,7 @@ if(!MTVNPlayer.Player) {
         //= core.js
         //= util/config.js
         //= util/selector.js
+        //= util/url.js
         //= player/flash-player.js
         //= player/html-player.js
         //= player/contentless.js
@@ -832,7 +833,6 @@ if(!MTVNPlayer.Player) {
             Player.prototype.one = Player.prototype.once;
             return Player;
         }(window));
-        //= util/reporting.js
         //= util/jquery-plugin.js
         //= util/load-module.js
         //= util/finish.js
