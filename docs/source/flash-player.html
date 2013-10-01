@@ -143,6 +143,7 @@ MTVNPlayer.module(&quot;flash&quot;).initialize = _.once(function() {
                 // this list of events is just for legibility. google closure compiler
                 // will in-line the strings
                 metadataEvent = MTVNPlayer.Events.METADATA,
+                fullScreenChange = MTVNPlayer.Events.FULL_SCREEN_CHANGE,
                 stateEvent = MTVNPlayer.Events.STATE_CHANGE,
                 playlistCompleteEvent = MTVNPlayer.Events.PLAYLIST_COMPLETE,
                 readyEvent = MTVNPlayer.Events.READY,
@@ -197,6 +198,13 @@ MTVNPlayer.module(&quot;flash&quot;).initialize = _.once(function() {
                 player.trigger(stateEvent + &quot;:&quot; + state, state);
             };
             element.addEventListener('STATE_CHANGE', mapString + stateEvent);
+            map[id + fullScreenChange] = function(isFullScreen) {
+                if (player.isFullScreen !== isFullScreen) {
+                    player.isFullScreen = isFullScreen;
+                    player.trigger(fullScreenChange, isFullScreen);
+                }
+            };
+            element.addEventListener('FULL_SCREEN_CHANGE', mapString + fullScreenChange);
             map[id + playheadUpdate] = function(playhead) {
                 var lastPlayhead = Math.floor(player.playhead);
                 player.playhead = playhead;
