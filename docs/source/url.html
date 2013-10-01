@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">/* exported Url*/
+<span id='Url'>/**
+</span> * @ignore
+ * Util for working with querystring params.
+ */
+var Url = {
+<span id='Url-method-addQueryStringParam'>	/**
+</span>	 * @member Url
+	 * This will only add the param if doesn't exist.
+	 * @param url {String} the url to add the param to.
+	 * @param name {String} the name of the param
+	 * @param value {String} the value of the param
+	 */
+	addQueryStringParam: function(url, name, value) {
+		var nameValuePair = name + &quot;=&quot; + value;
+		if (url.indexOf(nameValuePair) === -1) {
+			var endIndex = url.length - 1,
+				questionMarkIndex = url.lastIndexOf(&quot;?&quot;);
+			if (questionMarkIndex === -1 &amp;&amp; url.lastIndexOf(&quot;/&quot;) !== endIndex) {
+				url += &quot;/&quot;;
+			}
+			var concat = url.lastIndexOf(&quot;&amp;&quot;) === endIndex || questionMarkIndex === endIndex ? &quot;&quot; : questionMarkIndex === -1 ? &quot;?&quot; : &quot;&amp;&quot;;
+			url += concat + nameValuePair;
+		}
+		return url;
+	},
+<span id='Url-method-setQueryStringParam'>	/**
+</span>	 * This will replace the param if it exists, or add if it doesn't.
+	 * @param url {String} the url to add the param to.
+	 * @param name {String} the name of the param
+	 * @param value {String} the value of the param
+	 */
+	setQueryStringParam: function(url, name, value) {
+		var re = new RegExp(&quot;([?|&amp;])&quot; + name + &quot;=.*?(&amp;|$)&quot;, &quot;i&quot;);
+		if (url.match(re)) {
+			return url.replace(re, '$1' + name + &quot;=&quot; + value + '$2');
+		} else {
+			return Url.addQueryStringParam(url, name, value);
+		}
+	}
+};</pre>
+</body>
+</html>
