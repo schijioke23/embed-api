@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         syndicatedPath = targetPath + 'syndicated.min.js',
         minPath = targetPath + 'api.min.js';
     grunt.initConfig({
-        pkg: '<json:package.json>',
+        pkg: grunt.file.readJSON('package.json'),
         clean: {
             folders: ["dist/*"]
         },
