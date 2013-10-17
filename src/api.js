@@ -1,4 +1,4 @@
-//= http://media.mtvnservices.com/player/api/module/mtvn-package-manager/0.1.0/mtvn-package-manager.js
+//= ../components/package-manager/dist/mtvn-package-manager.js
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
@@ -8,7 +8,7 @@ var MTVNPlayer = window.MTVNPlayer || {};
 if(!MTVNPlayer.Player) {
     //= util/start.js
     (function() {
-        //= third-party/underscore.js
+        //= ../components/underscore/underscore.js
         //= third-party/swfobject.js
     }).apply(window);
     // we can 'use strict' below, no more third-party stuff.
@@ -843,5 +843,4 @@ if(!MTVNPlayer.Player) {
          */
         MTVNPlayer.isReady = true;
     })(MTVNPlayer, window.jQuery || window.Zepto);
-    //= ../dist/version.js
 }

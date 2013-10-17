@@ -8,4 +8,5 @@ example.sh
 build/
 node_modules/
 npm-debug.log
-dist/
+/dist
+/components/

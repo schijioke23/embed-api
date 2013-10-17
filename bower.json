@@ -1,0 +1,21 @@
+{
+    "name": "embed-api",
+    "version": "2.11.0",
+    "main": [
+        "./dist/api.js",
+        "dist/api.min.js"
+    ],
+    "ignore": [
+        "**/.*",
+        "test",
+        "src",
+        "testem.json",
+        "build",
+        "node_modules",
+        "components"
+    ],
+    "dependencies": {
+        "underscore": "underscore#1.5.1",
+        "package-manager": "p-js/package-manager#0.x.x"
+    }
+}
