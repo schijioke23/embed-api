@@ -15,7 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">/*global MTVNPlayer, _, Url */
+  <pre class="prettyprint lang-js">/*global MTVNPlayer, _, Url, _mtvnPlayerReady */
 /* exported Core */
 var Core = (function(core, $) {
     &quot;use strict&quot;;
@@ -230,8 +230,7 @@ var Core = (function(core, $) {
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
     core.executeCallbacks = function(player) {
-        var newCallbacks = window._mtvnPlayerReady || [],
-            cbs = onPlayerCallbacks.concat(newCallbacks).slice(),
+        var cbs = onPlayerCallbacks.concat(_mtvnPlayerReady).slice(),
             i = 0,
             len = cbs.length;
         for (i; i &lt; len; i++) {

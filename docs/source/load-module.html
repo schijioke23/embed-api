@@ -17,17 +17,8 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">/*global MTVNPlayer, Config, _*/
 var PackageManager = function() {
-    function provideJQuery() {
-        // provide $ if it's on the window
-        if (!MTVNPlayer.has(&quot;$&quot;)) {
-            var $ = window.jQuery;
-            // TODO we can lower this version if we want to test first.
-            if ($ &amp;&amp; Config.versionIsMinimum(&quot;1.9.0&quot;, $.fn.jquery)) {
-                MTVNPlayer.provide(&quot;$&quot;, $);
-            }
-        }
-    }
     var Events = {
+        CC_PREFS:&quot;cc-prefs&quot;,
         ENDSLATE: &quot;endslate&quot;
     },
     moduleBase = &quot;http://media.mtvnservices.com/player/api/module/&quot;,
@@ -41,7 +32,7 @@ var PackageManager = function() {
             &quot;endslate&quot;: moduleBase + &quot;endslate/latest/endslate.min.js&quot;
         },
         createEndslate = function(event) {
-            provideJQuery();
+            Config.provideJQuery();
             var player = event.target,
                 packages = player.config.module || {};
             MTVNPlayer.loadPackages(_.extend(endslatePackages, packages.endslate), function() {

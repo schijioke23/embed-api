@@ -22,198 +22,227 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
     var addCSS = function(e, prop, value) {
         e.style.cssText += prop + &quot;:&quot; + value;
     },
-<span id='global-method-removePlayerInstance'>    /**
-</span>     * remove an instance from the hash map.
-     * @ignore
-     * @param {contentWindow} source
-     */
-    removePlayerInstance = function(source) {
-        Core.instances = _.reject(Core.instances, function(instance) {
-            return instance.source === source;
-        });
-    },
-<span id='global-method-exitFullScreen'>    /**
-</span>     * return the iframe to it's original width and height.
-     * @method exitFullScreen
-     * @ignore
-     * @param {MTVNPlayer.Player} player
-     */
-    exitFullScreen = function(player) {
-        player.isFullScreen = false;
-        var c = player.config,
-            e = player.containerElement;
-        addCSS(e, &quot;position&quot;, &quot;static&quot;);
-        addCSS(e, &quot;z-index&quot;, &quot;auto&quot;);
-        addCSS(e, &quot;width&quot;, c.width + &quot;px&quot;);
-        addCSS(e, &quot;height&quot;, c.height + &quot;px&quot;);
-        player.element.width = c.width + &quot;px&quot;;
-        player.element.height = c.height + &quot;px&quot;;
-        player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
-    },
-<span id='global-method-goFullScreen'>    /**
-</span>     * @method goFullScreen
-     * @ignore
-     * @param {IFrameElement} iframeElement
-     */
-    goFullScreen = function(player) {
-        var e = player.containerElement,
-            highestZIndex = player.config.highestZIndex,
-            cssText = player.config.fullScreenCssText;
-        player.isFullScreen = true;
-        e.style.cssText = cssText ? cssText : &quot;position:fixed;left:0px;top:0px;z-index:&quot; + (highestZIndex || 2147483645) + &quot;;&quot;;
-        addCSS(e, &quot;width&quot;, window.innerWidth + &quot;px&quot;);
-        addCSS(e, &quot;height&quot;, window.innerHeight + &quot;px&quot;);
-        player.element.width = window.innerWidth + &quot;px&quot;;
-        player.element.height = window.innerHeight + &quot;px&quot;;
-        window.scrollTo(0, 0);
-        player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
-    },
-    jsonParse = function(str) {
-        // choose method.
-        jsonParse = function() {
-            if (window.JSON) {
-                return function(str) {
-                    if (str) {
-                        return JSON.parse(str);
-                    } else {
-                        return null;
-                    }
-                };
-            } else if ($ &amp;&amp; $.parseJSON) {
-                return function(str) {
-                    return $.parseJSON(str);
-                };
-            } else {
-                return function() {
-                    // no json parsing, fail silently.
-                };
+<span id='global-method-removePlayerInstance'>        /**
+</span>         * remove an instance from the hash map.
+         * @ignore
+         * @param {contentWindow} source
+         */
+        removePlayerInstance = function(source) {
+            Core.instances = _.reject(Core.instances, function(instance) {
+                return instance.source === source;
+            });
+        },
+<span id='global-method-exitFullScreen'>        /**
+</span>         * return the iframe to it's original width and height.
+         * @method exitFullScreen
+         * @ignore
+         * @param {MTVNPlayer.Player} player
+         */
+        exitFullScreen = function(player) {
+            player.isFullScreen = false;
+            var c = player.config,
+                e = player.containerElement;
+            addCSS(e, &quot;position&quot;, &quot;static&quot;);
+            addCSS(e, &quot;z-index&quot;, &quot;auto&quot;);
+            addCSS(e, &quot;width&quot;, c.width + &quot;px&quot;);
+            addCSS(e, &quot;height&quot;, c.height + &quot;px&quot;);
+            addCSS(player.element, &quot;width&quot;, c.width + &quot;px&quot;);
+            addCSS(player.element, &quot;height&quot;, c.height + &quot;px&quot;);
+            player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
+        },
+<span id='global-method-goFullScreen'>        /**
+</span>         * @method goFullScreen
+         * @ignore
+         * @param {IFrameElement} iframeElement
+         */
+        goFullScreen = function(player) {
+            var e = player.containerElement,
+                highestZIndex = player.config.highestZIndex,
+                cssText = player.config.fullScreenCssText;
+            player.isFullScreen = true;
+            e.style.cssText = cssText ? cssText : &quot;position:fixed;left:0px;top:0px;z-index:&quot; + (highestZIndex || 2147483645) + &quot;;&quot;;
+            addCSS(e, &quot;width&quot;, window.innerWidth + &quot;px&quot;);
+            addCSS(e, &quot;height&quot;, window.innerHeight + &quot;px&quot;);
+            addCSS(player.element, &quot;width&quot;, window.innerWidth + &quot;px&quot;);
+            addCSS(player.element, &quot;height&quot;, window.innerHeight + &quot;px&quot;);
+            if(Config.needsScrollToForFullScreen(navigator.userAgent)){
+                window.scrollTo(0, 0);
             }
-        }();
-        return jsonParse(str);
-    },
-<span id='global-method-getMessageData'>    /**
-</span>     * @method getMessageData
-     * @ignore
-     */
-    getMessageData = function(data) {
-        return data.slice(data.indexOf(&quot;:&quot;) + 1);
-    },
-<span id='global-method-onMetadata'>    /**
-</span>     * @method onMetadata
-     * @ignore
-     * @param {Object} data Event data
-     * @param {MTVNPlayer.Player} player A player instance
-     */
-    onMetadata = function(data, player) {
-        var obj = jsonParse(getMessageData(data)),
-            newIndex = obj.index,
-            oldIndex = player.playlistMetadata.index;
-        player.currentMetadata = obj;
-        if (newIndex !== -1) { // index is -1 for ads.
-            player.playlistMetadata.items[obj.index] = obj;
-            player.playlistMetadata.index = obj.index;
-            if (newIndex !== oldIndex) {
-                player.trigger(MTVNPlayer.Events.INDEX_CHANGE, newIndex);
-            }
-        }
-        player.trigger(MTVNPlayer.Events.METADATA, obj);
-    },
-<span id='global-method-handleMessage'>    /**
-</span>     * @method handleMessage
-     * @ignore
-     */
-    handleMessage = function(event) {
-        var data = event.data,
-            player, playhead, events, eventTypes = MTVNPlayer.Events;
-        if (data &amp;&amp; data.indexOf &amp;&amp; data.indexOf(&quot;logMessage:&quot;) === -1) {
-            player = Core.getPlayerInstance(event.source);
-            if (player) {
-                events = player.events;
-                if (data.indexOf(&quot;playState:&quot;) === 0) {
-                    player.state = getMessageData(data);
-                    player.trigger(eventTypes.STATE_CHANGE, player.state);
-                    player.trigger(eventTypes.STATE_CHANGE + &quot;:&quot; + player.state, player.state);
-                } else if (data.indexOf(&quot;config:&quot;) === 0) {
-                    Config.copyProperties(player.config, jsonParse(getMessageData(data)));
-                } else if (data.indexOf(&quot;performance:&quot;) === 0) {
-                    if (player.config.performance) {
-                        Core.processPerformance(player, jsonParse(getMessageData(data)));
-                    }
-                } else if (data.indexOf(&quot;playlistComplete&quot;) === 0) {
-                    player.trigger(eventTypes.PLAYLIST_COMPLETE);
-                } else if (data.indexOf(&quot;metadata:&quot;) === 0) {
-                    onMetadata(data, player);
-                } else if (data.indexOf(&quot;mediaStart&quot;) === 0) {
-                    player.trigger(eventTypes.MEDIA_START);
-                } else if (data.indexOf(&quot;mediaEnd&quot;) === 0) {
-                    player.trigger(eventTypes.MEDIA_END);
-                } else if (data.indexOf(&quot;playheadUpdate&quot;) === 0) {
-                    var lastPlayhead = Math.floor(player.playhead);
-                    playhead = parseInt(getMessageData(data), 10);
-                    player.playhead = playhead;
-                    player.trigger(eventTypes.PLAYHEAD_UPDATE, playhead);
-                    // support for cue points.
-                    if (lastPlayhead != Math.floor(playhead)) {
-                        player.trigger(eventTypes.PLAYHEAD_UPDATE + &quot;:&quot; + Math.floor(playhead), playhead);
-                    }
-                } else if (data.indexOf(&quot;playlistMetadata:&quot;) === 0) {
-                    player.playlistMetadata = jsonParse(getMessageData(data));
-                } else if (data === &quot;onReady&quot;) {
-                    player.ready = true;
-                    var fv = player.config.flashVars;
-                    if (fv &amp;&amp; fv.sid) {
-                        player.message.call(player, &quot;setSSID:&quot; + fv.sid);
-                    }
-                    var startIndex = parseInt(player.config.startIndex, 10);
-                    if (!isNaN(startIndex) &amp;&amp; startIndex &gt; 0) {
-                        player.message.call(player, &quot;startIndex:&quot; + startIndex);
-                    }
-                    Core.executeCallbacks(player);
-                    player.trigger(eventTypes.READY);
-                } else if (data === &quot;fullscreen&quot;) {
-                    if (player.isFullScreen) {
-                        exitFullScreen(player);
-                    } else {
-                        goFullScreen(player);
-                    }
-                } else if (data.indexOf(&quot;overlayRectChange:&quot;) === 0) {
-                    player.trigger(eventTypes.OVERLAY_RECT_CHANGE, jsonParse(getMessageData(data)));
-                } else if (data.indexOf(&quot;onUIStateChange:&quot;) === 0) {
-                    player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
-                } else if (data.indexOf(&quot;airplay&quot;) === 0) {
-                    player.trigger(eventTypes.AIRPLAY);
-                } else if (data.indexOf(&quot;onEndSlate:&quot;) === 0 || data.indexOf(&quot;endslate&quot;) === 0) {
-                    player.trigger(PackageManager.Events.ENDSLATE, jsonParse(getMessageData(data)));
+            player.trigger(MTVNPlayer.Events.FULL_SCREEN_CHANGE);
+        },
+        jsonParse = function(str) {
+            // choose method.
+            jsonParse = function() {
+                if (window.JSON) {
+                    return function(str) {
+                        if (str) {
+                            return JSON.parse(str);
+                        } else {
+                            return null;
+                        }
+                    };
+                } else if ($ &amp;&amp; $.parseJSON) {
+                    return function(str) {
+                        return $.parseJSON(str);
+                    };
+                } else {
+                    return function() {
+                        // no json parsing, fail silently.
+                    };
+                }
+            }();
+            return jsonParse(str);
+        },
+<span id='global-method-getMessageData'>        /**
+</span>         * @method getMessageData
+         * @ignore
+         */
+        getMessageData = function(data) {
+            return data.slice(data.indexOf(&quot;:&quot;) + 1);
+        },
+<span id='global-method-onMetadata'>        /**
+</span>         * @method onMetadata
+         * @ignore
+         * @param {Object} data Event data
+         * @param {MTVNPlayer.Player} player A player instance
+         */
+        onMetadata = function(data, player) {
+            var obj = jsonParse(getMessageData(data)),
+                newIndex = obj.index,
+                oldIndex = player.playlistMetadata.index;
+            player.currentMetadata = obj;
+            if (newIndex !== -1) { // index is -1 for ads.
+                player.playlistMetadata.items[obj.index] = obj;
+                player.playlistMetadata.index = obj.index;
+                if (newIndex !== oldIndex) {
+                    player.trigger(MTVNPlayer.Events.INDEX_CHANGE, newIndex);
                 }
             }
-        }
-    },
-    createElement = function(player) {
-        var config = player.config,
-            element = document.createElement(&quot;iframe&quot;),
-            targetDiv = document.getElementById(player.id);
-        element.setAttribute(&quot;id&quot;, player.id);
-        element.setAttribute(&quot;src&quot;, Core.getPath(config));
-        element.setAttribute(&quot;frameborder&quot;, &quot;0&quot;);
-        element.setAttribute(&quot;scrolling&quot;, &quot;no&quot;);
-        element.setAttribute(&quot;type&quot;, &quot;text/html&quot;);
-        element.width = element.height = &quot;100%&quot;;
-        targetDiv.parentNode.replaceChild(element, targetDiv);
-        player.element = element;
-    };
+            player.trigger(MTVNPlayer.Events.METADATA, obj);
+        },
+        triggerReady = function(player) {
+            player.ready = true;
+            var fv = player.config.flashVars;
+            if (fv &amp;&amp; fv.sid) {
+                player.message.call(player, &quot;setSSID:&quot; + fv.sid);
+            }
+            var startIndex = parseInt(player.config.startIndex, 10);
+            if (!isNaN(startIndex) &amp;&amp; startIndex &gt; 0) {
+                player.message.call(player, &quot;startIndex:&quot; + startIndex);
+            }
+            Core.executeCallbacks(player);
+            player.trigger(MTVNPlayer.Events.READY);
+        },
+<span id='global-method-handleMessage'>        /**
+</span>         * @method handleMessage
+         * @ignore
+         */
+        handleMessage = function(event) {
+            var data = event.data,
+                player, playhead, events, eventTypes = MTVNPlayer.Events;
+            if (data &amp;&amp; data.indexOf &amp;&amp; data.indexOf(&quot;logMessage:&quot;) === -1) {
+                player = Core.getPlayerInstance(event.source);
+                if (player) {
+                    events = player.events;
+                    if (data.indexOf(&quot;playState:&quot;) === 0) {
+                        player.state = getMessageData(data);
+                        player.trigger(eventTypes.STATE_CHANGE, player.state);
+                        player.trigger(eventTypes.STATE_CHANGE + &quot;:&quot; + player.state, player.state);
+                    } else if (data.indexOf(&quot;config:&quot;) === 0) {
+                        Config.copyProperties(player.config, jsonParse(getMessageData(data)));
+                    } else if (data.indexOf(&quot;performance:&quot;) === 0) {
+                        if (player.config.performance) {
+                            Core.processPerformance(player, jsonParse(getMessageData(data)));
+                        }
+                    } else if (data.indexOf(&quot;playlistComplete&quot;) === 0) {
+                        player.trigger(eventTypes.PLAYLIST_COMPLETE);
+                    } else if (data.indexOf(&quot;metadata:&quot;) === 0) {
+                        onMetadata(data, player);
+                    } else if (data.indexOf(&quot;mediaStart&quot;) === 0) {
+                        player.trigger(eventTypes.MEDIA_START);
+                    } else if (data.indexOf(&quot;mediaEnd&quot;) === 0) {
+                        player.trigger(eventTypes.MEDIA_END);
+                    } else if (data.indexOf(&quot;playheadUpdate&quot;) === 0) {
+                        var lastPlayhead = Math.floor(player.playhead);
+                        playhead = parseInt(getMessageData(data), 10);
+                        player.playhead = playhead;
+                        player.trigger(eventTypes.PLAYHEAD_UPDATE, playhead);
+                        // support for cue points.
+                        if (lastPlayhead != Math.floor(playhead)) {
+                            player.trigger(eventTypes.PLAYHEAD_UPDATE + &quot;:&quot; + Math.floor(playhead), playhead);
+                        }
+                    } else if (data.indexOf(&quot;playlistMetadata:&quot;) === 0) {
+                        player.playlistMetadata = jsonParse(getMessageData(data));
+                    } else if (data === &quot;onReady&quot;) {
+                        triggerReady(player);
+                    } else if (data === &quot;fullscreen&quot;) {
+                        if (player.isFullScreen) {
+                            exitFullScreen(player);
+                        } else {
+                            goFullScreen(player);
+                        }
+                    } else if (data.indexOf(&quot;overlayRectChange:&quot;) === 0) {
+                        player.trigger(eventTypes.OVERLAY_RECT_CHANGE, jsonParse(getMessageData(data)));
+                    } else if (data.indexOf(&quot;onUIStateChange:&quot;) === 0) {
+                        player.trigger(eventTypes.UI_STATE_CHANGE, jsonParse(getMessageData(data)));
+                    } else if (data.indexOf(&quot;airplay&quot;) === 0) {
+                        player.trigger(eventTypes.AIRPLAY);
+                    } else if (data.indexOf(&quot;showCCPrefs:&quot;) === 0) {
+                        player.trigger(PackageManager.Events.CC_PREFS, jsonParse(getMessageData(data)));
+                    } else if (data.indexOf(&quot;onEndSlate:&quot;) === 0 || data.indexOf(&quot;endslate&quot;) === 0) {
+                        player.trigger(PackageManager.Events.ENDSLATE, jsonParse(getMessageData(data)));
+                    }
+                }
+            }
+        },
+<span id='global-method-postMessage'>        /**
+</span>         * @ignore
+         * Overwritten by the syndicated iframe stuff, see `create`.
+         */
+        postMessage = function(player, message) {
+            return player.element.contentWindow.postMessage(message, &quot;*&quot;);  
+        },
+        createElement = function(player) {
+            var config = player.config,
+                element = document.createElement(&quot;iframe&quot;),
+                targetDiv = document.getElementById(player.id);
+            element.setAttribute(&quot;id&quot;, player.id);
+            element.setAttribute(&quot;src&quot;, Core.getPath(config));
+            element.setAttribute(&quot;frameborder&quot;, &quot;0&quot;);
+            element.setAttribute(&quot;scrolling&quot;, &quot;no&quot;);
+            element.setAttribute(&quot;type&quot;, &quot;text/html&quot;);
+            addCSS(element, &quot;width&quot;, config.width + &quot;px&quot;);
+            addCSS(element, &quot;height&quot;, config.height + &quot;px&quot;);
+            addCSS(element, &quot;position&quot;, &quot;absolute&quot;);
+            targetDiv.parentNode.replaceChild(element, targetDiv);
+            player.element = element;
+        };
 <span id='global-method-create'>    /**
 </span>     * create the player iframe
      * @method create
      * @ignore
      */
-    this.create = function(player, exists) {
-        if (!exists) {
+    this.create = function(player) {
+        if (!player.config.isSyndicatedLegacyHTML5) {
+            // standard initialization
             createElement(player);
+            Core.instances.push({
+                source: player.element.contentWindow,
+                player: player
+            });
+        } else {
+            // syndicated initialization
+            player.element = window;
+            Core.instances.push({
+                source: window,
+                player: player
+            });
+            // just post off the window here.
+            postMessage = function(player, message) {
+                return window.postMessage(message, &quot;*&quot;);  
+            };
+            triggerReady(player);
         }
-        Core.instances.push({
-            source: player.element.contentWindow,
-            player: player
-        });
         if (typeof window.addEventListener !== 'undefined') {
             window.addEventListener('message', handleMessage, false);
         } else if (typeof window.attachEvent !== 'undefined') {
@@ -247,13 +276,14 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
                 if (arguments[1] !== undefined) {
                     message += &quot;:&quot; + arguments[1] + (arguments[2] !== undefined ? &quot;,&quot; + arguments[2] : &quot;&quot;);
                 }
-                return this.element.contentWindow.postMessage(message, &quot;*&quot;);
+                return postMessage(this, message);
         }
     };
     this.destroy = function() {
         removePlayerInstance(this.element.contentWindow);
         this.element.parentNode.removeChild(this.element);
     };
+
     function callFullScreenOnAll() {
         var i, player = null,
             instances = Core.instances,

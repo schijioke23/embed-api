@@ -15,7 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">/*global MTVNPlayer, _ */
+  <pre class="prettyprint lang-js">/*global MTVNPlayer */
+/* exported _mtvnPlayerReady */
+var _mtvnPlayerReady = window._mtvnPlayerReady = window._mtvnPlayerReady || [];
 <span id='global-property-'>/**
 </span> * @ignore
  * Modules are for internal embed api modules.
@@ -34,39 +36,6 @@ if(!MTVNPlayer.module) {
         };
     }();
 }
-
-<span id='global-property-'>/**
-</span> * @ignore
- * These are for external projects built around the embed api to access the
- * shared resources. e.g. _, $, Backbone, Handlebars.
- */
-if(!MTVNPlayer.require) {
-    var packages = {};
-<span id='global-method-require'>    /**
-</span>     * @ignore
-     * This is a way for other modules to share between each other.
-     */
-    MTVNPlayer.require = function(name) {
-        if(!packages[name]) {
-            throw new Error(&quot;MTVNPlayer: package &quot; + name + &quot; not found.&quot;);
-        }
-        return packages[name];
-    };
-<span id='global-method-provide'>    /**
-</span>     * @ignore
-     * This is a way for other modules to share between each other.
-     */
-    MTVNPlayer.provide = function(name, module) {
-        packages[name] = module;
-    };
-<span id='global-method-has'>    /**
-</span>     * @ignore
-     * This is a way for other modules to share between each other.
-     */
-    MTVNPlayer.has = function(name) {
-        return packages[name];
-    };
-}
 (function(context) {
     // we're leaking yepnope into global.
     // noConflict will be called after we store references
@@ -74,7 +43,6 @@ if(!MTVNPlayer.require) {
     var oldYepNope = context.yepnope;
     MTVNPlayer.noConflict = function() {
         context.yepnope = oldYepNope;
-        _.noConflict();
     };
 })(window);</pre>
 </body>
