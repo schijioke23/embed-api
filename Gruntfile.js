@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         rig: {
             options: {
                 processContent: true,
-                footer: '\nMTVNPlayer.version="<%= pkg.version %><%= grunt.config("buildNumber") %>";\nMTVNPlayer.build="<%= grunt.template.today("mm/dd/yyyy hh:MM:ss TT") %>";',
+                banner: grunt.file.read("src/util/banner.js"),
             },
             files: {
                 src: "src/api.js",

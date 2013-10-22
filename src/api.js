@@ -1,26 +1,32 @@
 //= ../components/package-manager/dist/mtvn-package-manager.js
+/* global MTVNPlayer */
 /**
  * For creating a player inline you can use the MTVNPlayer.Player constructor.
  * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
  * @static
  */
-var MTVNPlayer = window.MTVNPlayer || {};
-if(!MTVNPlayer.Player) {
+if (!MTVNPlayer.Player) {
+    var require = MTVNPlayer.require,
+        provide = MTVNPlayer.provide;
     //= util/start.js
     (function() {
-        //= ../components/underscore/underscore.js
         //= third-party/swfobject.js
     }).apply(window);
+    (function() {
+        //= ../components/underscore/underscore.js
+        provide("_", this._); // underscore is put on this, a temporary scope.
+    }).apply({});
     // we can 'use strict' below, no more third-party stuff.
     (function(MTVNPlayer, $) {
         "use strict";
         /*global Core, Config, PackageManager, Contentless */
-        var _ = window._;
-        MTVNPlayer.provide("_", _);
+        var _ = require("_");
         //= core.js
         //= util/config.js
         //= util/selector.js
         //= util/url.js
+        //= util/cc-prefs.js
+        //= util/external-modules.js
         //= player/flash-player.js
         //= player/html-player.js
         //= player/contentless.js
@@ -227,12 +233,12 @@ if(!MTVNPlayer.Player) {
         MTVNPlayer.Player = (function(window) {
             // static methods variables
             var throwError = function(message) {
-                    throw new Error("Embed API:" + message);
-                },
+                throw new Error("Embed API:" + message);
+            },
                 document = window.document,
                 Player, fixEventName = function(eventName) {
-                    if(eventName && eventName.indexOf("on") === 0) {
-                        if(eventName === "onUIStateChange") {
+                    if (eventName && eventName.indexOf("on") === 0) {
+                        if (eventName === "onUIStateChange") {
                             return "uiStateChange";
                         }
                         return eventName.charAt(2).toLowerCase() + eventName.substr(3);
@@ -246,18 +252,18 @@ if(!MTVNPlayer.Player) {
                  * Check if the event exists in our list of events.
                  */
                 checkEventName = function(eventName) {
-                    if(eventName.indexOf(":") !== -1) {
+                    if (eventName.indexOf(":") !== -1) {
                         eventName = eventName.split(":")[0];
                     }
                     var check = function(events) {
-                            for(var event in events) {
-                                if(events.hasOwnProperty(event) && events[event] === eventName) {
-                                    return true; // has event
-                                }
+                        for (var event in events) {
+                            if (events.hasOwnProperty(event) && events[event] === eventName) {
+                                return true; // has event
                             }
-                            return false;
-                        };
-                    if(check(MTVNPlayer.Events) || check(PackageManager.Events)) {
+                        }
+                        return false;
+                    };
+                    if (check(MTVNPlayer.Events) || check(PackageManager.Events)) {
                         return;
                     }
                     throwError("event:" + eventName + " doesn't exist.");
@@ -269,14 +275,14 @@ if(!MTVNPlayer.Player) {
                  * Loop through the events, and check the event names
                  */
                 checkEvents = function(events) {
-                    for(var event in events) {
-                        if(events.hasOwnProperty(event) && event.indexOf("on") === 0) {
+                    for (var event in events) {
+                        if (events.hasOwnProperty(event) && event.indexOf("on") === 0) {
                             events[fixEventName(event)] = events[event];
                             delete events[event];
                         }
                     }
-                    for(event in events) {
-                        if(events.hasOwnProperty(event)) {
+                    for (event in events) {
+                        if (events.hasOwnProperty(event)) {
                             checkEventName(event);
                         }
                     }
@@ -303,7 +309,7 @@ if(!MTVNPlayer.Player) {
                         metadata = this.currentMetadata,
                         displayDataPrefix = "<p style=\"text-align:left;background-color:#FFFFFF;padding:4px;margin-top:4px;margin-bottom:0px;font-family:Arial, Helvetica, sans-serif;font-size:12px;\">",
                         displayMetadata = (function() {
-                            if(!metadata) {
+                            if (!metadata) {
                                 return "";
                             }
                             var copy = "",
@@ -311,20 +317,20 @@ if(!MTVNPlayer.Player) {
                                 source = categories.source,
                                 sourceLink = categories.sourceLink,
                                 seoHTMLText = categories.seoHTMLText;
-                            if(source) {
-                                if(sourceLink) {
+                            if (source) {
+                                if (sourceLink) {
                                     copy += "<b><a href=\"" + sourceLink + "\">" + source + "</a></b>";
                                 } else {
                                     copy += "<b>" + source + "</b> ";
                                 }
                             }
-                            if(seoHTMLText) {
-                                if(copy) {
+                            if (seoHTMLText) {
+                                if (copy) {
                                     copy += "<br/>";
                                 }
                                 copy += "Get More: " + seoHTMLText;
                             }
-                            if(copy) {
+                            if (copy) {
                                 copy = displayDataPrefix + copy + "</p>";
                             }
                             return copy;
@@ -381,7 +387,7 @@ if(!MTVNPlayer.Player) {
              */
             MTVNPlayer.removeOnPlayer = function(callback) {
                 var index = Core.onPlayerCallbacks.indexOf(callback);
-                if(index !== -1) {
+                if (index !== -1) {
                     Core.onPlayerCallbacks.splice(index, 1);
                 }
             };
@@ -401,7 +407,7 @@ if(!MTVNPlayer.Player) {
                 var result = [],
                     instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
+                for (i; i--;) {
                     result.push(instances[i].player);
                 }
                 return result;
@@ -414,8 +420,8 @@ if(!MTVNPlayer.Player) {
             MTVNPlayer.getPlayer = function(uri) {
                 var instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
-                    if(instances[i].player.config.uri === uri) {
+                for (i; i--;) {
+                    if (instances[i].player.config.uri === uri) {
                         return instances[i].player;
                     }
                 }
@@ -428,18 +434,18 @@ if(!MTVNPlayer.Player) {
              */
             MTVNPlayer.gc = function() {
                 var elementInDocument = function(element) {
-                        while(element.parentNode) {
-                            element = element.parentNode;
-                            if(element == document) {
-                                return true;
-                            }
+                    while (element.parentNode) {
+                        element = element.parentNode;
+                        if (element == document) {
+                            return true;
                         }
-                        return false;
-                    };
+                    }
+                    return false;
+                };
                 var instances = Core.instances,
                     i = instances.length;
-                for(i; i--;) {
-                    if(!elementInDocument(instances[i].player.element)) {
+                for (i; i--;) {
+                    if (!elementInDocument(instances[i].player.element)) {
                         instances.splice(i, 1);
                     }
                 }
@@ -474,11 +480,11 @@ if(!MTVNPlayer.Player) {
              *      </script>
              */
             MTVNPlayer.createPlayers = function(selectorQuery, config, events) {
-                if(!selectorQuery) {
+                if (!selectorQuery) {
                     selectorQuery = "div.MTVNPlayer";
                 }
                 var elements = MTVNPlayer.module("selector").find(selectorQuery);
-                for(var i = 0, len = elements.length; i < len; i++) {
+                for (var i = 0, len = elements.length; i < len; i++) {
                     new MTVNPlayer.Player(elements[i], config, events);
                 }
                 return elements.length;
@@ -486,7 +492,7 @@ if(!MTVNPlayer.Player) {
 
             Player = function(elementOrId, config, events) {
                 // in case constructor is called without new.
-                if(!(this instanceof Player)) {
+                if (!(this instanceof Player)) {
                     return new Player(elementOrId, config, events);
                 }
                 /** 
@@ -573,14 +579,14 @@ if(!MTVNPlayer.Player) {
                 this.config = config || {};
 
                 // record the start time for performance analysis.
-                if(this.config.performance) {
+                if (this.config.performance) {
                     this.config.performance = {
                         startTime: (new Date()).getTime()
                     };
                 }
 
-                if(this.config.contentless){
-                    _.extend(Player.prototype,Contentless);
+                if (this.config.contentless) {
+                    _.extend(Player.prototype, Contentless);
                 }
 
                 /**
@@ -590,8 +596,8 @@ if(!MTVNPlayer.Player) {
                 this.isFullScreen = false;
                 // the module will create an iframe or a swf.
                 var playerModule,
-                // the player target will be replaced by an iframe or swf.
-                playerTarget = createTarget();
+                    // the player target will be replaced by an iframe or swf.
+                    playerTarget = createTarget();
 
                 // the player target is going to go inside the containerElement.
                 this.containerElement = _.isElement(elementOrId) ? elementOrId : document.getElementById(elementOrId);
@@ -606,6 +612,7 @@ if(!MTVNPlayer.Player) {
                 // if these were set already on the element, then
                 this.containerElement.style.width = getDim(this.config.width);
                 this.containerElement.style.height = getDim(this.config.height);
+                this.containerElement.style.position = "relative";
 
                 // the player (a swf or an iframe), is a child of the element retrieved.
                 this.containerElement.appendChild(playerTarget);
@@ -621,15 +628,15 @@ if(!MTVNPlayer.Player) {
                 Core.playerInit(this, playerModule);
 
                 // check for element before creating
-                if(!this.containerElement) {
-                    if(document.readyState === "complete") {
+                if (!this.containerElement) {
+                    if (document.readyState === "complete") {
                         throwError("target div " + this.id + " not found");
                     } else {
-                        if($) {
+                        if ($) {
                             // wait for document ready, then try again.
                             (function(ref) {
                                 $(document).ready(function() {
-                                    if(document.getElementById(ref.id)) {
+                                    if (document.getElementById(ref.id)) {
                                         playerModule.create(ref);
                                     } else {
                                         throwError("target div " + ref.id + " not found");
@@ -747,9 +754,9 @@ if(!MTVNPlayer.Player) {
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var currentEvent = this.events[eventName];
-                    if(!currentEvent) {
+                    if (!currentEvent) {
                         currentEvent = callback;
-                    } else if(currentEvent instanceof Array) {
+                    } else if (currentEvent instanceof Array) {
                         currentEvent.push(callback);
                     } else {
                         currentEvent = [callback, currentEvent];
@@ -766,11 +773,11 @@ if(!MTVNPlayer.Player) {
                     eventName = fixEventName(eventName);
                     checkEventName(eventName);
                     var i, currentEvent = this.events[eventName];
-                    if(!currentEvent) {
+                    if (!currentEvent) {
                         return;
-                    } else if(currentEvent instanceof Array) {
-                        for(i = currentEvent.length; i--;) {
-                            if(currentEvent[i] === callback) {
+                    } else if (currentEvent instanceof Array) {
+                        for (i = currentEvent.length; i--;) {
+                            if (currentEvent[i] === callback) {
                                 currentEvent.splice(i, 1);
                                 break;
                             }
@@ -809,7 +816,7 @@ if(!MTVNPlayer.Player) {
                  * (v2.6.4) Call this before removing a player.
                  * Required for older versions of IE.
                  */
-                destroy:function() {
+                destroy: function() {
                     // overriden by modules
                 }
             };

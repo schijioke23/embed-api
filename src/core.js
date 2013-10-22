@@ -1,4 +1,4 @@
-/*global MTVNPlayer, _, Url */
+/*global MTVNPlayer, _, Url, _mtvnPlayerReady */
 /* exported Core */
 var Core = (function(core, $) {
     "use strict";
@@ -213,8 +213,7 @@ var Core = (function(core, $) {
      * Fires callbacks registered with MTVNPlayer.onPlayer
      */
     core.executeCallbacks = function(player) {
-        var newCallbacks = window._mtvnPlayerReady || [],
-            cbs = onPlayerCallbacks.concat(newCallbacks).slice(),
+        var cbs = onPlayerCallbacks.concat(_mtvnPlayerReady).slice(),
             i = 0,
             len = cbs.length;
         for (i; i < len; i++) {
