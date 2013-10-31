@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     // we're calling play

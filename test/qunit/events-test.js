@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, test, asyncTest, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     // we're calling play
@@ -46,15 +46,16 @@
             }
         });
     });
-    asyncTest("test unbind", 1, function() {
+    asyncTest("test unbind", 2, function() {
         $fixture.html($("#test2").html());
         var player = new MTVNPlayer.Player($(".MTVNPlayer")[0]),
             count = 0,
-            callback = function(event) {
+            callback = function() {
+                equal(count, 0, "callback one fired first.");
                 count++; // should equal 1
                 player.unbind("onPlayheadUpdate", callback);
             };
-        player.one("onReady", function(event) {
+        player.one("onReady", function() {
             player.play();
         });
         player.bind("onPlayheadUpdate", callback);
