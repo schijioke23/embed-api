@@ -1,4 +1,4 @@
-/*global $ MTVNPlayer */
+/*global $, MTVNPlayer */
 (function(window) {
 	if(!MTVNPlayer.EventTracker) {
 		MTVNPlayer.EventTracker = function(player, logToConsole) {

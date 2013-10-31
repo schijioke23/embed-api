@@ -1,16 +1,7 @@
 /*global MTVNPlayer, Config, _*/
 var PackageManager = function() {
-    function provideJQuery() {
-        // provide $ if it's on the window
-        if (!MTVNPlayer.has("$")) {
-            var $ = window.jQuery;
-            // TODO we can lower this version if we want to test first.
-            if ($ && Config.versionIsMinimum("1.9.0", $.fn.jquery)) {
-                MTVNPlayer.provide("$", $);
-            }
-        }
-    }
     var Events = {
+        CC_PREFS:"cc-prefs",
         ENDSLATE: "endslate"
     },
     moduleBase = "http://media.mtvnservices.com/player/api/module/",
@@ -24,7 +15,7 @@ var PackageManager = function() {
             "endslate": moduleBase + "endslate/latest/endslate.min.js"
         },
         createEndslate = function(event) {
-            provideJQuery();
+            Config.provideJQuery();
             var player = event.target,
                 packages = player.config.module || {};
             MTVNPlayer.loadPackages(_.extend(endslatePackages, packages.endslate), function() {

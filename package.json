@@ -1,6 +1,6 @@
 {
     "name": "embed-api",
-    "version": "2.10.0",
+    "version": "2.11.0",
     "author": "gianni ferullo <giannif@gmail.com>",
     "private": true,
     "description": "The embed api provides a unified interface for different player implementations.",
@@ -12,11 +12,19 @@
         "test": "testem ci"
     },
     "devDependencies": {
-        "testem": "*",
-        "grunt": "0.3.17",
-        "grunt-contrib":"0.3.0",
-        "grunt-rigger" : "0.3.0",
-        "grunt-remove-logging" : "0.0.5"
+        "grunt": "0.4.x",
+        "grunt-contrib": "0.4.x",
+        "grunt-contrib-uglify": "*",
+        "grunt-rigger": "0.4.x",
+        "grunt-contrib-watch": "~0.3.1",
+        "grunt-contrib-jshint": "~0.4.3",
+        "grunt-contrib-clean": "~0.4.1",
+        "grunt-contrib-copy": "~0.4.1",
+        "grunt-contrib-concat": "~0.3.0",
+        "grunt-bumpx": "~0.1.5",
+        "grunt-testem": "~0.3.6",
+        "grunt-push-svn": "~0.1.8",
+        "testem": "~0.5.4"
     },
     "license": "MIT",
     "engine": {

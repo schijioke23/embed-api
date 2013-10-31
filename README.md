@@ -4,7 +4,7 @@ The embed API provides a unified way to embed and use different video players. O
 
 - [Builds](#a0)
 - [Docs][docs]
-- Change Log: See History.md
+- [Version History](http://github.com/mtvn-player/embed-api/wiki/Version-History)
 - [Loading](#a1)
 - [Usage](#a2)
     - [config](#b1)

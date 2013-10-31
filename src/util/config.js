@@ -1,4 +1,4 @@
-/*global MTVNPlayer, _ */
+/*global MTVNPlayer, _, provide */
 /**
  * @ignore
  * The config module has helper functions for dealing with the config object.
@@ -10,16 +10,16 @@ var Config = MTVNPlayer.module("config");
  */
 Config.copyEvents = function(toObj, fromObj) {
     var newEvent, currentEvent;
-    if(fromObj) {
-        for(var prop in fromObj) {
-            if(fromObj.hasOwnProperty(prop)) {
+    if (fromObj) {
+        for (var prop in fromObj) {
+            if (fromObj.hasOwnProperty(prop)) {
                 newEvent = fromObj[prop];
-                if(_.isFunction(newEvent) || _.isArray(newEvent)) {
+                if (_.isFunction(newEvent) || _.isArray(newEvent)) {
                     currentEvent = toObj[prop];
-                    if(currentEvent) {
+                    if (currentEvent) {
                         // the event object already exists, we need to augment it
-                        if(_.isArray(currentEvent)) {
-                            if(_.isArray(newEvent)) {
+                        if (_.isArray(currentEvent)) {
+                            if (_.isArray(newEvent)) {
                                 // combine the arrays
                                 toObj[prop] = currentEvent.concat(newEvent);
                             } else {
@@ -49,21 +49,21 @@ Config.copyProperties = function(toObj, fromObj, override) {
     function exists(value) {
         return value !== undefined && value !== null;
     }
-    if(fromObj) {
-        for(var prop in fromObj) {
-            if(fromObj.hasOwnProperty(prop)) {
-                if(exists(fromObj[prop])) {
+    if (fromObj) {
+        for (var prop in fromObj) {
+            if (fromObj.hasOwnProperty(prop)) {
+                if (exists(fromObj[prop])) {
                     var propName = prop.toLowerCase();
-                    if(propName === "flashvars" || propName === "attributes" || propName === "params") {
+                    if (propName === "flashvars" || propName === "attributes" || propName === "params") {
                         toObj[prop] = toObj[prop] || {};
                         Config.copyProperties(toObj[prop], fromObj[prop], override);
                     } else {
                         // make sure width and height are defined and not zero
-                        if((prop === "width" || prop === "height") && !fromObj[prop]) {
+                        if ((prop === "width" || prop === "height") && !fromObj[prop]) {
                             continue;
                         }
                         // don't override if the prop exists
-                        if(!override && exists(toObj[prop])) {
+                        if (!override && exists(toObj[prop])) {
                             continue;
                         }
                         toObj[prop] = fromObj[prop];
@@ -74,30 +74,42 @@ Config.copyProperties = function(toObj, fromObj, override) {
     }
     return toObj;
 };
+Config.needsScrollToForFullScreen = function(userAgent) {
+    var reg = /OS (\d*)/ig,
+        match = reg.exec(userAgent);
+        if (!_.isEmpty(match)) {
+            var result = parseInt(match[1], 10);
+            if (!isNaN(result) && result <= 4) {
+                return true;
+            }
+        }
+    return false;
+};
+
 Config.versionIsMinimum = function(required, version) {
     function chopBuild(version) {
-        if(version.indexOf("-") !== -1) {
+        if (version.indexOf("-") !== -1) {
             return version.slice(0, required.indexOf("-"));
         }
         return version;
     }
-    if(required && version) {
+    if (required && version) {
         required = chopBuild(required);
         version = chopBuild(version);
-        if(required === version) {
+        if (required === version) {
             return true;
         }
         // convert to arrays
         required = required.split(".");
         version = version.split(".");
-        for(var i = 0, l = version.length; i < l; i++) {
+        for (var i = 0, l = version.length; i < l; i++) {
 
             var u = parseInt(required[i], 10),
                 r = parseInt(version[i], 10);
             u = isNaN(u) ? 0 : u;
             r = isNaN(r) ? 0 : r;
             // continue to the next digit
-            if(u == r) {
+            if (u == r) {
                 continue;
             }
 
@@ -106,6 +118,18 @@ Config.versionIsMinimum = function(required, version) {
         }
     }
 };
+
+Config.provideJQuery = function() {
+    // provide $ if it's on the window
+    if (!MTVNPlayer.has("$")) {
+        var $ = window.jQuery;
+        // TODO we can lower this version if we want to test first.
+        if ($ && Config.versionIsMinimum("1.9.0", $.fn.jquery)) {
+            provide("$", $);
+        }
+    }
+};
+
 Config.buildConfig = function(el, config) {
     config = Config.copyProperties(config, window.MTVNPlayer.defaultConfig);
     // make sure the height and width are defined.
@@ -115,20 +139,20 @@ Config.buildConfig = function(el, config) {
         height: 360
     });
     var getDataAttr = function(attr) {
-            return el.getAttribute("data-" + attr);
-        },
+        return el.getAttribute("data-" + attr);
+    },
         getStyleAttr = function(attr) {
             return parseInt(el.style[attr], 10);
         },
         getObjectFromNameValue = function(attr) {
             attr = getDataAttr(attr);
-            if(attr) {
+            if (attr) {
                 var i, result = {},
                     pairs = attr.split("&"),
                     pair;
-                for(i = pairs.length; i--;) {
+                for (i = pairs.length; i--;) {
                     pair = pairs[i].split("=");
-                    if(pair && pair.length == 2) {
+                    if (pair && pair.length == 2) {
                         result[pair[0]] = pair[1];
                     }
                 }
@@ -143,11 +167,11 @@ Config.buildConfig = function(el, config) {
         copyCustomPropertiesToFlashVars = function(obj) {
             var customProperties = ["autoPlay", "sid", "ssid"],
                 i, propValue, propName;
-            for(i = customProperties.length; i--;) {
+            for (i = customProperties.length; i--;) {
                 propName = customProperties[i];
                 propValue = getDataAttr(propName);
-                if(propValue) {
-                    if(!obj) {
+                if (propValue) {
+                    if (!obj) {
                         obj = {};
                     }
                     obj[propName] = propValue;

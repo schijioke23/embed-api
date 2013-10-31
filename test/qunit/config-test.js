@@ -1,4 +1,4 @@
-/*globals $ test asyncTest expect equal ok start deepEqual MTVNPlayer*/
+/*globals $, test, expect, equal, ok, start, deepEqual, MTVNPlayer*/
 (function() {
     "use strict";
     var $fixture = $("#qunit-fixture");
@@ -152,4 +152,49 @@
         ok(!config.versionIsMinimum("11.1.0", "11.0.0"), "11.1.0 is not greater than 11.0.0");
         ok(!config.versionIsMinimum("11.0.1", "11.0.0"), "11.0.1 is not greater than 11.0.0");
     });
+
+    test("test scrollTo", function() {
+        var config = MTVNPlayer.module("config"),
+            iPhoneOS4 = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5",
+            iPhoneOS5 = "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3",
+            iPhoneOS6 = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25",
+            iPadOS4 = "Mozilla/5.0 (iPad; U; CPU iPad OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5",
+            iPadOS5 = "Mozilla/5.0 (iPad; CPU iPad OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3",
+            iPadOS6 = "Mozilla/5.0 (iPad; CPU iPad OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25",
+            iPadOS10 = "Mozilla/5.0 (iPad; U; CPU iPad OS 10_0_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5",
+            Android4_3 = "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+            Android2_3 = "Mozilla/5.0 (Linux; U; Android 2.3; en-us) AppleWebKit/999+ (KHTML, like Gecko) Safari/999.9";
+
+        equal(config.needsScrollToForFullScreen(iPhoneOS4), true, "iOS 4");
+        equal(config.needsScrollToForFullScreen(iPhoneOS5), false, "iOS 5");
+        equal(config.needsScrollToForFullScreen(iPhoneOS6), false, "iOS 6");
+        equal(config.needsScrollToForFullScreen(iPadOS4), true, "iOS 4");
+        equal(config.needsScrollToForFullScreen(iPadOS10), false, "iOS 10");
+        equal(config.needsScrollToForFullScreen(iPadOS5), false, "iOS 5");
+        equal(config.needsScrollToForFullScreen(iPadOS6), false, "iOS 6");
+        equal(config.needsScrollToForFullScreen(Android2_3), false, "Android 2.3");
+        equal(config.needsScrollToForFullScreen(Android4_3), false, "Android 4.3");
+
+    });
+    if (MTVNPlayer.isHTML5Player) {
+        test("test config.flashVars for HTML5 comparison", function() {
+            var Core = MTVNPlayer.module("core"),
+                config = {
+                    uri: "test-uri"
+                };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri", "no flashvars works");
+            config.flashVars = {
+                123: "abc",
+                456: "def"
+            };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?flashVars=%7B%22123%22%3A%22abc%22%2C%22456%22%3A%22def%22%7D", "flashVars works");
+            config.test = {
+                678: "ghi",
+                910: "jkl"
+            };
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?flashVars=%7B%22123%22%3A%22abc%22%2C%22456%22%3A%22def%22%7D&testConfig=%7B%22678%22%3A%22ghi%22%2C%22910%22%3A%22jkl%22%7D", "flashVars works");
+            delete config.flashVars;
+            equal(Core.getPath(config), "http://media.mtvnservices.com/test-uri/?testConfig=%7B%22678%22%3A%22ghi%22%2C%22910%22%3A%22jkl%22%7D", "flashVars works");
+        });
+    }
 })();

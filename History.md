@@ -1,3 +1,16 @@
+
+2.11.0 / 2013-10-29 
+==================
+
+ * BRBSUPPORT-1542 only `scrollTo` on iOS 4 and less. 
+ * BRBSUPPORT-1616 flash handles the fullscreen event
+ * BRBPL-3818 support for passing config values onto the querystring.
+ * BRBPL-3683 Support for CC Prefs Panel (closed caption preferences) 
+ * Set width and height of iframe via css instead of properties. 
+ * Support for an embed api created within a legacy html5 player iframe. 
+ * The `containerElement` gets position relative for things like CC Prefs.
+ * Migrate to Grunt 0.4.x
+
 2.10.0 / 2013-08-20 
 ==================
 
