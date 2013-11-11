@@ -1,10 +1,5 @@
 //= ../components/package-manager/dist/mtvn-package-manager.js
 /* global MTVNPlayer */
-/**
- * For creating a player inline you can use the MTVNPlayer.Player constructor.
- * For creating multiple players defined in HTML see MTVNPlayer.createPlayers
- * @static
- */
 if (!MTVNPlayer.Player) {
     var require = MTVNPlayer.require,
         provide = MTVNPlayer.provide;
