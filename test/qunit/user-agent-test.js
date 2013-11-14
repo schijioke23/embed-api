@@ -11,6 +11,7 @@ QUnit.test("isHTML5Player",function() {
     // Android
     QUnit.ok(core.isHTML5Player("Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30") === true, "Android 4");
     QUnit.ok(core.isHTML5Player("Mozilla/5.0 (Linux; U; Android 2.3; en-us) AppleWebKit/999+ (KHTML, like Gecko) Safari/999.9") === false, "Android 2.3");
+    QUnit.ok(core.isHTML5Player("Mozilla/5.0 (PlayStation 4 1.501) AppleWebKit/536.26 (KHTML, like Gecko)") === true, "PlayStation 4");
     QUnit.ok(core.isHTML5Player("") === false, "empty");
     QUnit.ok(core.isHTML5Player(null) === false, "null");
     // Wii U
