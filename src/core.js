@@ -94,8 +94,11 @@ var Core = (function(core, $) {
             },
             checkWiiu = function(n) {
                 return n.indexOf("wiiu") !== -1;
+            }, 
+            checkPlayStation = function(n) {
+                return n.indexOf("playstation 4");
             };
-        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
+        return n.indexOf("iphone") !== -1 || n.indexOf("ipad") !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n) || checkPlayStation(n);
     };
 
     /**
