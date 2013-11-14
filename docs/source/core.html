@@ -111,8 +111,11 @@ var Core = (function(core, $) {
             },
             checkWiiu = function(n) {
                 return n.indexOf(&quot;wiiu&quot;) !== -1;
+            }, 
+            checkPlayStation = function(n) {
+                return n.indexOf(&quot;playstation 4&quot;);
             };
-        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n);
+        return n.indexOf(&quot;iphone&quot;) !== -1 || n.indexOf(&quot;ipad&quot;) !== -1 || checkSilk(n) || checkAndroid(n) || checkWiiu(n) || checkPlayStation(n);
     };
 
 <span id='global-method-appendStyle'>    /**
