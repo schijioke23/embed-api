@@ -1,4 +1,9 @@
 
+2.11.2 / 2013-11-16 
+==================
+
+ * Fix global leak of `require` and `provide` variables introduced in 2.11.0.
+
 2.11.1 / 2013-11-14 
 ==================
 
