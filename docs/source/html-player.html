@@ -39,9 +39,12 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
          * @param {MTVNPlayer.Player} player
          */
         exitFullScreen = function(player) {
-            player.isFullScreen = false;
             var c = player.config,
                 e = player.containerElement;
+            if(c.isSyndicatedLegacyHTML5){
+                return;
+            }
+            player.isFullScreen = false;
             addCSS(e, &quot;position&quot;, &quot;static&quot;);
             addCSS(e, &quot;z-index&quot;, &quot;auto&quot;);
             addCSS(e, &quot;width&quot;, c.width + &quot;px&quot;);
@@ -56,6 +59,9 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
          * @param {IFrameElement} iframeElement
          */
         goFullScreen = function(player) {
+            if(player.config.isSyndicatedLegacyHTML5){
+                return;
+            }
             var e = player.containerElement,
                 highestZIndex = player.config.highestZIndex,
                 cssText = player.config.fullScreenCssText;
