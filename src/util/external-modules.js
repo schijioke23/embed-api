@@ -12,8 +12,8 @@ MTVNPlayer.configurePackages({
 	},
 	"mtvn-player/cc-prefs": {
 		shim: true,
-		url: "http://media.mtvnservices.com/player/js/cc-prefs/0.1.0/cc-prefs.min.js",
+		url: "http://media.mtvnservices.com/player/js/cc-prefs/0.2.0/cc-prefs.min.js",
 		exports: "CCPrefs",
-		css: "http://media.mtvnservices.com/player/js/cc-prefs/0.1.0/style.css"
+		css: "http://media.mtvnservices.com/player/js/cc-prefs/0.2.0/style.css"
 	}
 });
