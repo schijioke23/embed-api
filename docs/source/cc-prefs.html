@@ -17,25 +17,33 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">/* global _mtvnPlayerReady, require, PackageManager, Config */
 _mtvnPlayerReady.push(function(player) {
-	player.on(PackageManager.Events.CC_PREFS, function(event) {
-		// maybe jQuery is in the page. 
-		Config.provideJQuery();
-		require([&quot;$&quot;, &quot;mtvn-util&quot;, &quot;mtvn-player/cc-prefs&quot;], function($, util, CCPrefs) {
-			var $player = $(player.element),
-				prefs = new CCPrefs({
-					defaults: event.data,
-					css: {
-						position: &quot;absolute&quot;,
-						width: $player.width(),
-						height: $player.height()
-					}
+<span id='global-property-'>	/**
+</span>	 * @ignore
+	 * Since this isn't p-js, we don't do this from the page.
+	 * Instead the api is loaded into the HTML5 player's iframe.
+	 * Once the p-js service is ready, we can avoid these hacks.
+	 */
+	if (player.config.isSyndicatedLegacyHTML5) {
+		player.on(PackageManager.Events.CC_PREFS, function(event) {
+			// maybe jQuery is in the page. 
+			Config.provideJQuery();
+			require([&quot;$&quot;, &quot;mtvn-util&quot;, &quot;mtvn-player/cc-prefs&quot;], function($, util, CCPrefs) {
+				var $player = $(player.element),
+					prefs = new CCPrefs({
+						defaults: event.data,
+						css: {
+							position: &quot;absolute&quot;,
+							width: $player.width(),
+							height: $player.height()
+						}
+					});
+				prefs.$el.appendTo(player.containerElement);
+				prefs.on(CCPrefs.Events.CHANGE, function(event) {
+					player.message(&quot;updateCCPrefs&quot;, JSON.stringify(event.data));
 				});
-			prefs.$el.appendTo(player.containerElement);
-			prefs.on(CCPrefs.Events.CHANGE, function(event) {
-				player.message(&quot;updateCCPrefs&quot;, JSON.stringify(event.data));
 			});
 		});
-	});
+	}
 });</pre>
 </body>
 </html>

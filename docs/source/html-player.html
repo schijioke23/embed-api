@@ -136,6 +136,9 @@ MTVNPlayer.module(&quot;html5&quot;).initialize = _.once(function() {
             if (!isNaN(startIndex) &amp;&amp; startIndex &gt; 0) {
                 player.message.call(player, &quot;startIndex:&quot; + startIndex);
             }
+            if(player.config.test){
+                player.message.call(player, &quot;overwriteConfig:&quot; + JSON.stringify(player.config.test));   
+            }
             Core.executeCallbacks(player);
             player.trigger(MTVNPlayer.Events.READY);
         },
