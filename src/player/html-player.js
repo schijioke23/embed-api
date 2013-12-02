@@ -119,6 +119,9 @@ MTVNPlayer.module("html5").initialize = _.once(function() {
             if (!isNaN(startIndex) && startIndex > 0) {
                 player.message.call(player, "startIndex:" + startIndex);
             }
+            if(player.config.test){
+                player.message.call(player, "overwriteConfig:" + JSON.stringify(player.config.test));   
+            }
             Core.executeCallbacks(player);
             player.trigger(MTVNPlayer.Events.READY);
         },
