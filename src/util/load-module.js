@@ -1,7 +1,6 @@
 /*global MTVNPlayer, Config, _*/
 var PackageManager = function() {
     var Events = {
-        CC_PREFS:"cc-prefs",
         ENDSLATE: "endslate"
     },
     moduleBase = "http://media.mtvnservices.com/player/api/module/",

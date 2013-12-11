@@ -1,4 +1,9 @@
 
+2.11.3 / 2013-12-10 
+==================
+
+ * Removing cc-prefs from embed-api, it will go in p-js code base.
+
 2.11.2 / 2013-11-16 
 ==================
 
