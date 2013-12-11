@@ -9,11 +9,5 @@ MTVNPlayer.configurePackages({
 	},
 	"mtvn-util": {
 		url: "http://media.mtvnservices.com/player/js/util/1.5.0/mtvn-util.min.js"
-	},
-	"mtvn-player/cc-prefs": {
-		shim: true,
-		url: "http://media.mtvnservices.com/player/js/cc-prefs/0.3.2/cc-prefs.min.js",
-		exports: "CCPrefs",
-		css: "http://media.mtvnservices.com/player/js/cc-prefs/0.3.2/style.css"
 	}
 });

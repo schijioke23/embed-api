@@ -21,7 +21,6 @@
             //= util/config.js
             //= util/selector.js
             //= util/url.js
-            //= util/cc-prefs.js
             //= util/external-modules.js
             //= player/flash-player.js
             //= player/html-player.js
