@@ -1,4 +1,9 @@
 
+2.11.4 / 2014-01-17 
+==================
+
+ * Fix blatant bug with indexOf causing all flash players to fail to initialize.
+
 2.11.3 / 2013-12-10 
 ==================
 
