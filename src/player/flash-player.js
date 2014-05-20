@@ -1,4 +1,4 @@
-/*global MTVNPlayer, Config, Core, PackageManager, _ */
+/*global $, MTVNPlayer, Config, Core, PackageManager, _ */
 /**
  * set up handling of flash external interface calls
  * create functions to map metadata to new format,
