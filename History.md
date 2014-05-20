@@ -1,4 +1,9 @@
 
+2.11.6 / 2014-05-20 
+==================
+
+ * Fix for user agent detection on Firefox on Android. Fixes BRBSUPPORT-1789.
+
 2.11.5 / 2014-03-10 
 ==================
 
