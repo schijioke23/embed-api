@@ -1,6 +1,6 @@
 {
     "name": "embed-api",
-    "version": "2.11.4",
+    "version": "2.11.6",
     "main": [
         "./dist/api.js",
         "dist/api.min.js"
