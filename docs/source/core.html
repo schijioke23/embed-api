@@ -103,6 +103,9 @@ var Core = (function(core, $) {
 			},
 			checkAndroid = function(n) {
 				if (n.indexOf(&quot;android&quot;) !== -1) {
+					if (n.indexOf(&quot;firefox&quot;) !== -1) {
+						return true;
+					}
 					var reg = /android (\d)/ig,
 						result = parseInt(reg.exec(n)[1], 10);
 					return !isNaN(result) &amp;&amp; result &gt;= 4;
