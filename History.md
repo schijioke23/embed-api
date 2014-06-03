@@ -1,4 +1,9 @@
 
+2.11.7 / 2014-06-03 
+==================
+
+ * Don't append / when appending querystring params.
+
 2.11.6 / 2014-05-20 
 ==================
 

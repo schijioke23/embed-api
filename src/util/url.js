@@ -16,9 +16,6 @@ var Url = {
 		if (url.indexOf(nameValuePair) === -1) {
 			var endIndex = url.length - 1,
 				questionMarkIndex = url.lastIndexOf("?");
-			if (questionMarkIndex === -1 && url.lastIndexOf("/") !== endIndex) {
-				url += "/";
-			}
 			var concat = url.lastIndexOf("&") === endIndex || questionMarkIndex === endIndex ? "" : questionMarkIndex === -1 ? "?" : "&";
 			url += concat + nameValuePair;
 		}
