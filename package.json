@@ -1,6 +1,6 @@
 {
 	"name": "embed-api",
-	"version": "2.11.6",
+	"version": "2.11.7",
 	"author": "gianni ferullo <giannif@gmail.com>",
 	"private": true,
 	"description": "The embed api provides a unified interface for different player implementations.",
