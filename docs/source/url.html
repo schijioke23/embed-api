@@ -33,9 +33,6 @@ var Url = {
 		if (url.indexOf(nameValuePair) === -1) {
 			var endIndex = url.length - 1,
 				questionMarkIndex = url.lastIndexOf(&quot;?&quot;);
-			if (questionMarkIndex === -1 &amp;&amp; url.lastIndexOf(&quot;/&quot;) !== endIndex) {
-				url += &quot;/&quot;;
-			}
 			var concat = url.lastIndexOf(&quot;&amp;&quot;) === endIndex || questionMarkIndex === endIndex ? &quot;&quot; : questionMarkIndex === -1 ? &quot;?&quot; : &quot;&amp;&quot;;
 			url += concat + nameValuePair;
 		}
